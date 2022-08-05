@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/different_black"
+    android:fillViewport="true"
+    tools:context=".BAAS">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/baas_back_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="33dp"
+        android:background="@drawable/back_icon"
+        android:backgroundTint="#F5F5F5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/baasMemberProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:text="BaaS"
+        android:textColor="#F5F5F5"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@id/baas_back_button"
+        app:layout_constraintStart_toEndOf="@id/baas_back_button"
+        app:layout_constraintTop_toTopOf="@id/baas_back_button"
+        tools:ignore="HardcodedText" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/baas_search_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/white"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/baasMemberProfile">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/ic_search"
+            android:backgroundTint="@color/grey" />
+
+        <EditText
+            android:id="@+id/search_baas_edtTxt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="38dp"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:fontFamily="@font/inter_regular"
+            android:hint="Search Events"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"
+            tools:ignore="HardcodedText" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/baas_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/baas_search_cv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
