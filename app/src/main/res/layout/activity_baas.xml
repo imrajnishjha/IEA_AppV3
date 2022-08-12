@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/different_black"
     android:fillViewport="true"
+    app:layoutDescription="@xml/activity_baas_scene"
     tools:context=".BAAS">
 
     <androidx.appcompat.widget.AppCompatButton
@@ -39,8 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="60dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="60dp"
         android:background="@drawable/edittext_style_search"
         android:backgroundTint="@color/white"
         android:fontFamily="@font/inter_regular"
@@ -62,8 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="60dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="60dp"
         android:background="@color/black"
         android:hint="Industry Type"
         android:textColorHint="@color/black"
@@ -104,10 +105,10 @@
         android:id="@+id/baas_filter_cv"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/baasMemberProfile">
 
@@ -124,21 +125,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/WormosCv" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/WormosCv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/WormosCv"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@id/baas_filter_cv"
         android:backgroundTint="#F5F5F5"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/baas_filter_cv">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,23 +153,22 @@
                 android:id="@+id/baas_list_image_cv"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:backgroundTint="#f5f5f5"
                 app:cardCornerRadius="25dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:backgroundTint="#f5f5f5">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/baas_list_image_iv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="4dp"
-                    android:src="@drawable/wormos_logo"/>
+                    android:src="@drawable/wormos_logo" />
             </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/baas_list_company_name"
                 android:layout_width="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -177,6 +177,7 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/baas_list_image_cv"
                 app:layout_constraintTop_toTopOf="@id/baas_list_image_cv"
                 tools:ignore="HardcodedText" />
@@ -223,19 +224,78 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/WormosCv"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/WormosCv" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/baas_addProductIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="#f1f1f1"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/plusicon" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/baas_uploadBrochure"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#f1f1f1"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@id/baas_addProductIcon"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:src="@drawable/brochureicon" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/baas_newitem"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#f1f1f1"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@id/baas_uploadBrochure"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:src="@drawable/newitem" />
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

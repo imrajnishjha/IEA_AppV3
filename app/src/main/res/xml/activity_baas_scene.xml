@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:autoTransition="animateToEnd"
+        motion:staggered="0.4"
+        motion:duration="1000">
+       <KeyFrameSet>
+           <KeyAttribute
+               motion:motionTarget="@+id/baas_addProductIcon"
+               motion:framePosition="0"
+               android:alpha="0" />
+           <KeyAttribute
+               motion:motionTarget="@+id/baas_uploadBrochure"
+               motion:framePosition="0"
+               android:alpha="0" />
+           <KeyAttribute
+               motion:motionTarget="@+id/baas_newitem"
+               motion:framePosition="0"
+               android:alpha="0" />
+       </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/baas_uploadBrochure"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="-60dp"
+            motion:layout_constraintBottom_toTopOf="@id/baas_addProductIcon"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp" />
+        <Constraint
+            android:id="@+id/baas_newitem"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="-60dp"
+            motion:layout_constraintBottom_toTopOf="@id/baas_uploadBrochure"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+    </ConstraintSet>
+</MotionScene>
