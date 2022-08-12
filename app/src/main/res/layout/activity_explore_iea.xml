@@ -11,13 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
-
-
-
-
-
-
         <androidx.cardview.widget.CardView
             android:id="@+id/aboutcard"
             android:layout_width="match_parent"
@@ -32,8 +25,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/explore_back_button"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/back_icon"
@@ -64,7 +57,7 @@
                     android:layout_height="160dp"
                     android:layout_marginTop="20dp"
                     android:background="@color/white"
-                    app:cardCornerRadius="100dp"
+                    app:cardCornerRadius="80dp"
                     android:layout_gravity="center">
 
                     <ImageView
@@ -327,6 +320,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/explore_iea_help_cv"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"

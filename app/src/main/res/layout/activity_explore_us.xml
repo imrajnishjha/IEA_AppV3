@@ -349,6 +349,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/explore_us_open_whatsapp_cv"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -369,10 +370,6 @@
                 />
 
         </androidx.cardview.widget.CardView>
-
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

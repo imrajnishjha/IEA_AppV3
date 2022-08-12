@@ -1,12 +1,12 @@
 package com.example.ieaapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PrivacyPolicy extends AppCompatActivity {
 
@@ -17,12 +17,13 @@ public class PrivacyPolicy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
 
-        privacyPolicyWv = findViewById(R.id.privacy_policy_wv);
+        String url = getIntent().getStringExtra("url");
+
 
         WebSettings websettings = privacyPolicyWv.getSettings();
         websettings.setJavaScriptEnabled(true);
         privacyPolicyWv.setWebViewClient(new Callback());
-        privacyPolicyWv.loadUrl("ieaprivacypolicy.servicewalebhaiya.com");
+        privacyPolicyWv.loadUrl(url);
     }
 
     private class Callback extends WebViewClient {

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ public class explore_us extends AppCompatActivity {
 
     TextView join_now;
     AppCompatButton exploreUsBackButton;
-    CardView exploreUsContactUsCard;
+    CardView exploreUsContactUsCard, exploreUsOpenWhatsappCv;
     Dialog exploreUsContactDialog;
 
     @Override
@@ -31,6 +32,7 @@ public class explore_us extends AppCompatActivity {
 
         exploreUsBackButton = findViewById(R.id.exploreus_back_button);
         exploreUsContactUsCard  = findViewById(R.id.explore_us_contact_us_card);
+        exploreUsOpenWhatsappCv = findViewById(R.id.explore_us_open_whatsapp_cv);
 
         exploreUsContactDialog = new Dialog(this);
 
@@ -48,5 +50,13 @@ public class explore_us extends AppCompatActivity {
             exploreUsContactDialog.show();
         });
 
+        exploreUsOpenWhatsappCv.setOnClickListener(view -> openWhatsAppConvo());
+
+    }
+
+    private void openWhatsAppConvo() {
+        Uri uri = Uri.parse("https://wa.me/919145114666?text=Hello,%20I%20have%20a%20query.");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 }

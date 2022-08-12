@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,7 +43,7 @@ public class explore_menu extends AppCompatActivity {
     TextView exploreUsername, Memberofmonthname, activeValue, solvedValue, MoMdescription;
     ImageView logoutImg, userImage;
     CircleImageView MemberofmonthImg;
-    CardView coreMembersCard, memberDirectoryCard, grievanceCard, contactUs, refer, baasCard, eventsCard;
+    CardView coreMembersCard, memberDirectoryCard, grievanceCard, contactUs, refer, baasCard, eventsCard, helpImg, postJob;
     Dialog exploreIeaContactDialog;
     DatabaseReference databaseReference, solvedReference, unResolvedReference, rejectedReference;
     StorageReference storageProfilePicReference;
@@ -58,14 +59,12 @@ public class explore_menu extends AppCompatActivity {
         exploreUsername = findViewById(R.id.explore_username);
         Memberofmonthname = findViewById(R.id.description_username);
         MoMdescription = findViewById(R.id.description_text);
-        logoutImg = findViewById(R.id.logout_img);
         coreMembersCard = findViewById(R.id.core_mem);
         memberDirectoryCard = findViewById(R.id.member_directory);
         grievanceCard = findViewById(R.id.grievance);
         contactUs = findViewById(R.id.explore_menu_contact_us_cardView);
         refer = findViewById(R.id.refer);
         exploreIeaContactDialog = new Dialog(this);
-        exploreMenuLogoutBtn = findViewById(R.id.logout_text);
         userImage = findViewById(R.id.user_img);
         activeValue = findViewById(R.id.active_value);
         solvedValue = findViewById(R.id.solved_value);
@@ -75,57 +74,14 @@ public class explore_menu extends AppCompatActivity {
         eventsCard = findViewById(R.id.events);
         MemberofmonthImg = findViewById(R.id.description_img);
         memberNotificationIcon = findViewById(R.id.member_notification_icon);
+        postJob = findViewById(R.id.postjobs);
+        helpImg = findViewById(R.id.helpimg);
 
         mAuth = FirebaseAuth.getInstance();
 
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
-        rejectedReference = FirebaseDatabase.getInstance().getReference().child("Rejected Grievance").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-
-        solvedReference = FirebaseDatabase.getInstance().getReference().child("Solved Grievance").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-
-        unResolvedReference = FirebaseDatabase.getInstance().getReference().child("Unresolved Grievances").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-        unResolvedReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                allProblemValue = snapshot.getChildrenCount();
-                solvedReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allsolvedValue = snapshot.getChildrenCount();
-                        solvedValue.setText(String.valueOf(allsolvedValue));
-                        Log.d("Problems", "Solved Grievances " + snapshot.getChildrenCount());
-                        rejectedReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                allRejectedValue = snapshot.getChildrenCount();
-                                activeValue.setText(String.valueOf(allProblemValue - allsolvedValue - allRejectedValue));
-                                Log.d("Problems", "All Count: " + snapshot.getChildrenCount());
-                                Log.d("Problems", "onDataChange: " + allsolvedValue);
-                                Log.d("Problems", "onDataChange: " + allRejectedValue);
-                                Log.d("Problems", "Rejected Grievances " + snapshot.getChildrenCount());
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        grievanceCalculator();
 
 
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
@@ -222,15 +178,6 @@ public class explore_menu extends AppCompatActivity {
         CardView explore = (CardView) findViewById(R.id.explore);
         explore.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, explore_iea.class)));
 
-        logoutImg.setOnClickListener(view -> {
-            mAuth.signOut();
-            finish();
-        });
-        exploreMenuLogoutBtn.setOnClickListener(view -> {
-            mAuth.signOut();
-            finish();
-        });
-
         coreMembersCard.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, CoreTeamMembers.class)));
         memberDirectoryCard.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, MembersDirectory.class)));
         grievanceCard.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, Grievance.class)));
@@ -256,13 +203,71 @@ public class explore_menu extends AppCompatActivity {
         memberNotificationIcon.setOnClickListener(view -> {
             startActivity(new Intent(explore_menu.this, MembersNotification.class));
         });
+
+        helpImg.setOnClickListener(view -> openWhatsAppConvo());
+        postJob.setOnClickListener(view -> {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
+        });
     }
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-//        finish();
-//        overridePendingTransition(0, 0);
-//        startActivity(getIntent());
-//        overridePendingTransition(0, 0);
-//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        grievanceCalculator();
+    }
+
+    private void openWhatsAppConvo() {
+        Uri uri = Uri.parse("https://wa.me/919145114666?text=Hello,%20I%20have%20a%20query.");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    public void grievanceCalculator(){
+        rejectedReference = FirebaseDatabase.getInstance().getReference().child("Rejected Grievance").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+
+        solvedReference = FirebaseDatabase.getInstance().getReference().child("Solved Grievance").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+
+        unResolvedReference = FirebaseDatabase.getInstance().getReference().child("Unresolved Grievances").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+        unResolvedReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allProblemValue = snapshot.getChildrenCount();
+                solvedReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        allsolvedValue = snapshot.getChildrenCount();
+                        solvedValue.setText(String.valueOf(allsolvedValue));
+                        Log.d("Problems", "Solved Grievances " + snapshot.getChildrenCount());
+                        rejectedReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                allRejectedValue = snapshot.getChildrenCount();
+                                activeValue.setText(String.valueOf(allProblemValue - allsolvedValue - allRejectedValue));
+                                Log.d("Problems", "All Count: " + snapshot.getChildrenCount());
+                                Log.d("Problems", "onDataChange: " + allsolvedValue);
+                                Log.d("Problems", "onDataChange: " + allRejectedValue);
+                                Log.d("Problems", "Rejected Grievances " + snapshot.getChildrenCount());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }

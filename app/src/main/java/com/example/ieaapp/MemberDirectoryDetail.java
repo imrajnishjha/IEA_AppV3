@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemberDirectoryDetail extends AppCompatActivity {
     ImageView memberProfileImage;
-    TextView memberProfileName, memberMembershipId,
+    TextView memberProfileName,
             memberCompanyName, memberAddress, memberPhoneno, memberMail, memberInfoText, memberInfoDetails;
     AppCompatButton memberProfileBackBtn, downloadBrochureBtn, moreProductButton;
     RecyclerView memberProductRecyclerView;
@@ -58,7 +58,6 @@ public class MemberDirectoryDetail extends AppCompatActivity {
         memberAddress = findViewById(R.id.nullphonenotext);
         memberPhoneno = findViewById(R.id.nullphonenotext);
         memberProfileImage = findViewById(R.id.member_profile_image);
-        memberMembershipId = findViewById(R.id.member_membership_id);
         memberProfileName = findViewById(R.id.member_profile_name);
         moreProductButton = findViewById(R.id.moreProduct_button);
 
@@ -157,7 +156,6 @@ public class MemberDirectoryDetail extends AppCompatActivity {
                     memberBrochureLink = Objects.requireNonNull(snapshot.child("brochure_url").getValue()).toString();
 
 
-                    memberMembershipId.setText(memberMembershipIdStr);
                     memberCompanyName.setText(memberCompanyNameStr);
                     memberAddress.setText(memberAddressStr);
                     memberPhoneno.setText(memberPhoneStr);

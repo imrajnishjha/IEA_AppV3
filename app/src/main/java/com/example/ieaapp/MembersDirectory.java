@@ -110,6 +110,7 @@ public class MembersDirectory extends AppCompatActivity {
             memberDirectoryRadioGroup = view1.findViewById(R.id.member_directory_popup_radio_group);
             searchByMemberNameRBtn = view1.findViewById(Integer.parseInt(memberDirectoryIdHolder.getText().toString()));
             memberDirectoryPopupOkayBtn = view1.findViewById(R.id.member_directory_popup_okay_btn);
+
             memberDirectorySearchPopup.setContentView(view1);
             memberDirectorySearchPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             memberDirectorySearchPopup.show();
@@ -119,7 +120,6 @@ public class MembersDirectory extends AppCompatActivity {
                 memberDirectoryIdHolder.setText(String.valueOf(memberDirectoryRadioGroup.getCheckedRadioButtonId()));
                 searchByMemberNameRBtn = view1.findViewById(Integer.parseInt(memberDirectoryIdHolder.getText().toString()));
                 if (searchByMemberNameRBtn.getText().toString().equals("Member Name")) {
-                    Log.d("Visibility", "Working");
                     memberSearchOutbox.setVisibility(View.GONE);
                     memberDirectorySearchNameEdtTxt.setVisibility(View.VISIBLE);
                     memberDirectorySearchNameEdtTxt.addTextChangedListener(new TextWatcher() {
@@ -191,7 +191,6 @@ public class MembersDirectory extends AppCompatActivity {
                         }
                     });
                 }
-
                 memberDirectorySearchPopup.dismiss();
                 Log.d("filtervalue", memberDirectoryIdHolder.getText().toString());
                 Log.d("Visibility", searchByMemberNameRBtn.getText().toString());
@@ -216,12 +215,6 @@ public class MembersDirectory extends AppCompatActivity {
         super.onStart();
         memberDirectoryAdapter.startListening();
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        memberDirectoryAdapter.stopListening();
-//    }
 
     public static class WrapContentLinearLayoutManager extends LinearLayoutManager {
         public WrapContentLinearLayoutManager(Context context) {

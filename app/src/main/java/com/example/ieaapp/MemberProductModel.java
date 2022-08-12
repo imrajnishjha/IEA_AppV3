@@ -2,17 +2,18 @@ package com.example.ieaapp;
 
 public class MemberProductModel {
 
-    String productDescription,productImageUrl,productPrice,productTitle,ownerEmail;
+    String productDescription,productImageUrl,productPrice,productTitle,ownerEmail, productTitleLowerCase;
 
     public MemberProductModel() {
     }
 
-    public MemberProductModel(String productDescription, String productImageUrl, String productPrice, String productTitle, String ownerEmail) {
+    public MemberProductModel(String productDescription, String productImageUrl, String productPrice, String productTitle, String ownerEmail, String productTitleLowerCase) {
         this.productDescription = productDescription;
         this.productImageUrl = productImageUrl;
         this.productPrice = productPrice;
         this.productTitle = productTitle;
         this.ownerEmail = ownerEmail;
+        this.productTitleLowerCase = productTitleLowerCase;
     }
 
     public String getProductDescription() {
@@ -53,5 +54,13 @@ public class MemberProductModel {
 
     public void setOwnerEmail(String ownerEmail) {
         this.ownerEmail = ownerEmail;
+    }
+
+    public String getProductTitleLowerCase() {
+        return productTitleLowerCase;
+    }
+
+    public void setProductTitleLowerCase(String productTitleLowerCase) {
+        this.productTitleLowerCase = productTitleLowerCase;
     }
 }

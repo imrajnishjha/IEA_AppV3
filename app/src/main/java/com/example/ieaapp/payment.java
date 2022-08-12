@@ -3,6 +3,7 @@ package com.example.ieaapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -23,11 +24,12 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     private String memberfees;
 
 
-    String fullname, email, phoneNo, companyName, Department, Turnover;
+    String fullname, email, phoneNo, companyName, Department, Turnover,Gstno;
 
     FirebaseDatabase memberDirectoryRoot;
     DatabaseReference memberDirectoryRef;
     String paymentReceiverName;
+    EditText gstNo;
 
 
     @Override
@@ -37,6 +39,8 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
 
         EditText amount_payingnow = findViewById(R.id.amount_paynow);
         TextView amount_payinglater = findViewById(R.id.amount_paylater);
+        gstNo = findViewById(R.id.Gstno);
+
 
         Intent intent = getIntent();
         fullname = intent.getStringExtra("name");
@@ -46,6 +50,8 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
         Department = intent.getStringExtra("department");
         Turnover = intent.getStringExtra("annual_turn");
         memberfees = intent.getStringExtra("memberfee");
+
+        Log.d("Useremail", "onCreate: "+email.toLowerCase());
 
         String[] payment = getResources().getStringArray(R.array.paymethod);
         ArrayAdapter<String> arrayAdapterPaymethod = new ArrayAdapter<>(getBaseContext(), R.layout.drop_down_item, payment);
@@ -106,7 +112,7 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
                 TextView amountleft = findViewById(R.id.amount_paylater);
 
                 intent.putExtra("name", fullname);
-                intent.putExtra("email", email);
+                intent.putExtra("email", email.toLowerCase());
                 intent.putExtra("phoneno", phoneNo);
                 intent.putExtra("cname", companyName);
                 intent.putExtra("department", Department);
@@ -114,6 +120,7 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
                 intent.putExtra("memberfee", memberfees);
                 intent.putExtra("costleft", amountleft.getText().toString());
                 intent.putExtra("paymentMethod", autoCompletePayment.getText().toString());
+                intent.putExtra("GstNo",gstNo.getText().toString());
 
                 if (TextUtils.isEmpty(amount_payingnow.getText().toString())) {
                     amount_payingnow.setError("Amount cannot be empty!");

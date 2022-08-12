@@ -16,8 +16,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/events_back_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_margin="16dp"
         android:background="@drawable/back_icon"
         android:backgroundTint="@color/white"
@@ -32,7 +32,7 @@
         android:fontFamily="@font/inria_sans_regular"
         android:text="Event"
         android:textColor="@color/white"
-        android:textSize="22sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

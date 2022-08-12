@@ -14,8 +14,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/baas_member_back_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="33dp"
             android:background="@drawable/back_icon"
@@ -29,8 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:fontFamily="@font/poppins_semi_bold"
-            android:text=""
-            android:textColor="@color/black"
+            android:text="Portfolio"
+            android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="@id/baas_member_back_button"
             app:layout_constraintStart_toEndOf="@id/baas_member_back_button"
@@ -38,7 +38,7 @@
             tools:ignore="HardcodedText" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/baas_member_profile_image_cv"
+            android:id="@+id/company_logo_cv"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="32dp"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toBottomOf="@id/baas_member_back_button">
 
             <ImageView
-                android:id="@+id/baas_member_profile_image_iv"
+                android:id="@+id/company_logo_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
@@ -69,8 +69,8 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/baas_member_profile_image_cv"
-            app:layout_constraintTop_toTopOf="@id/baas_member_profile_image_cv"
+            app:layout_constraintStart_toEndOf="@id/company_logo_cv"
+            app:layout_constraintTop_toTopOf="@id/company_logo_cv"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:text="Enlarge Your Business"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/baas_member_profile_image_cv"
+            app:layout_constraintStart_toEndOf="@id/company_logo_cv"
             app:layout_constraintTop_toBottomOf="@id/baas_member_profile_company_name"
             tools:ignore="HardcodedText" />
 
@@ -92,7 +92,7 @@
             android:layout_marginTop="32dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/baas_member_profile_image_cv">
+            app:layout_constraintTop_toBottomOf="@id/company_logo_cv">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/baas_member_profile_view_brochure_btn"
@@ -109,8 +109,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/different_black"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@id/baas_member_profile_image_cv"
-                app:layout_constraintTop_toBottomOf="@id/baas_member_profile_image_cv"
+                app:layout_constraintStart_toStartOf="@id/company_logo_cv"
+                app:layout_constraintTop_toBottomOf="@id/company_logo_cv"
                 tools:ignore="HardcodedText" />
 
             <androidx.appcompat.widget.AppCompatButton

@@ -113,6 +113,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/number" />
 
+        <EditText
+            android:id="@+id/company_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/edittext_style_white_smaller"
+            android:fontFamily="@font/inria_sans_regular"
+            android:hint="Company Url"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/company_name"
+            tools:ignore="HardcodedText" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/outbox_department_field"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -128,7 +148,7 @@
             app:boxStrokeWidth="2.5dp"
             app:endIconDrawable="@drawable/ic_down_arrow"
             app:endIconTint="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/company_name">
+            app:layout_constraintTop_toBottomOf="@id/company_url">
 
             <AutoCompleteTextView
                 android:id="@+id/autocomplete_department_field"
@@ -256,6 +276,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
             android:fontFamily="@font/inter_medium"
             android:text="@string/by_signing_up_you_agree_to_terms_of_service_and_privacy_policy"
@@ -263,7 +284,25 @@
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/wormos_redirecting_url" />
+
+        <TextView
+            android:id="@+id/wormos_redirecting_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/get_website_here"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+
 
         <EditText
             android:layout_width="match_parent"
@@ -274,7 +313,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_style_white_smaller"
             android:fontFamily="@font/inria_sans_regular"
-            android:hint="Refer Code (Optional)"
+            android:hint="Referral Name (Optional)"
             android:importantForAutofill="no"
             android:inputType="text"
             android:padding="12dp"

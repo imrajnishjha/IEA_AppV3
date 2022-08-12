@@ -58,8 +58,8 @@ public class UserProfile extends AppCompatActivity {
 
     DatabaseReference ref = database.getReference("Registered Users/" + userEmailConverted);
 
-    ImageView userProfileImage, uploadProductImageIv;
-    TextView userProfileName, userMembershipId, userMembershipDate, userMembershipExpiryDate;
+    ImageView userProfileImage, uploadProductImageIv, logoutImg;
+    TextView userProfileName, userMembershipId, userMembershipDate, userMembershipExpiryDate, logoutTv;
     EditText userContactNumberEdtTxt, userDateOfBirthEdtTxt, userEmailEdtTxt, userCompanyNameEdtTxt, userAddressEdtTxt,
             productTitleEdtTxt, productDescriptionEdtTxt, productPriceEdtTxt;
     AppCompatButton saveProfileBtn, userProfileBackBtn, uploadBrochureBtn, addProductBtn, editProductBtn;
@@ -77,7 +77,6 @@ public class UserProfile extends AppCompatActivity {
 
         userProfileImage = findViewById(R.id.user_profile_image);
         userProfileName = findViewById(R.id.user_profile_name);
-        userMembershipId = findViewById(R.id.user_membership_id);
         userMembershipDate = findViewById(R.id.user_membership_date);
         userContactNumberEdtTxt = findViewById(R.id.user_profile_contactNumber_edtTxt);
         userDateOfBirthEdtTxt = findViewById(R.id.user_profile_dateOfBirth_edtTxt);
@@ -96,6 +95,8 @@ public class UserProfile extends AppCompatActivity {
         productPriceEdtTxt = findViewById(R.id.product_price_edtTxt);
         uploadProductImageCv = findViewById(R.id.upload_product_image_cv);
         uploadProductImageIv = findViewById(R.id.upload_product_image_iv);
+        logoutImg = findViewById(R.id.logout_img);
+        logoutTv = findViewById(R.id.logout_text);
         productUploadProgressDialog = new ProgressDialog(this);
 
         userProfileBackBtn.setOnClickListener(view -> {
@@ -130,7 +131,6 @@ public class UserProfile extends AppCompatActivity {
                 userProfileName.setText(userProfileNameStr);
 
                 String userMembershipIdStr = Objects.requireNonNull(dataSnapshot.child("member_id").getValue()).toString();
-                userMembershipId.setText(userMembershipIdStr);
 
                 String userMembershipDateStr = Objects.requireNonNull(dataSnapshot.child("date_of_membership").getValue()).toString();
                 userMembershipDate.setText(userMembershipDateStr);
@@ -292,6 +292,17 @@ public class UserProfile extends AppCompatActivity {
                 uploadProductImage(productImageUri);
             }
 
+        });
+
+        logoutImg.setOnClickListener(view -> {
+            mAuth.signOut();
+            startActivity(new Intent(UserProfile.this, LandingPage.class).setFlags(getIntent().FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
+        });
+        logoutTv.setOnClickListener(view -> {
+            mAuth.signOut();
+            startActivity(new Intent(UserProfile.this, LandingPage.class).setFlags(getIntent().FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
         });
 
     }

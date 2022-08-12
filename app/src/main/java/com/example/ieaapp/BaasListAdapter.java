@@ -112,7 +112,7 @@ public class BaasListAdapter extends FirebaseRecyclerAdapter<BaasListModel, Baas
 
 
         Glide.with(holder.baasListImage.getContext())
-                .load(model.getPurl())
+                .load(model.getCompany_logo())
                 .placeholder(R.drawable.iea_logo)
                 .circleCrop()
                 .error(R.drawable.iea_logo)

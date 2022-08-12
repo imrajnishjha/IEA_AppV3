@@ -67,7 +67,7 @@
             app:boxStrokeWidth="2.5dp"
             app:endIconDrawable="@drawable/ic_down_arrow"
             app:endIconTint="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/amount_paylater">
+            app:layout_constraintTop_toBottomOf="@id/Gstno">
 
             <AutoCompleteTextView
                 android:id="@+id/autocomplete_payment"
@@ -165,6 +165,33 @@
             app:layout_constraintTop_toBottomOf="@+id/amount_paynow"
             app:layout_constraintStart_toStartOf="parent"
             android:text="Amount Remaining"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Gstno"
+            android:textSize="16dp"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:inputType="text"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edittext_style_white_smaller"
+            app:layout_constraintTop_toBottomOf="@id/GstnoText"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/GstnoText"
+            app:layout_constraintTop_toBottomOf="@+id/amount_paylater"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="GST No."
             android:textColor="@color/black"
             android:textSize="11sp"
             android:layout_marginTop="16dp"

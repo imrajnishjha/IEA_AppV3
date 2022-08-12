@@ -17,7 +17,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
@@ -30,6 +33,7 @@ public class Login extends AppCompatActivity {
     FirebaseAuth mAuth;
     TextView forgotPassIntent, privacyPolicy;
     ProgressDialog loginProgressDialog;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,6 @@ public class Login extends AppCompatActivity {
 
         forgotPassIntent = findViewById(R.id.forgotPassIntent);
         privacyPolicy = findViewById(R.id.login_policy_text);
-//        forgotPassIntent.setPaintFlags(forgotPassIntent.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         forgotPassIntent.setOnClickListener(view -> startActivity(new Intent(Login.this, forgot_password.class)));
         privacyPolicy.setOnClickListener(view -> openPrivacyPolicyLink());
         mAuth = FirebaseAuth.getInstance();
@@ -58,7 +61,7 @@ public class Login extends AppCompatActivity {
     private void loginUser() {
         loginEmail = findViewById(R.id.login_email);
         loginPassword = findViewById(R.id.login_password);
-        String login_email = loginEmail.getText().toString();
+        String login_email = loginEmail.getText().toString().toLowerCase();
         String login_password = loginPassword.getText().toString();
 
 
@@ -88,7 +91,7 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(Login.this, "You are logged in!", Toast.LENGTH_SHORT).show();
                         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
                             Log.d("Messaging", "onComplete: Messaging On Complete");
-                            String token = task1.getResult();
+                            token = task1.getResult();
                             Log.d("Messaging", "Token: " + token);
                             sendTokenToDatabase(token);
                         });
@@ -109,12 +112,34 @@ public class Login extends AppCompatActivity {
         userToken.put("user_token", token);
 
         HashMap memberToken = new HashMap();
-        memberToken.put(loginEmail.getText().toString().replaceAll("\\.", "%7"), token);
+        memberToken.put(loginEmail.getText().toString().replaceAll("\\.", "%7").toLowerCase(), token);
 
-        FirebaseDatabase.getInstance().getReference().child("Registered Users/" + loginEmail.getText().toString().replaceAll("\\.", "%7"))
+        FirebaseDatabase.getInstance().getReference().child("Registered Users/" + loginEmail.getText().toString().replaceAll("\\.", "%7").toLowerCase())
                 .updateChildren(userToken);
 
         FirebaseDatabase.getInstance().getReference("Member Directory Token")
                 .updateChildren(memberToken);
+
+        String industryTypeRef = "Registered Users/" + loginEmail.getText().toString().replaceAll("\\.", "%7").toLowerCase() + "/industry_type";
+
+        Log.d("IndustryType", industryTypeRef);
+        FirebaseDatabase.getInstance().getReference()
+                .child(industryTypeRef).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("IndustryType", "Industry Type working");
+                        if(snapshot.getValue() != null) {
+                            FirebaseDatabase.getInstance().getReference("Industry Notification Token/" + snapshot.getValue().toString())
+                                    .updateChildren(memberToken);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
     }
 }

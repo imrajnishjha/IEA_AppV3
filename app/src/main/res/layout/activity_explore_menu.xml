@@ -17,52 +17,23 @@
             android:id="@+id/member_notification_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="18dp"
             android:background="@drawable/bell_icon"
             android:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/user_img"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/logout_img"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="7dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/logout"
-            app:layout_constraintEnd_toStartOf="@id/logout_text"
-            app:layout_constraintTop_toTopOf="@id/logout_text" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/logout_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="37dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/purple_200"
-            android:foregroundGravity="left"
-            android:gravity="center|start|left"
-            android:text="Log Out"
-            android:textAllCaps="false"
-            android:textColor="#0B77D6"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_img"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="18dp"
-            android:background="@color/purple_200"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="18dp"
             android:src="@drawable/iea_logo"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -77,7 +48,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logout_text" />
+            app:layout_constraintTop_toBottomOf="@+id/user_img" />
 
         <TextView
             android:id="@+id/explore_username"
@@ -97,12 +68,12 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:gravity="bottom"
-            android:text="Get boost to your Business"
+            android:text="Boost your Business"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logout_text" />
+            app:layout_constraintTop_toBottomOf="@id/user_img" />
 
 
         <RelativeLayout
@@ -138,6 +109,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="#14FFFFFF"
+                android:maxLines="1"
                 android:gravity="center"
                 android:text="Solved"
                 android:textColor="#10ADF4"
@@ -189,6 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/round_corner"
             app:layout_constraintTop_toBottomOf="@id/activeval">
@@ -200,8 +173,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:src="@drawable/sanjeev_sharma_pic"
-                app:civ_border_color="@color/black"
-                app:civ_border_width="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -238,35 +209,25 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <GridLayout
-            android:id="@+id/cards"
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/core_mem"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="12dp"
-            android:columnCount="2"
-            android:orientation="horizontal"
-            android:rowCount="4"
-            app:layout_constraintEnd_toEndOf="@+id/conslayout"
-            app:layout_constraintStart_toStartOf="@+id/conslayout"
-            app:layout_constraintTop_toBottomOf="@id/description">
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:layout_constraintEnd_toStartOf="@id/refer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            android:layout_marginStart="12dp">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/core_mem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
-
-                <ImageView
+            <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="10dp"
@@ -280,7 +241,7 @@
                     android:layout_gravity="start"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="60dp"
-                    android:text="Functional Team"
+                    android:text="Core Team"
                     android:textColor="#000"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -292,6 +253,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="10dp"
+                    android:maxLines="1"
                     android:text="Head Department Members"
                     android:textColor="@color/different_black"
                     android:textSize="9sp" />
@@ -300,18 +262,22 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/refer"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@id/core_mem"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintStart_toEndOf="@id/core_mem"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -336,6 +302,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
+                    android:maxLines="1"
                     android:layout_marginBottom="10dp"
                     android:text="Run hassle free Business"
                     android:textColor="@color/different_black"
@@ -343,20 +310,25 @@
 
             </androidx.cardview.widget.CardView>
 
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/explore"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/core_mem"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginStart="12dp"
+                app:layout_constraintTop_toBottomOf="@id/core_mem"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/member_directory">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -384,6 +356,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="10dp"
+                    android:maxLines="1"
                     android:text="Know more about us"
                     android:textColor="@color/different_black"
                     android:textSize="9sp" />
@@ -392,19 +365,23 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/member_directory"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/refer"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@id/explore"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toBottomOf="@id/refer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/explore">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -419,6 +396,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="60dp"
+                    android:maxLines="1"
                     android:text="Member Directory"
                     android:textColor="#000"
                     android:textSize="13sp"
@@ -430,6 +408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
+                    android:maxLines="1"
                     android:layout_marginBottom="10dp"
                     android:text="Explore other member"
                     android:textColor="@color/different_black"
@@ -439,18 +418,22 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/bbas"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/explore"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginStart="12dp"
+                app:layout_constraintTop_toBottomOf="@id/explore"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/grievance">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -468,6 +451,7 @@
                     android:layout_marginTop="60dp"
                     android:text="Business as a Service"
                     android:textColor="#000"
+                    android:maxLines="1"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -478,6 +462,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="10dp"
+                    android:maxLines="1"
                     android:text="Business of Services"
                     android:textColor="@color/different_black"
                     android:textSize="9sp" />
@@ -486,19 +471,23 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/grievance"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/member_directory"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@id/bbas"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/member_directory"
+                app:layout_constraintStart_toEndOf="@id/bbas">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -533,18 +522,22 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/postjobs"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/bbas"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginStart="12dp"
+                app:layout_constraintTop_toBottomOf="@id/bbas"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/events">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -572,6 +565,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="10dp"
+                    android:maxLines="1"
                     android:text="Need Hands?Post now"
                     android:textColor="@color/different_black"
                     android:textSize="9sp" />
@@ -580,19 +574,23 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/events"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_below="@id/grievance"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@id/postjobs"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="6dp">
+                app:cardElevation="6dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toBottomOf="@id/grievance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/postjobs">
 
                 <ImageView
                     android:layout_width="50dp"
@@ -618,14 +616,13 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="80dp"
                     android:layout_marginBottom="10dp"
+                    android:maxLines="1"
                     android:text="Meet and Connect with Others"
                     android:textColor="@color/different_black"
                     android:textSize="9sp" />
 
             </androidx.cardview.widget.CardView>
 
-
-        </GridLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/explore_menu_contact_us_cardView"
@@ -638,7 +635,7 @@
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cards">
+            app:layout_constraintTop_toBottomOf="@+id/postjobs">
 
             <TextView
                 android:layout_width="match_parent"
@@ -665,7 +662,7 @@
             app:cardCornerRadius="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/explore_menu_contact_us_cardView"
-            app:layout_constraintTop_toBottomOf="@+id/cards">
+            app:layout_constraintTop_toBottomOf="@+id/postjobs">
 
             <ImageView
                 android:id="@+id/help_btnr"
@@ -674,6 +671,9 @@
                 android:src="@drawable/help" />
 
         </androidx.cardview.widget.CardView>
+
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

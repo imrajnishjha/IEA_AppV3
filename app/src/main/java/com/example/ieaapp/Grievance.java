@@ -38,6 +38,9 @@ public class Grievance extends AppCompatActivity {
     CardView myGrievancesBtn;
     Dialog grievanceSubmissionDialog;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,8 @@ public class Grievance extends AppCompatActivity {
         grievanceSubjectEdtTxt = findViewById(R.id.grievance_subject_edtTxt);
 
         dropdownInit();
+
+
 
         grievance_back_button.setOnClickListener(view -> finish());
 

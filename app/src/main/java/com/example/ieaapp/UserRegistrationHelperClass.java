@@ -1,13 +1,13 @@
 package com.example.ieaapp;
 
 public class UserRegistrationHelperClass {
-    String fullname, email, phoneNo, companyName, department, turnover,imageUrl,amountLeft,memberfee,paymentReceiverName;
+    String fullname, email, phoneNo, companyName, department, turnover,imageUrl,amountLeft,memberfee,paymentReceiverName, gstno;
 
     public  UserRegistrationHelperClass(){
 
     }
 
-    public UserRegistrationHelperClass(String fullname, String email, String phoneNo, String companyName, String department, String turnover, String imageUrl, String amountLeft, String memberfee, String paymentReceiverName) {
+    public UserRegistrationHelperClass(String fullname, String email, String phoneNo, String companyName, String department, String turnover, String imageUrl, String amountLeft, String memberfee, String paymentReceiverName, String gstno) {
         this.fullname = fullname;
         this.email = email;
         this.phoneNo = phoneNo;
@@ -18,6 +18,7 @@ public class UserRegistrationHelperClass {
         this.amountLeft = amountLeft;
         this.memberfee = memberfee;
         this.paymentReceiverName = paymentReceiverName;
+        this.gstno = gstno;
     }
 
     public String getFullname() {
@@ -98,5 +99,13 @@ public class UserRegistrationHelperClass {
 
     public void setPaymentReceiverName(String paymentReceiverName) {
         this.paymentReceiverName = paymentReceiverName;
+    }
+
+    public String getGstno() {
+        return gstno;
+    }
+
+    public void setGstno(String gstno) {
+        this.gstno = gstno;
     }
 }

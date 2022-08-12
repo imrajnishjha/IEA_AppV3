@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 public class BaasListModel {
 
-    String company_name, email, purl, industry_type;
+    String company_name, email, company_logo, industry_type;
     ArrayList<BaasListRecyclerModel> baasListRecyclerModels;
 
     BaasListModel() {
 
     }
 
-    public BaasListModel(String company_name, String email, String purl, String industry_type, ArrayList<BaasListRecyclerModel> baasListRecyclerModels) {
+    public BaasListModel(String company_name, String email, String company_logo, String industry_type, ArrayList<BaasListRecyclerModel> baasListRecyclerModels) {
         this.company_name = company_name;
         this.email = email;
-        this.purl = purl;
+        this.company_logo = company_logo;
         this.industry_type = industry_type;
         this.baasListRecyclerModels = baasListRecyclerModels;
     }
@@ -35,12 +35,12 @@ public class BaasListModel {
         this.email = email;
     }
 
-    public String getPurl() {
-        return purl;
+    public String getCompany_logo() {
+        return company_logo;
     }
 
-    public void setPurl(String purl) {
-        this.purl = purl;
+    public void setCompany_logo(String company_logo) {
+        this.company_logo = company_logo;
     }
 
     public String getIndustry_type() {

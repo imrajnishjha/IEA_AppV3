@@ -9,6 +9,7 @@
     <string name="full_name">Full Name</string>
     <string name="proceed_to_pay">Proceed To Pay</string>
     <string name="by_signing_up_you_agree_to_terms_of_service_and_privacy_policy">By Signing up, you agree to our Terms of Services and <u><b>Privacy Policy</b></u>.</string>
+    <string name="get_website_here">Don\'t have a website? Get one <b><u>here</u></b>.</string>
     <string name="email">Email</string>
     <string name="number">Contact Number</string>
     <string name="company_name">Company Name</string>
@@ -34,6 +35,12 @@
     <string name="visontext4">Close and Strong Coordination between Local /State /National Statutory bodies /Authorities and More than 40 Famous National Organizations</string>
     <string name="visontext5">Empowering Youth through Academia-Industry Bridge</string>
     <string name="benefits">&#8226; Easy Access to Govt. Schemes\n\n&#8226; Industrial Social Activities\n\n&#8226; Cultural Events within Industrial Fraternity\n\n&#8226; Global Industrial Relation\n\n&#8226; Virtual Expo\n\n&#8226; Connect to National/International Industry Associations\n\n&#8226; Instant Digital Catalog\n\n&#8226; Instant Publicity on Social Media\n\n&#8226; Discount on Health and Education Sector\n\n&#8226; Legal Advice and Support\n</string>
+    <string name="website_detail">&#8226; Portfolio Static Site\n&#8226; Dynamic Sites \n&#8226; E-commerce Sites\n</string>
+    <string name="dashboards_detail">&#8226; Customer/Client based dashboard\n&#8226; Business Management Software \n</string>
+    <string name="mobile_applications_detail">&#8226; Android\n&#8226; iOS\n</string>
+    <string name="creativity_detail">&#8226; Graphic Desing\n&#8226; Content Writing\n</string>
+    <string name="production_detail">&#8226; Photography\n&#8226; Videography\n&#8226; Animation\n&#8226;VFX and Editing\n</string>
+    <string name="marketing_detail">&#8226; Advertisement\n&#8226; Digital Marketing\n</string>
     <string name="abouttext">The Industrial Entrepreneurs Association (IEA) is a multifunctional social networking platform that brings together industrial entrepreneurs, students, youth, women, and individuals of all ages.\nThe Industrial Entrepreneurs Association (IEA) provides an easy-to-use social network that allows entrepreneurs to connect with and volunteer with business mentors all over the world to solve difficulties and establish a viable business model together. It aims to empower innovation and startups.  It is the organisation where Fellows share connections, funds, and opportunities; they collaborate on projects and other issues to provide you with exposure to the global market\'s ever-changing trends and to update your toolkit with cutting-edge skills.\nUnlike other organisations, IEA focuses on the development and expansion of entrepreneurs, start-ups, and businesses at the local, district, and community levels across the country, something that has never been done before, and so sets IEA apart from the others. With our various mentors who continue to make an impact through the power of mentoring to assist small businesses develop, the IEA functions as a link between growing sectors at the district, state, and national levels.</string>
     <string name="missiontext">Mentored approach for collaborative growth of members: In digitalization, global growth, industrial benchmarking and technology upgradation.\nProject plan preparation, coordination with funding agencies, etc.\nEmpowering youth: Through effective "project based" academia-industry interface system.\nTechnology upgradation support to members.\nBuilding "environmental friendly" ecosystem: Tree Plantation, ZED Implementation, Zero Waste, Etc.</string>
     <string name="overview">Creating a social platform for entrepreneurs to connect and to grow their businesses.\nCreating a network of local entrepreneurs.\nBuilding capacity by curating and sharing knowledge.\nEmpowering Youth, Innovation and Startups\nCreating an industry-enterprise ecosystem that is both positive and supportive.</string>

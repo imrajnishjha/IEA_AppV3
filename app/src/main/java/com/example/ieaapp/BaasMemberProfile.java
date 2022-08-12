@@ -1,11 +1,5 @@
 package com.example.ieaapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,24 +7,41 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 public class BaasMemberProfile extends AppCompatActivity {
-    ImageView baasMemberProfileImage;
+    ImageView companyLogoIv;
     TextView baasMemberProfileCompanyName;
     AppCompatButton baasMemberProfileViewBrochure, baasMemberProfileContactUs, baasMemberBackBtn;
     RecyclerView baasMemberRecyclerView;
@@ -38,6 +49,9 @@ public class BaasMemberProfile extends AppCompatActivity {
     BaasProductAdapter baasListRecyclerAdapter;
     String memberBrochureLink, ownerEmail, ownerEmailConverted, ownerContactNumber, ownerContactEmail;
     Dialog baasMemberContactDialog;
+    ActivityResultLauncher<String> mGetContent;
+    Uri companyLogoUri;
+    FirebaseAuth mAuth;
 
 
     @Override
@@ -46,15 +60,15 @@ public class BaasMemberProfile extends AppCompatActivity {
         setContentView(R.layout.activity_baas_member_profile);
         ownerEmail = getIntent().getStringExtra("BaasItemKey");
         ownerEmailConverted = ownerEmail.replaceAll("\\.", "%7");
-        baasMemberProfileImage = findViewById(R.id.baas_member_profile_image_iv);
         baasMemberProfileCompanyName = findViewById(R.id.baas_member_profile_company_name);
         baasMemberProfileViewBrochure = findViewById(R.id.baas_member_profile_view_brochure_btn);
         baasMemberProfileContactUs = findViewById(R.id.baas_member_profile_contact_us_btn);
         baasMemberBackBtn = findViewById(R.id.baas_member_back_button);
-
+        companyLogoIv = findViewById(R.id.company_logo_iv);
         baasMemberContactDialog = new Dialog(this);
+        mAuth = FirebaseAuth.getInstance();
 
-        DatabaseReference ownerDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Registered Users/"+ownerEmailConverted);
+        DatabaseReference ownerDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Registered Users/" + ownerEmailConverted);
 
         ownerDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -63,12 +77,12 @@ public class BaasMemberProfile extends AppCompatActivity {
                 ownerContactNumber = Objects.requireNonNull(snapshot.child("phone_number").getValue()).toString();
                 ownerContactEmail = snapshot.child("email").getValue().toString();
 
-                Glide.with(baasMemberProfileImage.getContext())
-                        .load(Objects.requireNonNull(snapshot.child("purl").getValue()).toString())
+                Glide.with(getApplicationContext())
+                        .load(Objects.requireNonNull(snapshot.child("company_logo").getValue()).toString())
                         .placeholder(R.drawable.iea_logo)
                         .circleCrop()
                         .error(R.drawable.iea_logo)
-                        .into(baasMemberProfileImage);
+                        .into(companyLogoIv);
 
                 baasMemberProfileCompanyName.setText(Objects.requireNonNull(snapshot.child("company_name").getValue()).toString());
             }
@@ -81,11 +95,11 @@ public class BaasMemberProfile extends AppCompatActivity {
 
         baasMemberRecyclerView = findViewById(R.id.baas_member_rv);
 
-        baasMemberRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL,false));
+        baasMemberRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
 
 
         options = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("Products by Member/"+ownerEmailConverted), MemberProductModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("Products by Member/" + ownerEmailConverted), MemberProductModel.class)
                 .build();
 
         baasListRecyclerAdapter = new BaasProductAdapter(options);
@@ -119,6 +133,49 @@ public class BaasMemberProfile extends AppCompatActivity {
         });
 
         baasMemberBackBtn.setOnClickListener(view -> finish());
+
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                String destinationUri = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+                UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
+                        .withAspectRatio(1, 1)
+                        .start(BaasMemberProfile.this, 2);
+            }
+        });
+        Log.d("ownerEmail", ownerEmail + " " + mAuth.getCurrentUser().getEmail());
+        if (ownerEmail.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail().replaceAll("\\.", "%7"))) {
+            companyLogoIv.setClickable(true);
+
+            companyLogoIv.setOnClickListener(view -> {
+                mGetContent.launch("image/*");
+            });
+        } else {
+            companyLogoIv.setClickable(false);
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 2) {
+            companyLogoUri = UCrop.getOutput(data);
+            companyLogoIv.setImageURI(companyLogoUri);
+            uploadCompanyLogo(companyLogoUri);
+        }
+    }
+
+    private void uploadCompanyLogo(Uri companyLogoUri) {
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("Company Logos/" + mAuth.getCurrentUser().getEmail() + "CompanyLogo");
+        fileRef.putFile(companyLogoUri).addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            HashMap LogoData = new HashMap();
+            LogoData.put("company_logo", uri.toString());
+
+            DatabaseReference companyLogoRef = FirebaseDatabase.getInstance().getReference("Registered Users/" + Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()
+                    .replaceAll("\\.", "%7"));
+            companyLogoRef.updateChildren(LogoData).addOnSuccessListener(o -> Toast.makeText(BaasMemberProfile.this, "Company Logo has been updated", Toast.LENGTH_SHORT).show());
+        }));
 
     }
 
