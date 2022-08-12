@@ -68,7 +68,6 @@ public class BAAS extends AppCompatActivity {
 
         baasListAdapter = new BaasListAdapter(options);
         baasListRecyclerView.setAdapter(baasListAdapter);
-        baasListAdapter.startListening();
 
         baasBackBtn.setOnClickListener(view -> finish());
 
@@ -228,6 +227,7 @@ public class BAAS extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         baasListAdapter.startListening();
+        Log.d("TAG", "onStart: ");
     }
 
     @Override

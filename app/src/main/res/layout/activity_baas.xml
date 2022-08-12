@@ -245,7 +245,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="25dp"
-        android:backgroundTint="#f1f1f1"
+        android:backgroundTint="#7F7F7F"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -264,7 +264,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="#f1f1f1"
+        android:backgroundTint="#7F7F7F"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toTopOf="@id/baas_addProductIcon"
         app:layout_constraintEnd_toEndOf="parent">
@@ -273,6 +273,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="12dp"
+            android:background="#7F7F7F"
             android:src="@drawable/brochureicon" />
 
     </androidx.cardview.widget.CardView>
@@ -284,7 +285,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="#f1f1f1"
+        android:backgroundTint="#7F7F7F"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toTopOf="@id/baas_uploadBrochure"
         app:layout_constraintEnd_toEndOf="parent">
