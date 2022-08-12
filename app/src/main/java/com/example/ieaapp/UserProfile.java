@@ -1,11 +1,25 @@
 package com.example.ieaapp;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,9 +29,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +50,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +67,7 @@ public class UserProfile extends AppCompatActivity {
     String userEmailConverted, userCompanyNameStr;
     Uri resultUri, pdfUri, productImageUri = null;
     ProgressDialog productUploadProgressDialog;
+    Bitmap imageBitmap;
 
     {
         assert userEmail != null;
@@ -69,6 +87,7 @@ public class UserProfile extends AppCompatActivity {
 
     StorageReference storageProfilePicReference;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +130,7 @@ public class UserProfile extends AppCompatActivity {
 
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
-        StorageReference fileRef = storageProfilePicReference.child("User Profile Pictures/" + mAuth.getCurrentUser().getEmail().toString() + "ProfilePicture");
+        StorageReference fileRef = storageProfilePicReference.child("User Profile Pictures/" + mAuth.getCurrentUser().getEmail() + "ProfilePicture");
         fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -187,6 +206,9 @@ public class UserProfile extends AppCompatActivity {
 
             if (resultUri != null) {
                 uploadImageToFirebase(resultUri);
+            } else if(imageBitmap!=null) {
+                Uri camImg = getimageUri(UserProfile.this,imageBitmap);
+                uploadImageToFirebase(camImg);
             }
         });
 
@@ -217,7 +239,44 @@ public class UserProfile extends AppCompatActivity {
         });
 
         userProfileImage.setOnClickListener(view -> {
-            mGetContent.launch("image/*");
+            AlertDialog.Builder builder = new AlertDialog.Builder(UserProfile.this);
+            LayoutInflater layoutInflater= getLayoutInflater();
+            View pickImgview = layoutInflater.inflate(R.layout.image_picker_item,null);
+            builder.setCancelable(true);
+            builder.setView(pickImgview);
+            AlertDialog alertDialogImg = builder.create();
+            Window window = alertDialogImg.getWindow();
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.BOTTOM;
+            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            alertDialogImg.show();
+            window.setAttributes(wlp);
+
+            CardView cameraCardView = pickImgview.findViewById(R.id.chooseCamera);
+            CardView galleryCardView = pickImgview.findViewById(R.id.chooseGallery);
+
+            galleryCardView.setOnClickListener(view1 -> {
+                if (!checkStoragePermission()) {
+                    requestStoragePermission();
+
+                } else {
+                    mGetContent.launch("image/*");
+                    alertDialogImg.dismiss();
+                    imageBitmap = null;
+                }
+
+            });
+            cameraCardView.setOnClickListener(view1 -> {
+                if (!checkCameraPermission()) {
+                    requestCameraPermission();
+
+                } else {
+                    PickImagefromcamera();
+                    resultUri = null;
+                    alertDialogImg.dismiss();
+                }
+            });
         });
 
 
@@ -399,17 +458,21 @@ public class UserProfile extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             userProfileImage.setImageURI(resultUri);
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            final Throwable cropError = UCrop.getError(data);
+        }else if (resultCode == RESULT_OK && requestCode == 3) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            userProfileImage.setImageBitmap(imageBitmap);
         } else if (resultCode == RESULT_OK && requestCode == 2) {
             productImageUri = UCrop.getOutput(data);
             uploadProductImageIv.setImageURI(productImageUri);
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
         }
     }
 
     private void uploadImageToFirebase(Uri imageUri) {
         StorageReference fileRef = storageProfilePicReference.child("User Profile Pictures/" + mAuth.getCurrentUser().getEmail().toString() + "ProfilePicture");
-        fileRef.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -464,5 +527,38 @@ public class UserProfile extends AppCompatActivity {
         c.add(Calendar.DATE, 365);
         date = sdf.format(c.getTime());
         return date;
+    }
+
+
+    private void PickImagefromcamera() {
+        Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(fromcamera, 3);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestCameraPermission() {
+        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return res1 && res2;
+    }
+
+    public Uri getimageUri(Context context, Bitmap bitimage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
+        return Uri.parse(path);
     }
 }

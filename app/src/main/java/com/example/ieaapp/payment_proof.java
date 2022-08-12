@@ -161,25 +161,6 @@ public class payment_proof extends AppCompatActivity {
                         alertDialogImg.dismiss();
                     }
                 });
-
-
-//                boolean pick = true;
-//                if (pick == true) {
-//                    if (!checkCameraPermission()) {
-//                        requestCameraPermission();
-//
-//                    } else {
-//                        PickImagefromcamera();
-//                    }
-//                } else {
-//                    if (!checkStoragePermission()) {
-//                        requestStoragePermission();
-//
-//                    } else {
-//                        PickImagefromstorage();
-//                    }
-//
-//                }
             }
         });
 

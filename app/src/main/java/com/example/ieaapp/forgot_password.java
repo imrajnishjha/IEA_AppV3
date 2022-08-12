@@ -52,12 +52,12 @@ public class forgot_password extends AppCompatActivity {
                     forgotPassInfo.setText("Please Enter the Email");
                 }
                 else{
-                    mAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mAuth.sendPasswordResetEmail(mail.toLowerCase()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             forgotPassDialog.dismiss();
                             forgotPassInfo.setTextColor(Color.parseColor("#03AC13"));
-                            forgotPassInfo.setText("Check your mail to reset your password");
+                            forgotPassInfo.setText("Check your mail to reset your password \nCheck your spam if not found");
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
