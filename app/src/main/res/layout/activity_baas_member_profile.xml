@@ -57,15 +57,18 @@
 
     <TextView
         android:id="@+id/baas_member_profile_company_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:gravity="center|start"
+        android:paddingEnd="5dp"
         android:fontFamily="@font/poppins_semi_bold"
         android:text="Wormos Pvt. Ltd."
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/company_logo_cv"
         app:layout_constraintTop_toTopOf="@id/company_logo_cv"
         tools:ignore="HardcodedText" />

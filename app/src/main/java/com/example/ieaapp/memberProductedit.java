@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -54,11 +57,11 @@ public class memberProductedit extends AppCompatActivity {
     ImageView Productimg;
     EditText productName,productDesc,productPrice;
     AppCompatButton editproductbackbutton;
-    CardView Addproductbtn;
+    CardView Addproductbtn,RemoveProductBtn;
     ActivityResultLauncher<String> mGetProductImage;
     Uri productImageUri=null;
     String productKey,ownerEmail,productPurlStr;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,productReference;
     FirebaseAuth mAuth;
     StorageReference storageProfilePicReference;
     Bitmap imageBitmap;
@@ -76,12 +79,14 @@ public class memberProductedit extends AppCompatActivity {
         productDesc = findViewById(R.id.edit_description_edtTxt);
         productPrice = findViewById(R.id.edit_price_edtTxt);
         Addproductbtn = findViewById(R.id.edit_product_btn);
+        RemoveProductBtn = findViewById(R.id.remove_product_btn);
         mAuth=FirebaseAuth.getInstance();
         editproductbackbutton = findViewById(R.id.editProduct_back_button);
         editproductbackbutton.setOnClickListener(view -> finish());
 
         ownerEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().toString();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Products by Member").child(ownerEmail.replaceAll("\\.","%7")).child(productKey);
+        productReference= FirebaseDatabase.getInstance().getReference().child("Products").child(productKey);
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -107,6 +112,11 @@ public class memberProductedit extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+
+        RemoveProductBtn.setOnClickListener(view -> {
+            productReference.removeValue();
+            finish();
         });
 
 
@@ -164,10 +174,17 @@ public class memberProductedit extends AppCompatActivity {
         Addproductbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (productImageUri != null){
-                    uploadProductImage(productImageUri);
+                if (productImageUri != null || imageBitmap !=null){
+                    if(productImageUri!=null){
+                        uploadProductImage(productImageUri);
+                    } else if (imageBitmap !=null){
+                        Uri imgUri = getimageUri(getApplicationContext(),imageBitmap);
+                        uploadProductImage(imgUri);
+                    }
+
                 } else {
                     uploadProductImageStr(productPurlStr);
+                    Log.d("TAG", "onClick: ");
                 }
 
             }
@@ -194,8 +211,19 @@ public class memberProductedit extends AppCompatActivity {
                         String productDescriptionStr = productDesc.getText().toString();
                         String productPriceStr = productPrice.getText().toString();
 
-                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr, mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-                        productReferenceByUser.setValue(newProduct);
+                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr.substring(1), mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+                        productReferenceByUser.setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(memberProductedit.this,memberProductedit.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                     }
                 });
@@ -212,8 +240,18 @@ public class memberProductedit extends AppCompatActivity {
         String productDescriptionStr = productDesc.getText().toString();
         String productPriceStr = productPrice.getText().toString();
 
-        ProductModel newProduct = new ProductModel(productPurlStr, productTitleStr, productDescriptionStr, productPriceStr, mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-        productReferenceByUser.setValue(newProduct);
+        ProductModel newProduct = new ProductModel(productPurlStr, productTitleStr, productDescriptionStr, productPriceStr.substring(1), mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+        productReferenceByUser.setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
