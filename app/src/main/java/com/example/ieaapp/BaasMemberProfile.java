@@ -1,6 +1,7 @@
 package com.example.ieaapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -66,6 +67,7 @@ public class BaasMemberProfile extends AppCompatActivity {
     Uri companyLogoUri;
     FirebaseAuth mAuth;
     Bitmap imageBitmap;
+    CardView addProductCv,uploadBrochureCv,newItemCv;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -80,6 +82,9 @@ public class BaasMemberProfile extends AppCompatActivity {
         baasMemberProfileContactUs = findViewById(R.id.baas_member_profile_contact_us_btn);
         baasMemberBackBtn = findViewById(R.id.baas_member_back_button);
         companyLogoIv = findViewById(R.id.company_logo_iv);
+        addProductCv = findViewById(R.id.baas_addProductIcon);
+        uploadBrochureCv = findViewById(R.id.baas_uploadBrochure);
+        newItemCv = findViewById(R.id.baas_newitem);
         baasMemberContactDialog = new Dialog(this);
         mAuth = FirebaseAuth.getInstance();
 
@@ -100,6 +105,12 @@ public class BaasMemberProfile extends AppCompatActivity {
                         .into(companyLogoIv);
 
                 baasMemberProfileCompanyName.setText(Objects.requireNonNull(snapshot.child("company_name").getValue()).toString());
+                if (!mAuth.getCurrentUser().getEmail().equals(ownerContactEmail)) {
+                    addProductCv.setVisibility(View.GONE);
+                    uploadBrochureCv.setVisibility(View.GONE);
+                    newItemCv.setVisibility(View.GONE);
+                }
+
             }
 
             @Override
@@ -107,6 +118,8 @@ public class BaasMemberProfile extends AppCompatActivity {
 
             }
         });
+
+        addProductCv.setOnClickListener(view -> startActivity(new Intent(BaasMemberProfile.this,UploadProduct.class)));
 
         baasMemberRecyclerView = findViewById(R.id.baas_member_rv);
 
