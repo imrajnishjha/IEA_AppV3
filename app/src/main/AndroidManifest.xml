@@ -22,6 +22,9 @@
         android:theme="@style/Theme.IEAApp"
         tools:targetApi="28">
         <activity
+            android:name=".UploadProduct"
+            android:exported="false" />
+        <activity
             android:name=".My_Refer"
             android:exported="false" />
         <activity
