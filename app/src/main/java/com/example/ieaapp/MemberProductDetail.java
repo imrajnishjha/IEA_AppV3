@@ -25,7 +25,7 @@ import java.util.Objects;
 public class MemberProductDetail extends AppCompatActivity {
     ImageView memberProductDetailIv;
     TextView memberProductDetailTitleTv, memberProductDetailDescTv;
-    AppCompatButton memberContactBtn;
+    AppCompatButton memberContactBtn,productBackBtn;
     DatabaseReference productReference;
     Dialog contactDialog;
     String ownerEmail;
@@ -35,6 +35,9 @@ public class MemberProductDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_product_detail);
         String productKey = getIntent().getStringExtra("memberProductKey");
+
+        productBackBtn=findViewById(R.id.member_product_detail_back_btn);
+        productBackBtn.setOnClickListener(view -> finish());
 
 
         FirebaseDatabase.getInstance().getReference("Products/" + productKey).addValueEventListener(new ValueEventListener() {

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,9 +24,16 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BAAS extends AppCompatActivity {
 
@@ -37,11 +45,14 @@ public class BAAS extends AppCompatActivity {
     EditText searchBaasEdtTxt;
     AutoCompleteTextView baasIndustrySearchTv;
     CardView baasFilterIconCv, wormosCv;
+    CircleImageView companyLogo;
     Dialog baasFilterPopup;
     RadioGroup baasFilterRadioGroup;
     RadioButton baasFilterRadioButton;
     TextView baasRadioIdHolder;
     TextInputLayout baasFilterSearchOutbox;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    StorageReference storageCompanyLogoReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +66,26 @@ public class BAAS extends AppCompatActivity {
         baasRadioIdHolder = findViewById(R.id.baas_radio_id_holder);
         baasFilterSearchOutbox = findViewById(R.id.baas_filter_search_outbox);
         wormosCv = findViewById(R.id.WormosCv);
+        companyLogo= findViewById(R.id.baasCompanyLogoIv);
 
         baasFilterPopup = new Dialog(this);
+
+        storageCompanyLogoReference = FirebaseStorage.getInstance().getReference();
+        StorageReference fileRef = storageCompanyLogoReference.child("Company Logos/" + mAuth.getCurrentUser().getEmail() + "CompanyLogo");
+        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext())
+                        .load(uri)
+                        .placeholder(R.drawable.iea_logo)
+                        .circleCrop()
+                        .error(R.drawable.iea_logo)
+                        .into(companyLogo);
+            }
+        });
+        companyLogo.setOnClickListener(view -> {
+            startActivity(new Intent(BAAS.this,BaasMemberProfile.class).putExtra("BaasItemKey",mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")));
+        });
 
         baasRadioIdHolder.setText(String.valueOf(R.id.search_by_industry_type_rBtn));
 

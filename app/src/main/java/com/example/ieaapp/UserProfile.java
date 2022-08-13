@@ -416,12 +416,6 @@ public class UserProfile extends AppCompatActivity {
                                 Toast.makeText(UserProfile.this, "Product could not be added", Toast.LENGTH_SHORT).show();
                             }
                         });
-
-//                        productTitleEdtTxt.setText("");
-//                        productDescriptionEdtTxt.setText("");
-//                        productPriceEdtTxt.setText("");
-//                        uploadProductImageIv.setImageResource(R.drawable.add_image_icon);
-//                        uploadProductImageIv.setPadding(24, 24, 24, 24);
                     }
                 });
             }

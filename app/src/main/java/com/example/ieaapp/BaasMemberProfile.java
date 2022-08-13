@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
@@ -63,11 +67,12 @@ public class BaasMemberProfile extends AppCompatActivity {
     BaasProductAdapter baasListRecyclerAdapter;
     String memberBrochureLink, ownerEmail, ownerEmailConverted, ownerContactNumber, ownerContactEmail;
     Dialog baasMemberContactDialog;
-    ActivityResultLauncher<String> mGetContent;
-    Uri companyLogoUri;
+    ActivityResultLauncher<String> mGetContent,mGetPdf;
+    Uri companyLogoUri,pdfUri;
     FirebaseAuth mAuth;
     Bitmap imageBitmap;
     CardView addProductCv,uploadBrochureCv,newItemCv;
+    ProgressDialog pdfUploadDialog;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -86,6 +91,7 @@ public class BaasMemberProfile extends AppCompatActivity {
         uploadBrochureCv = findViewById(R.id.baas_uploadBrochure);
         newItemCv = findViewById(R.id.baas_newitem);
         baasMemberContactDialog = new Dialog(this);
+        pdfUploadDialog= new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
         DatabaseReference ownerDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Registered Users/" + ownerEmailConverted);
@@ -218,6 +224,56 @@ public class BaasMemberProfile extends AppCompatActivity {
         } else {
             companyLogoIv.setClickable(false);
         }
+
+
+        mGetPdf = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                pdfUploadDialog = new ProgressDialog(BaasMemberProfile.this);
+                pdfUploadDialog.setMessage("Uploading");
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Registered Users/" + mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7"));
+                pdfUploadDialog.show();
+                pdfUri = result;
+                StorageReference pdfUploadRef = FirebaseStorage.getInstance().getReference().child("Product Brochure/" + baasMemberProfileCompanyName.getText().toString() + " Brochure" + ".pdf");
+
+                if (pdfUri != null) {
+                    pdfUploadRef.putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pdfUploadRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    HashMap UserData = new HashMap();
+                                    UserData.put("brochure_url", uri.toString());
+
+                                    databaseReference.updateChildren(UserData).addOnSuccessListener(new OnSuccessListener() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Toast.makeText(BaasMemberProfile.this, "Brochure Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                            pdfUploadDialog.dismiss();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(BaasMemberProfile.this, "Failed to Upload Brochure", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    pdfUploadDialog.dismiss();
+                    Toast.makeText(BaasMemberProfile.this, "File not selected", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        uploadBrochureCv.setOnClickListener(view -> {
+            mGetPdf.launch("application/pdf");
+        });
 
     }
 

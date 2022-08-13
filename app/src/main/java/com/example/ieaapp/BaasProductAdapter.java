@@ -42,15 +42,18 @@ public class BaasProductAdapter extends FirebaseRecyclerAdapter<MemberProductMod
                 .error(R.drawable.iea_logo)
                 .into(holder.baasProductImg);
         holder.baasProductPrice.setText("\u20B9"+model.getProductPrice());
+        Log.d("random3", model.getOwnerEmail()+" "+FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         holder.memberProductCardView.setOnClickListener(view -> {
-            if(model.getOwnerEmail().equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())){
+            if(model.getOwnerEmail().equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail().replaceAll("\\.","%7"))){
                 Intent intent = new Intent(view.getContext(),memberProductedit.class);
                 intent.putExtra("EditItemKey", getRef(position).getKey());
+                Log.d("random1", "halaluyeah");
                 view.getContext().startActivity(intent);
             } else {
                 Intent intent = new Intent(view.getContext(), MemberProductDetail.class);
                 intent.putExtra("memberProductKey", getRef(position).getKey());
+                Log.d("random2", "hakunamatata");
                 view.getContext().startActivity(intent);
             }
         });

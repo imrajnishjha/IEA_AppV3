@@ -248,25 +248,6 @@ public class payment_proof extends AppCompatActivity {
 
         }
 
-//        switch (requestCode) {
-//
-//            case 0:
-//                if (resultCode == RESULT_OK) {
-//                    Bundle extras = data.getExtras();
-//                    imageBitmap = (Bitmap) extras.get("data");
-//                    proof_img.setImageBitmap(imageBitmap);
-//
-//
-//                }
-//                break;
-//
-//            case 1:
-//                if (resultCode == RESULT_OK) {
-//                    Uri selectedImage = data.getData();
-//                    proof_img.setImageURI(selectedImage);
-//                }
-//                break;
-//        }
     }
 
     public void imguploader(Bitmap imageBitmap,ProgressDialog dialog,Uri uri) {
