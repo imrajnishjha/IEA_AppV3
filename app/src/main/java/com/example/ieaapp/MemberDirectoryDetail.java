@@ -203,7 +203,7 @@ public class MemberDirectoryDetail extends AppCompatActivity {
         });
 
         moreProductButton.setOnClickListener(view -> {
-            startActivity(new Intent(this, BAAS.class));
+            startActivity(new Intent(MemberDirectoryDetail.this,BaasMemberProfile.class).putExtra("BaasItemKey",memberEmailStr.replaceAll("\\.","%7")));
         });
 
     }

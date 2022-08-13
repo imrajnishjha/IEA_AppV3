@@ -66,7 +66,7 @@
         <EditText
             android:id="@+id/edit_description_edtTxt"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="250dp"
             android:layout_centerHorizontal="false"
             android:background="@drawable/edittext_style_white_smaller"
             android:fontFamily="@font/inter_regular"
@@ -78,7 +78,6 @@
             android:textColor="@color/grey"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/editProductNameCv"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
