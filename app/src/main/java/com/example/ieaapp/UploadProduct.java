@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,6 +169,7 @@ public class UploadProduct extends AppCompatActivity {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
             productImg.setImageBitmap(imageBitmap);
+
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);

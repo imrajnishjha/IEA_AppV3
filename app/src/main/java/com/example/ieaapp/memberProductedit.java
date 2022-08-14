@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -14,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,24 +51,30 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Objects;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class memberProductedit extends AppCompatActivity {
 
     ImageView Productimg;
-    TextView yesbtn,nobtn;
-    EditText productName,productDesc,productPrice;
+    TextView yesbtn, nobtn;
+    EditText productName, productDesc, productPrice;
     AppCompatButton editproductbackbutton;
-    CardView Addproductbtn,RemoveProductBtn;
+    CardView Addproductbtn, RemoveProductBtn;
     ActivityResultLauncher<String> mGetProductImage;
-    Uri productImageUri=null;
-    String productKey,ownerEmail,productPurlStr;
-    DatabaseReference databaseReference,productReference;
-    FirebaseAuth mAuth;
+    Uri productImageUri;
+    String productKey, productPurlStr;
+    DatabaseReference databaseReference, productReference;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    final String ownerEmailConverted = mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7");
     StorageReference storageProfilePicReference;
+
+    {
+        storageProfilePicReference = FirebaseStorage.getInstance().getReference();
+    }
+
     Bitmap imageBitmap;
-    String productPriceStr,productNameStr,productDescStr;
+    String productPriceStr, productNameStr, productDescStr;
     Dialog confirmationDialog;
 
 
@@ -79,45 +85,50 @@ public class memberProductedit extends AppCompatActivity {
         setContentView(R.layout.activity_member_productedit);
 
         productKey = getIntent().getStringExtra("EditItemKey");
-        Log.d("keydG", "onCreate: "+productKey);
+        Log.d("keydG", "onCreate: " + productKey + " " + imageBitmap);
         Productimg = findViewById(R.id.edit_product_image_iv);
         productName = findViewById(R.id.edit_title_edtTxt);
         productDesc = findViewById(R.id.edit_description_edtTxt);
         productPrice = findViewById(R.id.edit_price_edtTxt);
-        Addproductbtn = findViewById(R.id.edit_product_btn);
+        Addproductbtn = findViewById(R.id.upload_product_btn);
         RemoveProductBtn = findViewById(R.id.remove_product_btn);
-        mAuth=FirebaseAuth.getInstance();
         editproductbackbutton = findViewById(R.id.editProduct_back_button);
         editproductbackbutton.setOnClickListener(view -> finish());
 
-        ownerEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("\\.","%7");
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Products by Member").child(ownerEmail).child(productKey);
-        productReference= FirebaseDatabase.getInstance().getReference().child("Products").child(productKey);
-        storageProfilePicReference = FirebaseStorage.getInstance().getReference();
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Products by Member").child(ownerEmailConverted);
+        databaseReference.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
-                    productPriceStr= snapshot.child("productPrice").getValue().toString();
-                    productNameStr= snapshot.child("productTitle").getValue().toString();
-                    productDescStr= snapshot.child("productDescription").getValue().toString();
-                    productPurlStr= snapshot.child("productImageUrl").getValue().toString();
+                    productNameStr = snapshot.child("productTitle").getValue().toString();
+                    productPriceStr = snapshot.child("productPrice").getValue().toString();
+                    productDescStr = snapshot.child("productDescription").getValue().toString();
+                    productPurlStr = snapshot.child("productImageUrl").getValue().toString();
 
-                    productPrice.setText("\u20B9"+productPriceStr);
                     productName.setText(productNameStr);
+                    productPrice.setText("\u20B9"+productPriceStr);
                     productDesc.setText(productDescStr);
-                    Glide.with(getApplicationContext())
-                            .load(productPurlStr)
-                            .placeholder(R.drawable.iea_logo)
-                            .error(R.drawable.iea_logo)
-                            .into(Productimg);
-                    Log.d("Bugg", "onDataChange: hjh");
+                    if(imageBitmap!= null){
+                        Uri iUri = getimageUri(memberProductedit.this,imageBitmap);
 
+                        Glide.with(getApplicationContext())
+                                .load(iUri)
+                                .placeholder(R.drawable.iea_logo)
+                                .error(R.drawable.iea_logo)
+                                .into(Productimg);
+
+
+                    }else {
+                        Glide.with(getApplicationContext())
+                                .load(productPurlStr)
+                                .placeholder(R.drawable.iea_logo)
+                                .error(R.drawable.iea_logo)
+                                .into(Productimg);
+
+                    }
                 } catch (Exception e){
-                    Log.e("TAG", "some error",e );
+                    Log.e("error", "onDataChange: ",e );
                 }
-
 
             }
 
@@ -127,7 +138,7 @@ public class memberProductedit extends AppCompatActivity {
             }
         });
 
-        RemoveProductBtn.setOnClickListener(v -> {
+        RemoveProductBtn.setOnClickListener(v->{
             confirmationDialog = new Dialog(memberProductedit.this);
             LayoutInflater inflater = getLayoutInflater();
             View confirmationView = inflater.inflate(R.layout.are_you_sure_popup, null);
@@ -147,14 +158,13 @@ public class memberProductedit extends AppCompatActivity {
 
                 public void onClick(View view) {
                     try {
-                        DatabaseReference memberProductRef = FirebaseDatabase.getInstance().getReference().child("Products by Member")
-                                .child(ownerEmail).child(productKey);
-
-                        memberProductRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        productReference = FirebaseDatabase.getInstance().getReference().child("Products").child(productKey);
+                        databaseReference.child(productKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 productReference.removeValue();
-                                startActivity(new Intent(memberProductedit.this,BaasMemberProfile.class).putExtra("BaasItemKey",ownerEmail).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                confirmationDialog.dismiss();
+                                startActivity(new Intent(memberProductedit.this,BaasMemberProfile.class).putExtra("BaasItemKey",ownerEmailConverted).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             }
                         });
@@ -164,17 +174,32 @@ public class memberProductedit extends AppCompatActivity {
                     }
                 }
             });
-
         });
 
+        Addproductbtn.setOnClickListener(v -> {
+            if (productImageUri != null || imageBitmap !=null){
+                if(productImageUri!=null){
+                    uploadEditedProduct(productImageUri,databaseReference,productKey);
+                } else if (imageBitmap !=null){
+                    Uri imgUri = getimageUri(memberProductedit.this,imageBitmap);
+                    uploadEditedProduct(imgUri,databaseReference,productKey);
+
+                }
+
+            } else {
+                uploadEditedProductStr(productPurlStr,databaseReference,productKey);
+
+            }
+        });
 
         mGetProductImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri result) {
-                String destinationUri = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+                String destinationUri = UUID.randomUUID().toString() + ".jpg";
                 UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
                         .withAspectRatio(5, 6)
-                        .start(memberProductedit.this);
+                        .start(memberProductedit.this, 2);
+                Productimg.setPadding(0, 0, 0, 0);
             }
         });
 
@@ -196,7 +221,7 @@ public class memberProductedit extends AppCompatActivity {
             CardView cameraCardView = pickImgview.findViewById(R.id.chooseCamera);
             CardView galleryCardView = pickImgview.findViewById(R.id.chooseGallery);
 
-            galleryCardView.setOnClickListener(view -> {
+            galleryCardView.setOnClickListener(view1 -> {
                 if (!checkStoragePermission()) {
                     requestStoragePermission();
 
@@ -207,7 +232,7 @@ public class memberProductedit extends AppCompatActivity {
                 }
 
             });
-            cameraCardView.setOnClickListener(view -> {
+            cameraCardView.setOnClickListener(view1 -> {
                 if (!checkCameraPermission()) {
                     requestCameraPermission();
 
@@ -219,77 +244,75 @@ public class memberProductedit extends AppCompatActivity {
             });
         });
 
-        Addproductbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (productImageUri != null || imageBitmap !=null){
-                    if(productImageUri!=null){
-                        uploadProductImage(productImageUri);
-                    } else if (imageBitmap !=null){
-                        Uri imgUri = getimageUri(memberProductedit.this,imageBitmap);
-                        uploadProductImage(imgUri);
-                    }
+    }
 
-                } else {
-                    uploadProductImageStr(productPurlStr);
-                    Log.d("TAG", "onClick: ");
+    public void uploadEditedProduct(Uri productUri,DatabaseReference ref,String key){
+        try{
+
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage("Updating...");
+            dialog.setCancelable(false);
+            dialog.show();
+            HashMap<String, Object> productData = new HashMap<>();
+            productData.put("productPrice",productPrice.getText().toString().substring(1));
+            productData.put("productTitle",productName.getText().toString());
+            productData.put("productDescription",productDesc.getText().toString());
+            StorageReference productFileRef = storageProfilePicReference.child("Product Images/" + mAuth.getCurrentUser().getEmail() + productName.getText().toString());
+            productFileRef.putFile(productUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(getApplicationContext())
+                                    .load(uri)
+                                    .placeholder(R.drawable.iea_logo)
+                                    .circleCrop()
+                                    .error(R.drawable.iea_logo)
+                                    .into(Productimg);
+                            productData.put("productImageUrl",uri.toString());
+                            ref.child(key).updateChildren(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    if(!productNameStr.equals(productName.getText().toString())){
+                                        StorageReference oldProductImgRef = FirebaseStorage.getInstance().getReferenceFromUrl(productPurlStr);
+                                        oldProductImgRef.delete();
+                                    }
+                                    imageBitmap=null;
+                                    productImageUri =null;
+                                    dialog.dismiss();
+                                    Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.dismiss();
+                                    Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+                    });
+
                 }
-
-            }
-        });
-
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    dialog.dismiss();
+                    Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            Log.e("TAG", "uploadEditedProduct: ",e );
+        }
 
     }
-
-
-
-    private void uploadProductImage(Uri productImageUri) {
-        StorageReference productFileRef = storageProfilePicReference.child("Product Images/" + mAuth.getCurrentUser().getEmail().toString() + productName.getText().toString());
-        productFileRef.putFile(productImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        DatabaseReference productReferenceByUser = FirebaseDatabase.getInstance().getReference().child("Products by Member")
-                                .child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7")).child(productKey);
-
-
-                        String productTitleStr = productName.getText().toString();
-                        String productDescriptionStr = productDesc.getText().toString();
-                        String productPriceStr = productPrice.getText().toString();
-
-                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr.substring(1), mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-                        productReferenceByUser.setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(memberProductedit.this,memberProductedit.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
-                });
-            }
-        });
-    }
-
-    private void uploadProductImageStr(String productImageUri) {
-
-        DatabaseReference productReferenceByUser = FirebaseDatabase.getInstance().getReference().child("Products by Member")
-                                .child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7")).child(productKey);
-
-        String productTitleStr = productName.getText().toString();
-        String productDescriptionStr = productDesc.getText().toString();
-        String productPriceStr = productPrice.getText().toString();
-
-        ProductModel newProduct = new ProductModel(productPurlStr, productTitleStr, productDescriptionStr, productPriceStr.substring(1), mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-        productReferenceByUser.setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void uploadEditedProductStr(String purlStr,DatabaseReference ref,String key){
+        HashMap<String, Object> productData = new HashMap<>();
+        productData.put("productPrice",productPrice.getText().toString().substring(1));
+        productData.put("productTitle",productName.getText().toString());
+        productData.put("productDescription",productDesc.getText().toString());
+        ref.child(key).updateChildren(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
@@ -300,12 +323,26 @@ public class memberProductedit extends AppCompatActivity {
                 Toast.makeText(memberProductedit.this, "Product updating failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 2) {
+            productImageUri = UCrop.getOutput(data);
+            Productimg.setImageURI(productImageUri);
+        }else if (resultCode == RESULT_OK && requestCode == 3) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            Productimg.setImageBitmap(imageBitmap);
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+        }
     }
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(fromcamera, 10);
+        startActivityForResult(fromcamera, 3);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -333,22 +370,5 @@ public class memberProductedit extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
         return Uri.parse(path);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 10) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            Log.d("Bugg", "onDataChange: hgh");
-            Uri imgUri = getimageUri(getApplicationContext(),imageBitmap);
-            Productimg.setImageURI(imgUri);
-        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            productImageUri = UCrop.getOutput(data);
-            Productimg.setImageURI(productImageUri);
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            final Throwable cropError = UCrop.getError(data);
-        }
     }
 }

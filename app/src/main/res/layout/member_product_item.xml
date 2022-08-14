@@ -40,6 +40,7 @@
             android:textSize="13sp"
             android:paddingStart="4dp"
             android:paddingEnd="0dp"
+            android:maxLines="1"
             android:gravity="center|start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/member_product_price"

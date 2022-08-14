@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
-    android:fillViewport="true"
-    tools:context=".memberProductedit">
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -93,7 +92,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:id="@+id/edit_product_btn"
+            android:id="@+id/upload_product_btn"
             app:cardCornerRadius="25dp"
             android:backgroundTint="#f1f1f1"
             android:layout_marginTop="10dp"
