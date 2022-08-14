@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +77,7 @@ public class BaasMemberProfile extends AppCompatActivity {
     ProgressDialog pdfUploadDialog;
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,15 +103,29 @@ public class BaasMemberProfile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 memberBrochureLink = Objects.requireNonNull(snapshot.child("brochure_url").getValue()).toString();
+
                 ownerContactNumber = Objects.requireNonNull(snapshot.child("phone_number").getValue()).toString();
                 ownerContactEmail = snapshot.child("email").getValue().toString();
 
-                Glide.with(getApplicationContext())
-                        .load(Objects.requireNonNull(snapshot.child("company_logo").getValue()).toString())
-                        .placeholder(R.drawable.iea_logo)
-                        .circleCrop()
-                        .error(R.drawable.iea_logo)
-                        .into(companyLogoIv);
+                if(companyLogoUri!= null){
+                    Glide.with(getApplicationContext())
+                            .load(companyLogoUri)
+                            .circleCrop()
+                            .placeholder(R.drawable.iea_logo)
+                            .error(R.drawable.iea_logo)
+                            .into(companyLogoIv);
+
+
+                }else {
+                    Glide.with(getApplicationContext())
+                            .load(Objects.requireNonNull(snapshot.child("company_logo").getValue()).toString())
+                            .placeholder(R.drawable.iea_logo)
+                            .circleCrop()
+                            .error(R.drawable.iea_logo)
+                            .into(companyLogoIv);
+                }
+
+
 
                 baasMemberProfileCompanyName.setText(Objects.requireNonNull(snapshot.child("company_name").getValue()).toString());
                 if (!mAuth.getCurrentUser().getEmail().equals(ownerContactEmail)) {
@@ -171,7 +188,7 @@ public class BaasMemberProfile extends AppCompatActivity {
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri result) {
-                String destinationUri = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+                String destinationUri = UUID.randomUUID().toString() + ".jpg";
                 UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
                         .withAspectRatio(1, 1)
                         .start(BaasMemberProfile.this, 2);
@@ -285,11 +302,11 @@ public class BaasMemberProfile extends AppCompatActivity {
             companyLogoIv.setImageURI(companyLogoUri);
             uploadCompanyLogo(companyLogoUri);
         }else if (resultCode == RESULT_OK && requestCode == 0) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            companyLogoIv.setImageBitmap(imageBitmap);
-            Uri camImg = getimageUri(BaasMemberProfile.this,imageBitmap);
-            uploadCompanyLogo(camImg);
+            File file = new File(Environment.getExternalStorageDirectory(),"companyLogo" );
+            Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            Log.d("TAG", "onActivityResult: "+uri.toString());
+            companyLogoIv.setImageURI(uri);
+            uploadCompanyLogo(uri);
         }
     }
 
@@ -309,6 +326,9 @@ public class BaasMemberProfile extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"companyLogo" );
+        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 0);
     }
 

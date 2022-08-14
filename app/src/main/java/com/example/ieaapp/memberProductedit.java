@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -108,11 +110,9 @@ public class memberProductedit extends AppCompatActivity {
                     productName.setText(productNameStr);
                     productPrice.setText("\u20B9"+productPriceStr);
                     productDesc.setText(productDescStr);
-                    if(imageBitmap!= null){
-                        Uri iUri = getimageUri(memberProductedit.this,imageBitmap);
-
+                    if(productImageUri!= null){
                         Glide.with(getApplicationContext())
-                                .load(iUri)
+                                .load(productImageUri)
                                 .placeholder(R.drawable.iea_logo)
                                 .error(R.drawable.iea_logo)
                                 .into(Productimg);
@@ -177,15 +177,8 @@ public class memberProductedit extends AppCompatActivity {
         });
 
         Addproductbtn.setOnClickListener(v -> {
-            if (productImageUri != null || imageBitmap !=null){
-                if(productImageUri!=null){
-                    uploadEditedProduct(productImageUri,databaseReference,productKey);
-                } else if (imageBitmap !=null){
-                    Uri imgUri = getimageUri(memberProductedit.this,imageBitmap);
-                    uploadEditedProduct(imgUri,databaseReference,productKey);
-
-                }
-
+            if (productImageUri != null){
+                uploadEditedProduct(productImageUri,databaseReference,productKey);
             } else {
                 uploadEditedProductStr(productPurlStr,databaseReference,productKey);
 
@@ -332,9 +325,9 @@ public class memberProductedit extends AppCompatActivity {
             productImageUri = UCrop.getOutput(data);
             Productimg.setImageURI(productImageUri);
         }else if (resultCode == RESULT_OK && requestCode == 3) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            Productimg.setImageBitmap(imageBitmap);
+            File file = new File(Environment.getExternalStorageDirectory(),"productslogo" );
+            productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            Productimg.setImageURI(productImageUri);
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }
@@ -342,6 +335,9 @@ public class memberProductedit extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"productslogo" );
+        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 3);
     }
 
@@ -366,9 +362,4 @@ public class memberProductedit extends AppCompatActivity {
         return res1 && res2;
     }
 
-    public Uri getimageUri(Context context, Bitmap bitimage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
-        return Uri.parse(path);
-    }
 }

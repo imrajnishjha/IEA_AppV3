@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -65,6 +67,7 @@ public class UploadProduct extends AppCompatActivity {
     StorageReference storageProfilePicReference;
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class UploadProduct extends AppCompatActivity {
         productDescription = findViewById(R.id.baas_productDescription);
         saveBtn = findViewById(R.id.uploadProductSaveBtn);
         productUploadProgressDialog = new ProgressDialog(this);
+        Log.d("TAG", "onCreate: ");
 
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
@@ -147,14 +151,7 @@ public class UploadProduct extends AppCompatActivity {
                 Toast.makeText(this, "Select a product image", Toast.LENGTH_SHORT).show();
                 productImg.requestFocus();
             } else {
-
-                if(imageBitmap==null){
-                    uploadProductImage(resultUri);
-                } else if(resultUri==null){
-                    Uri imgUri = getimageUri(getApplicationContext(),imageBitmap);
-                    uploadProductImage(imgUri);
-                }
-
+                uploadProductImage(resultUri);
             }
 
         });
@@ -166,10 +163,9 @@ public class UploadProduct extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 0) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            productImg.setImageBitmap(imageBitmap);
-
+            File file = new File(Environment.getExternalStorageDirectory(),"productlogo" );
+            resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            productImg.setImageURI(resultUri);
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);
@@ -177,11 +173,13 @@ public class UploadProduct extends AppCompatActivity {
             final Throwable cropError = UCrop.getError(data);
 
         }
-
     }
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"productlogo" );
+        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 0);
     }
 
@@ -206,15 +204,12 @@ public class UploadProduct extends AppCompatActivity {
         return res1 && res2;
     }
 
-    public Uri getimageUri(Context context, Bitmap bitimage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
-        return Uri.parse(path);
-    }
+
 
     private void uploadProductImage(Uri productImageUri) {
         final String[] userContactNumber = new String[1];
         productUploadProgressDialog.setMessage("Uploading Product");
+        productUploadProgressDialog.setCancelable(false);
         productUploadProgressDialog.show();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered Users/" + mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7"));
         ref.addValueEventListener(new ValueEventListener() {
@@ -274,9 +269,27 @@ public class UploadProduct extends AppCompatActivity {
                                 productUploadProgressDialog.dismiss();
                                 Toast.makeText(UploadProduct.this, "Product could not be added", Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                productUploadProgressDialog.dismiss();
+                                Toast.makeText(UploadProduct.this, "Product could not be added", Toast.LENGTH_SHORT).show();
+                            }
+                        });;
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        productUploadProgressDialog.dismiss();
+                        Toast.makeText(UploadProduct.this, "Product could not be added", Toast.LENGTH_SHORT).show();
+                    }
+                });;
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                productUploadProgressDialog.dismiss();
+                Toast.makeText(UploadProduct.this, "Product could not be added", Toast.LENGTH_SHORT).show();
             }
         });
     }

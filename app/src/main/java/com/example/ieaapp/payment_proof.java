@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -36,6 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -203,6 +205,9 @@ public class payment_proof extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"paymentpic" );
+        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 0);
     }
 
@@ -227,19 +232,15 @@ public class payment_proof extends AppCompatActivity {
         return res1 && res2;
     }
 
-    public Uri getimageUri(Context context, Bitmap bitimage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
-        return Uri.parse(path);
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 0) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            proof_img.setImageBitmap(imageBitmap);
+            File file = new File(Environment.getExternalStorageDirectory(),"paymentpic" );
+            imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            proof_img.setImageURI(imageUri);
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             imageUri = UCrop.getOutput(data);
             proof_img.setImageURI(imageUri);
@@ -255,13 +256,7 @@ public class payment_proof extends AppCompatActivity {
         memberDirectoryRoot = FirebaseDatabase.getInstance();
         memberDirectoryRef = memberDirectoryRoot.getReference("Temp Registry");
 
-        if (imageBitmap != null) {
-
-            Uri proofimg_uri = getimageUri(payment_proof.this, imageBitmap);
-            Log.d("imguri", "onClick: " + proofimg_uri.toString());
-            ImgdataHaldler(dialog,proofimg_uri);
-
-        }else if(uri != null){
+        if(uri != null){
             ImgdataHaldler(dialog,uri);
 
         } else {

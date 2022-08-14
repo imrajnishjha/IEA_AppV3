@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -131,18 +133,6 @@ public class UserProfile extends AppCompatActivity {
 
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
-        StorageReference fileRef = storageProfilePicReference.child("User Profile Pictures/" + mAuth.getCurrentUser().getEmail() + "ProfilePicture");
-        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext())
-                        .load(uri)
-                        .placeholder(R.drawable.iea_logo)
-                        .circleCrop()
-                        .error(R.drawable.iea_logo)
-                        .into(userProfileImage);
-            }
-        });
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -183,12 +173,24 @@ public class UserProfile extends AppCompatActivity {
                 userBioEditText.setText(userBioStr);
 
                 String corePictureUrl = Objects.requireNonNull(dataSnapshot.child("purl").getValue()).toString();
-                Glide.with(getApplicationContext())
-                        .load(corePictureUrl)
-                        .placeholder(R.drawable.iea_logo)
-                        .circleCrop()
-                        .error(R.drawable.iea_logo)
-                        .into(userProfileImage);
+
+                if(resultUri!= null){
+                    Glide.with(getApplicationContext())
+                            .load(resultUri)
+                            .placeholder(R.drawable.iea_logo)
+                            .circleCrop()
+                            .error(R.drawable.iea_logo)
+                            .into(userProfileImage);
+
+
+                }else {
+                    Glide.with(getApplicationContext())
+                            .load(corePictureUrl)
+                            .placeholder(R.drawable.iea_logo)
+                            .circleCrop()
+                            .error(R.drawable.iea_logo)
+                            .into(userProfileImage);
+                }
             }
 
             @Override
@@ -454,9 +456,9 @@ public class UserProfile extends AppCompatActivity {
             resultUri = UCrop.getOutput(data);
             userProfileImage.setImageURI(resultUri);
         }else if (resultCode == RESULT_OK && requestCode == 3) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            userProfileImage.setImageBitmap(imageBitmap);
+            File file = new File(Environment.getExternalStorageDirectory(),"userprofile" );
+            resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            userProfileImage.setImageURI(resultUri);
         } else if (resultCode == RESULT_OK && requestCode == 2) {
             productImageUri = UCrop.getOutput(data);
             uploadProductImageIv.setImageURI(productImageUri);
@@ -527,6 +529,9 @@ public class UserProfile extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"userprofile" );
+        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 3);
     }
 
