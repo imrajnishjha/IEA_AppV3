@@ -94,6 +94,7 @@ public class UserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+
         userProfileImage = findViewById(R.id.user_profile_image);
         userProfileName = findViewById(R.id.user_profile_name);
         userMembershipDate = findViewById(R.id.user_membership_date);

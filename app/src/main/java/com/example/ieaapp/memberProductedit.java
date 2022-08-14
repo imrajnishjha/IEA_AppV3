@@ -99,9 +99,7 @@ public class memberProductedit extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
-                    Log.d("keys", "I am inside ref: ");
                     productPriceStr= snapshot.child("productPrice").getValue().toString();
-                    Log.d("keys", "I am inside ref: "+productPriceStr);
                     productNameStr= snapshot.child("productTitle").getValue().toString();
                     productDescStr= snapshot.child("productDescription").getValue().toString();
                     productPurlStr= snapshot.child("productImageUrl").getValue().toString();
@@ -114,6 +112,7 @@ public class memberProductedit extends AppCompatActivity {
                             .placeholder(R.drawable.iea_logo)
                             .error(R.drawable.iea_logo)
                             .into(Productimg);
+                    Log.d("Bugg", "onDataChange: hjh");
 
                 } catch (Exception e){
                     Log.e("TAG", "some error",e );
@@ -175,7 +174,7 @@ public class memberProductedit extends AppCompatActivity {
                 String destinationUri = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
                 UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
                         .withAspectRatio(5, 6)
-                        .start(memberProductedit.this, 2);
+                        .start(memberProductedit.this);
             }
         });
 
@@ -227,7 +226,7 @@ public class memberProductedit extends AppCompatActivity {
                     if(productImageUri!=null){
                         uploadProductImage(productImageUri);
                     } else if (imageBitmap !=null){
-                        Uri imgUri = getimageUri(getApplicationContext(),imageBitmap);
+                        Uri imgUri = getimageUri(memberProductedit.this,imageBitmap);
                         uploadProductImage(imgUri);
                     }
 
@@ -306,7 +305,7 @@ public class memberProductedit extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(fromcamera, 0);
+        startActivityForResult(fromcamera, 10);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -339,19 +338,17 @@ public class memberProductedit extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 0) {
+        if (resultCode == RESULT_OK && requestCode == 10) {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
-            Productimg.setImageBitmap(imageBitmap);
-        } else if (resultCode == RESULT_OK && requestCode == 2) {
+            Log.d("Bugg", "onDataChange: hgh");
+            Uri imgUri = getimageUri(getApplicationContext(),imageBitmap);
+            Productimg.setImageURI(imgUri);
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             productImageUri = UCrop.getOutput(data);
             Productimg.setImageURI(productImageUri);
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
-
         }
-
     }
-
-
 }
