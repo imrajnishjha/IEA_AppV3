@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -55,6 +57,7 @@ import java.util.UUID;
 public class memberProductedit extends AppCompatActivity {
 
     ImageView Productimg;
+    TextView yesbtn,nobtn;
     EditText productName,productDesc,productPrice;
     AppCompatButton editproductbackbutton;
     CardView Addproductbtn,RemoveProductBtn;
@@ -65,6 +68,8 @@ public class memberProductedit extends AppCompatActivity {
     FirebaseAuth mAuth;
     StorageReference storageProfilePicReference;
     Bitmap imageBitmap;
+    String productPriceStr,productNameStr,productDescStr;
+    Dialog confirmationDialog;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -74,6 +79,7 @@ public class memberProductedit extends AppCompatActivity {
         setContentView(R.layout.activity_member_productedit);
 
         productKey = getIntent().getStringExtra("EditItemKey");
+        Log.d("keydG", "onCreate: "+productKey);
         Productimg = findViewById(R.id.edit_product_image_iv);
         productName = findViewById(R.id.edit_title_edtTxt);
         productDesc = findViewById(R.id.edit_description_edtTxt);
@@ -84,27 +90,35 @@ public class memberProductedit extends AppCompatActivity {
         editproductbackbutton = findViewById(R.id.editProduct_back_button);
         editproductbackbutton.setOnClickListener(view -> finish());
 
-        ownerEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().toString();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Products by Member").child(ownerEmail.replaceAll("\\.","%7")).child(productKey);
+        ownerEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("\\.","%7");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Products by Member").child(ownerEmail).child(productKey);
         productReference= FirebaseDatabase.getInstance().getReference().child("Products").child(productKey);
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String productPriceStr= Objects.requireNonNull(snapshot.child("productPrice").getValue()).toString();
-                String productNameStr= Objects.requireNonNull(snapshot.child("productTitle").getValue()).toString();
-                String productDescStr= Objects.requireNonNull(snapshot.child("productDescription").getValue()).toString();
-                productPurlStr= Objects.requireNonNull(snapshot.child("productImageUrl").getValue()).toString();
+                try{
+                    Log.d("keys", "I am inside ref: ");
+                    productPriceStr= snapshot.child("productPrice").getValue().toString();
+                    Log.d("keys", "I am inside ref: "+productPriceStr);
+                    productNameStr= snapshot.child("productTitle").getValue().toString();
+                    productDescStr= snapshot.child("productDescription").getValue().toString();
+                    productPurlStr= snapshot.child("productImageUrl").getValue().toString();
 
-                productPrice.setText("\u20B9"+productPriceStr);
-                productName.setText(productNameStr);
-                productDesc.setText(productDescStr);
-                Glide.with(getApplicationContext())
-                        .load(productPurlStr)
-                        .placeholder(R.drawable.iea_logo)
-                        .error(R.drawable.iea_logo)
-                        .into(Productimg);
+                    productPrice.setText("\u20B9"+productPriceStr);
+                    productName.setText(productNameStr);
+                    productDesc.setText(productDescStr);
+                    Glide.with(getApplicationContext())
+                            .load(productPurlStr)
+                            .placeholder(R.drawable.iea_logo)
+                            .error(R.drawable.iea_logo)
+                            .into(Productimg);
+
+                } catch (Exception e){
+                    Log.e("TAG", "some error",e );
+                }
+
 
             }
 
@@ -114,9 +128,44 @@ public class memberProductedit extends AppCompatActivity {
             }
         });
 
-        RemoveProductBtn.setOnClickListener(view -> {
-            productReference.removeValue();
-            finish();
+        RemoveProductBtn.setOnClickListener(v -> {
+            confirmationDialog = new Dialog(memberProductedit.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View confirmationView = inflater.inflate(R.layout.are_you_sure_popup, null);
+            yesbtn = confirmationView.findViewById(R.id.yesbtn);
+            nobtn = confirmationView.findViewById(R.id.nobtn);
+            confirmationDialog.setContentView(confirmationView);
+            confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            confirmationDialog.show();
+            nobtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    confirmationDialog.dismiss();
+                }
+            });
+            yesbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+
+                public void onClick(View view) {
+                    try {
+                        DatabaseReference memberProductRef = FirebaseDatabase.getInstance().getReference().child("Products by Member")
+                                .child(ownerEmail).child(productKey);
+
+                        memberProductRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                productReference.removeValue();
+                                startActivity(new Intent(memberProductedit.this,BaasMemberProfile.class).putExtra("BaasItemKey",ownerEmail).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                finish();
+                            }
+                        });
+
+                    } catch (Exception e){
+                        Log.d("error", ": "+e);
+                    }
+                }
+            });
+
         });
 
 
