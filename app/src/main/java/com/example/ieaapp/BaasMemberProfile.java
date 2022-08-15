@@ -56,6 +56,8 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -67,7 +69,7 @@ public class BaasMemberProfile extends AppCompatActivity {
     RecyclerView baasMemberRecyclerView;
     FirebaseRecyclerOptions<MemberProductModel> options;
     BaasProductAdapter baasListRecyclerAdapter;
-    String memberBrochureLink, ownerEmail, ownerEmailConverted, ownerContactNumber, ownerContactEmail;
+    String memberBrochureLink, ownerEmail, ownerEmailConverted, ownerContactNumber, ownerContactEmail,pdfUrl;
     Dialog baasMemberContactDialog;
     ActivityResultLauncher<String> mGetContent,mGetPdf;
     Uri companyLogoUri,pdfUri;
@@ -149,13 +151,19 @@ public class BaasMemberProfile extends AppCompatActivity {
         baasListRecyclerAdapter.startListening();
 
         baasMemberProfileViewBrochure.setOnClickListener(view -> {
-            Uri uri = Uri.parse(memberBrochureLink);
+            try {
+                pdfUrl = URLEncoder.encode(memberBrochureLink,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            Uri uri = Uri.parse(pdfUrl);
             if (!uri.toString().equals("")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/gview?embedded=true&url=" + uri));
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Brochure hasn't been uploaded yet", Toast.LENGTH_LONG).show();
             }
+
         });
 
         baasMemberProfileContactUs.setOnClickListener(view -> {

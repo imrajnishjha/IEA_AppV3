@@ -29,6 +29,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -39,10 +41,11 @@ public class MemberDirectoryDetail extends AppCompatActivity {
             memberCompanyName, memberAddress, memberPhoneno, memberMail, memberInfoText, memberInfoDetails;
     AppCompatButton memberProfileBackBtn, downloadBrochureBtn, moreProductButton;
     RecyclerView memberProductRecyclerView;
-    String memberEmailStr, memberBrochureLink, memberAddressStr, memberPhoneStr;
+    String memberEmailStr, memberBrochureLink, memberAddressStr, memberPhoneStr,pdfUrl;
     MemberProductAdapter memberProductAdapter;
     CircleImageView memberEmailImg, memberPhoneImg, memberAddressImg;
     Dialog MemberinfoDialog;
+
 
 
     FirebaseRecyclerOptions<MemberProductModel> options;
@@ -191,19 +194,25 @@ public class MemberDirectoryDetail extends AppCompatActivity {
         memberProductAdapter = new MemberProductAdapter(options);
         memberProductRecyclerView.setAdapter(memberProductAdapter);
 
+
+        moreProductButton.setOnClickListener(view -> {
+            startActivity(new Intent(MemberDirectoryDetail.this,BaasMemberProfile.class).putExtra("BaasItemKey",memberEmailStr.replaceAll("\\.","%7")));
+        });
+
         downloadBrochureBtn.setOnClickListener(view -> {
-            Uri uri = Uri.parse(memberBrochureLink);
+            try {
+                pdfUrl = URLEncoder.encode(memberBrochureLink,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            Uri uri = Uri.parse(pdfUrl);
             if (!uri.toString().equals("")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/gview?embedded=true&url=" + uri));
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Brochure hasn't been uploaded yet", Toast.LENGTH_LONG).show();
             }
 
-        });
-
-        moreProductButton.setOnClickListener(view -> {
-            startActivity(new Intent(MemberDirectoryDetail.this,BaasMemberProfile.class).putExtra("BaasItemKey",memberEmailStr.replaceAll("\\.","%7")));
         });
 
     }

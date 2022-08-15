@@ -164,7 +164,7 @@ public class UploadProduct extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 0) {
-            File file = new File(Environment.getExternalStorageDirectory(),"productlogo" );
+            File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
             resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             Glide.with(getApplicationContext())
                     .load(resultUri)
@@ -182,9 +182,10 @@ public class UploadProduct extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),"productlogo" );
-        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+        File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
+        file.delete();
+        resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, resultUri);
         startActivityForResult(fromcamera, 0);
     }
 

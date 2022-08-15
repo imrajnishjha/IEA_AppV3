@@ -280,7 +280,6 @@ public class Grievance extends AppCompatActivity {
             File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
             imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             cameraIv.setVisibility(View.VISIBLE);
-//            cameraIv.setImageURI(imageUri);
             Glide.with(getApplicationContext())
                     .load(imageUri)
                     .placeholder(R.drawable.iea_logo)

@@ -206,7 +206,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/button_style_black"
             android:fontFamily="@font/inter_semi_bold"
-            android:text="Download Brochure"
+            android:text="View Brochure"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="12sp"
