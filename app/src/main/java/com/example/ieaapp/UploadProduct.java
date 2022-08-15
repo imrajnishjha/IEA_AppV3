@@ -166,11 +166,7 @@ public class UploadProduct extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 0) {
             File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
             resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            Glide.with(getApplicationContext())
-                    .load(resultUri)
-                    .placeholder(R.drawable.iea_logo)
-                    .error(R.drawable.iea_logo)
-                    .into(productImg);
+            productImg.setImageURI(resultUri);
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);

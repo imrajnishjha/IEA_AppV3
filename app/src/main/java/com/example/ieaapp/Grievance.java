@@ -280,11 +280,8 @@ public class Grievance extends AppCompatActivity {
             File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
             imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             cameraIv.setVisibility(View.VISIBLE);
-            Glide.with(getApplicationContext())
-                    .load(imageUri)
-                    .placeholder(R.drawable.iea_logo)
-                    .error(R.drawable.iea_logo)
-                    .into(cameraIv);
+            cameraIv.setImageURI(imageUri);
+
             Log.d("TAG2", String.valueOf(imageUri));
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             imageUri = UCrop.getOutput(data);
