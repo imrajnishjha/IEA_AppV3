@@ -248,11 +248,6 @@ public class memberProductedit extends AppCompatActivity {
                     productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-//                            Glide.with(getApplicationContext())
-//                                    .load(uri)
-//                                    .placeholder(R.drawable.iea_logo)
-//                                    .error(R.drawable.iea_logo)
-//                                    .into(Productimg);
                             productData.put("productImageUrl",uri.toString());
                             ref.child(key).updateChildren(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -318,7 +313,11 @@ public class memberProductedit extends AppCompatActivity {
         }else if (resultCode == RESULT_OK && requestCode == 3) {
             File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
             productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            Productimg.setImageURI(productImageUri);
+            Glide.with(getApplicationContext())
+                    .load(productImageUri)
+                    .placeholder(R.drawable.iea_logo)
+                    .error(R.drawable.iea_logo)
+                    .into(Productimg);
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }

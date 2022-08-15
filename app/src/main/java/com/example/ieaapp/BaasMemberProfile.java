@@ -287,7 +287,6 @@ public class BaasMemberProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 2) {
             companyLogoUri = UCrop.getOutput(data);
-            companyLogoIv.setImageURI(companyLogoUri);
             uploadCompanyLogo(companyLogoUri);
         }else if (resultCode == RESULT_OK && requestCode == 0) {
             File file = new File(Environment.getExternalStorageDirectory(),"companyLogo" );

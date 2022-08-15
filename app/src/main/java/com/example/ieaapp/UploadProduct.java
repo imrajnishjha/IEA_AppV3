@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -165,7 +166,11 @@ public class UploadProduct extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 0) {
             File file = new File(Environment.getExternalStorageDirectory(),"productlogo" );
             resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            productImg.setImageURI(resultUri);
+            Glide.with(getApplicationContext())
+                    .load(resultUri)
+                    .placeholder(R.drawable.iea_logo)
+                    .error(R.drawable.iea_logo)
+                    .into(productImg);
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);

@@ -41,6 +41,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -280,8 +281,11 @@ public class Grievance extends AppCompatActivity {
             imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             cameraIv.setVisibility(View.VISIBLE);
 //            cameraIv.setImageURI(imageUri);
-            bitmap= getimageBitmap(imageUri);
-            cameraIv.setImageBitmap(bitmap);
+            Glide.with(getApplicationContext())
+                    .load(imageUri)
+                    .placeholder(R.drawable.iea_logo)
+                    .error(R.drawable.iea_logo)
+                    .into(cameraIv);
             Log.d("TAG2", String.valueOf(imageUri));
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             imageUri = UCrop.getOutput(data);
