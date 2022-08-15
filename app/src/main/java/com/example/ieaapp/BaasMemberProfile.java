@@ -107,13 +107,15 @@ public class BaasMemberProfile extends AppCompatActivity {
                 ownerContactNumber = Objects.requireNonNull(snapshot.child("phone_number").getValue()).toString();
                 ownerContactEmail = snapshot.child("email").getValue().toString();
 
-
-                Glide.with(getApplicationContext())
+                if(companyLogoUri==null){
+                    Glide.with(getApplicationContext())
                             .load(Objects.requireNonNull(snapshot.child("company_logo").getValue()).toString())
                             .placeholder(R.drawable.iea_logo)
                             .circleCrop()
                             .error(R.drawable.iea_logo)
                             .into(companyLogoIv);
+                }
+
 
                 baasMemberProfileCompanyName.setText(Objects.requireNonNull(snapshot.child("company_name").getValue()).toString());
                 if (!mAuth.getCurrentUser().getEmail().equals(ownerContactEmail)) {
@@ -298,6 +300,9 @@ public class BaasMemberProfile extends AppCompatActivity {
     }
 
     private void uploadCompanyLogo(Uri companyLogoUri) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating...");
+        progressDialog.show();
         StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("Company Logos/" + mAuth.getCurrentUser().getEmail() + "CompanyLogo");
         fileRef.putFile(companyLogoUri).addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
             HashMap LogoData = new HashMap();
@@ -305,8 +310,22 @@ public class BaasMemberProfile extends AppCompatActivity {
 
             DatabaseReference companyLogoRef = FirebaseDatabase.getInstance().getReference("Registered Users/" + Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()
                     .replaceAll("\\.", "%7"));
-            companyLogoRef.updateChildren(LogoData).addOnSuccessListener(o -> Toast.makeText(BaasMemberProfile.this, "Company Logo has been updated", Toast.LENGTH_SHORT).show());
-        }));
+            companyLogoRef.updateChildren(LogoData).addOnSuccessListener(o -> {
+                progressDialog.dismiss();
+                startActivity(new Intent(BaasMemberProfile.this,BaasMemberProfile.class).putExtra("BaasItemKey",ownerEmail).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                Toast.makeText(BaasMemberProfile.this, "Company Logo has been updated", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(f ->{
+            progressDialog.dismiss();
+            Toast.makeText(BaasMemberProfile.this, "Please try again", Toast.LENGTH_SHORT).show();
+            });
+
+        }).addOnFailureListener(f ->{
+            progressDialog.dismiss();
+            Toast.makeText(BaasMemberProfile.this, "Please try again", Toast.LENGTH_SHORT).show();
+        })).addOnFailureListener(f ->{
+            progressDialog.dismiss();
+            Toast.makeText(BaasMemberProfile.this, "Please try again", Toast.LENGTH_SHORT).show();
+        });
 
     }
 
