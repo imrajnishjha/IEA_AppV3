@@ -1,18 +1,27 @@
 package com.example.ieaapp;
 
 public class GrievanceModel {
-    String complain, department, email, status, subject;
+    String complain, department, email, status, subject,purl;
 
     public GrievanceModel(){
 
     }
 
-    public GrievanceModel(String complain, String department, String email, String status, String subject) {
+    public GrievanceModel(String complain, String department, String email, String status, String subject, String purl) {
         this.complain = complain;
         this.department = department;
         this.email = email;
         this.status = status;
         this.subject = subject;
+        this.purl = purl;
+    }
+
+    public String getPurl() {
+        return purl;
+    }
+
+    public void setPurl(String purl) {
+        this.purl = purl;
     }
 
     public String getComplain() {

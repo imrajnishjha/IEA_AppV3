@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -54,6 +55,8 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -174,16 +177,7 @@ public class UserProfile extends AppCompatActivity {
 
                 String corePictureUrl = Objects.requireNonNull(dataSnapshot.child("purl").getValue()).toString();
 
-                if(resultUri!= null){
-                    Glide.with(getApplicationContext())
-                            .load(resultUri)
-                            .placeholder(R.drawable.iea_logo)
-                            .circleCrop()
-                            .error(R.drawable.iea_logo)
-                            .into(userProfileImage);
-
-
-                }else {
+                if(imageBitmap == null){
                     Glide.with(getApplicationContext())
                             .load(corePictureUrl)
                             .placeholder(R.drawable.iea_logo)
@@ -456,9 +450,10 @@ public class UserProfile extends AppCompatActivity {
             resultUri = UCrop.getOutput(data);
             userProfileImage.setImageURI(resultUri);
         }else if (resultCode == RESULT_OK && requestCode == 3) {
-            File file = new File(Environment.getExternalStorageDirectory(),"userprofile" );
-            resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            userProfileImage.setImageURI(resultUri);
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            userProfileImage.setImageBitmap(imageBitmap);
+            Log.d("TAG23", imageBitmap.toString()+data.getExtras());
         } else if (resultCode == RESULT_OK && requestCode == 2) {
             productImageUri = UCrop.getOutput(data);
             uploadProductImageIv.setImageURI(productImageUri);
@@ -530,8 +525,6 @@ public class UserProfile extends AppCompatActivity {
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = new File(Environment.getExternalStorageDirectory(),"userprofile" );
-        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(fromcamera, 3);
     }
 
@@ -561,4 +554,6 @@ public class UserProfile extends AppCompatActivity {
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitimage, "Title", null);
         return Uri.parse(path);
     }
+
+
 }

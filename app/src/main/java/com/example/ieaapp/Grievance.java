@@ -1,32 +1,66 @@
 package com.example.ieaapp;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Grievance extends AppCompatActivity {
 
@@ -37,10 +71,18 @@ public class Grievance extends AppCompatActivity {
     AutoCompleteTextView dept;
     CardView myGrievancesBtn;
     Dialog grievanceSubmissionDialog;
+    ImageView cameraBtn,cameraIv;
+    ActivityResultLauncher<String> mGetImage;
+    Uri imageUri;
+    StorageReference storageProfilePicReference = FirebaseStorage.getInstance().getReference();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    ProgressDialog progressDialog;
+    Bitmap bitmap;
 
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +91,8 @@ public class Grievance extends AppCompatActivity {
         grievance_back_button = findViewById(R.id.grievance_back_button);
         myGrievancesBtn = findViewById(R.id.my_grievances_btn);
         grievanceSubjectEdtTxt = findViewById(R.id.grievance_subject_edtTxt);
+        cameraBtn = findViewById(R.id.issueCamaraBtn);
+        cameraIv = findViewById(R.id.issueCamaraIv);
 
         dropdownInit();
 
@@ -60,6 +104,8 @@ public class Grievance extends AppCompatActivity {
 
         grievance_submit = findViewById(R.id.grievance_submit_btn);
         grievance_submit.setOnClickListener(v -> {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Submitting...");
             grievanceDb = FirebaseDatabase.getInstance();
             issue = findViewById(R.id.issue_input_edtTxt);
             dept = findViewById(R.id.grievance_department_field);
@@ -77,6 +123,12 @@ public class Grievance extends AppCompatActivity {
                 String complain = issue.getText().toString();
                 String departments = dept.getText().toString();
                 String subject = grievanceSubjectEdtTxt.getText().toString();
+                String purl;
+                if(imageUri!=null){
+                    purl = imageUri.toString();
+                } else{
+                    purl = "";
+                }
 
                 grievanceReference = grievanceDb.getReference("Unsolved Grievances");
 
@@ -84,22 +136,162 @@ public class Grievance extends AppCompatActivity {
 
                 grievanceReference2 = grievanceDb.getReference("Unresolved Grievances").child(Objects.requireNonNull(complainerEmail)
                         .replaceAll("\\.", "%7")).child(Objects.requireNonNull(grievanceKey));
-                GrievanceModel solvedModel = new GrievanceModel(complain, departments, complainerEmail, "Unsolved", subject);
-                grievanceReference2.setValue(solvedModel);
-                grievanceReference.child(grievanceKey).setValue(solvedModel);
+                if (!purl.equals("")){
+                    progressDialog.show();
+                    StorageReference productFileRef = storageProfilePicReference.child("Grievance Images/" + mAuth.getCurrentUser().getEmail() + grievanceSubjectEdtTxt.getText().toString()+ dept.getText().toString());
+                    productFileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    GrievanceModel solvedModel = new GrievanceModel(complain, departments, complainerEmail, "Unsolved", subject, uri.toString());
+                                    grievanceReference2.setValue(solvedModel);
+                                    grievanceReference.child(grievanceKey).setValue(solvedModel);
 
-                new AlertDialog.Builder(Grievance.this)
-                        .setTitle("Grievance ID")
-                        .setMessage("Your Grievance ID is: " + grievanceKey).show();
-
-                issue.setText("");
-                Toast.makeText(Grievance.this, "We have received your request", Toast.LENGTH_SHORT).show();
-                confirmationPopup();
-                sendGrievanceNotification();
+                                    Toast.makeText(Grievance.this, "We have received your request with id "+grievanceKey, Toast.LENGTH_LONG).show();
+                                    confirmationPopup(progressDialog,0);
+                                    sendGrievanceNotification();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(Grievance.this, "Please try again", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Grievance.this, "Please try again", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Grievance.this, "Please try again", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    GrievanceModel solvedModel = new GrievanceModel(complain, departments, complainerEmail, "Unsolved", subject, purl);
+                    grievanceReference2.setValue(solvedModel);
+                    grievanceReference.child(grievanceKey).setValue(solvedModel);
+                    Toast.makeText(Grievance.this, "We have received your request with id "+grievanceKey, Toast.LENGTH_LONG).show();
+                    confirmationPopup(progressDialog,1);
+                    sendGrievanceNotification();
+                }
             }
         });
 
         myGrievancesBtn.setOnClickListener(view -> startActivity(new Intent(Grievance.this, MyGrievances.class)));
+
+        mGetImage =registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                String destinationUri = UUID.randomUUID().toString() + ".jpg";
+                UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
+                        .withAspectRatio(1, 1)
+                        .start(Grievance.this);
+            }
+        });
+
+        cameraBtn.setOnClickListener(v ->{
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Grievance.this);
+            LayoutInflater layoutInflater= getLayoutInflater();
+            View pickImgview = layoutInflater.inflate(R.layout.image_picker_item,null);
+            builder.setCancelable(true);
+            builder.setView(pickImgview);
+            android.app.AlertDialog alertDialogImg = builder.create();
+            Window window = alertDialogImg.getWindow();
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.BOTTOM;
+            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            alertDialogImg.show();
+            window.setAttributes(wlp);
+
+            CardView cameraCardView = pickImgview.findViewById(R.id.chooseCamera);
+            CardView galleryCardView = pickImgview.findViewById(R.id.chooseGallery);
+
+            galleryCardView.setOnClickListener(view -> {
+                if (!checkStoragePermission()) {
+                    requestStoragePermission();
+
+                } else {
+                    mGetImage.launch("image/*");
+                    alertDialogImg.dismiss();
+                }
+
+            });
+            cameraCardView.setOnClickListener(view -> {
+                if (!checkCameraPermission()) {
+                    requestCameraPermission();
+
+                } else {
+                    PickImagefromcamera();
+                    imageUri= null;
+                    alertDialogImg.dismiss();
+                }
+            });
+        });
+    }
+
+    private void PickImagefromcamera() {
+        Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
+        Log.d("TAG1", "PickImagefromcamera: "+file);
+        file.delete();
+        imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
+        Log.d("TAG3", "PickImagefromcamera: "+imageUri);
+        startActivityForResult(fromcamera, 0);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestCameraPermission() {
+        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return res1 && res2;
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 0) {
+            File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
+            imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            cameraIv.setVisibility(View.VISIBLE);
+//            cameraIv.setImageURI(imageUri);
+            bitmap= getimageBitmap(imageUri);
+            cameraIv.setImageBitmap(bitmap);
+            Log.d("TAG2", String.valueOf(imageUri));
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            imageUri = UCrop.getOutput(data);
+            cameraIv.setVisibility(View.VISIBLE);
+            cameraIv.setImageURI(imageUri);
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+
+        }
+
     }
 
     private void sendGrievanceNotification() {
@@ -138,7 +330,8 @@ public class Grievance extends AppCompatActivity {
         autoCompleteTextViewDepartments.setAdapter(arrayAdapterDepartments);
     }
 
-    public void confirmationPopup() {
+    public void confirmationPopup(ProgressDialog progressDialog,int val) {
+        if(val == 0) progressDialog.dismiss();
         LayoutInflater inflater = getLayoutInflater();
         View confirmationView = inflater.inflate(R.layout.confirmation_popup, null);
         grievanceSubmissionDialog.setContentView(confirmationView);
@@ -151,5 +344,25 @@ public class Grievance extends AppCompatActivity {
             startActivity(i);
             finish();
         }, 3000);
+    }
+    public Bitmap getimageBitmap( Uri uri) {
+        InputStream imageStream = null;
+        try {
+            imageStream = getContentResolver().openInputStream(uri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 5, stream);
+        byte[] byteArray = stream.toByteArray();
+        try {
+            stream.close();
+            stream = null;
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+        return bmp;
     }
 }

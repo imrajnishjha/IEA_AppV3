@@ -110,21 +110,12 @@ public class memberProductedit extends AppCompatActivity {
                     productName.setText(productNameStr);
                     productPrice.setText("\u20B9"+productPriceStr);
                     productDesc.setText(productDescStr);
-                    if(productImageUri!= null){
-                        Glide.with(getApplicationContext())
-                                .load(productImageUri)
-                                .placeholder(R.drawable.iea_logo)
-                                .error(R.drawable.iea_logo)
-                                .into(Productimg);
-
-
-                    }else {
+                    if(productImageUri == null){
                         Glide.with(getApplicationContext())
                                 .load(productPurlStr)
                                 .placeholder(R.drawable.iea_logo)
                                 .error(R.drawable.iea_logo)
                                 .into(Productimg);
-
                     }
                 } catch (Exception e){
                     Log.e("error", "onDataChange: ",e );
@@ -257,12 +248,11 @@ public class memberProductedit extends AppCompatActivity {
                     productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Glide.with(getApplicationContext())
-                                    .load(uri)
-                                    .placeholder(R.drawable.iea_logo)
-                                    .circleCrop()
-                                    .error(R.drawable.iea_logo)
-                                    .into(Productimg);
+//                            Glide.with(getApplicationContext())
+//                                    .load(uri)
+//                                    .placeholder(R.drawable.iea_logo)
+//                                    .error(R.drawable.iea_logo)
+//                                    .into(Productimg);
                             productData.put("productImageUrl",uri.toString());
                             ref.child(key).updateChildren(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -271,9 +261,10 @@ public class memberProductedit extends AppCompatActivity {
                                         StorageReference oldProductImgRef = FirebaseStorage.getInstance().getReferenceFromUrl(productPurlStr);
                                         oldProductImgRef.delete();
                                     }
-                                    imageBitmap=null;
-                                    productImageUri =null;
+//                                    imageBitmap=null;
+//                                    productImageUri =null;
                                     dialog.dismiss();
+                                    startActivity(new Intent(memberProductedit.this,memberProductedit.class).putExtra("EditItemKey",productKey).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     Toast.makeText(memberProductedit.this, "Product updated", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -325,7 +316,7 @@ public class memberProductedit extends AppCompatActivity {
             productImageUri = UCrop.getOutput(data);
             Productimg.setImageURI(productImageUri);
         }else if (resultCode == RESULT_OK && requestCode == 3) {
-            File file = new File(Environment.getExternalStorageDirectory(),"productslogo" );
+            File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
             productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             Productimg.setImageURI(productImageUri);
         } else if (resultCode == UCrop.RESULT_ERROR) {
@@ -335,9 +326,10 @@ public class memberProductedit extends AppCompatActivity {
 
     private void PickImagefromcamera() {
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),"productslogo" );
-        Uri uri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+        File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
+        file.delete();
+        productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, productImageUri);
         startActivityForResult(fromcamera, 3);
     }
 

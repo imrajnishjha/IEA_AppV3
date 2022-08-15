@@ -107,25 +107,13 @@ public class BaasMemberProfile extends AppCompatActivity {
                 ownerContactNumber = Objects.requireNonNull(snapshot.child("phone_number").getValue()).toString();
                 ownerContactEmail = snapshot.child("email").getValue().toString();
 
-                if(companyLogoUri!= null){
-                    Glide.with(getApplicationContext())
-                            .load(companyLogoUri)
-                            .circleCrop()
-                            .placeholder(R.drawable.iea_logo)
-                            .error(R.drawable.iea_logo)
-                            .into(companyLogoIv);
 
-
-                }else {
-                    Glide.with(getApplicationContext())
+                Glide.with(getApplicationContext())
                             .load(Objects.requireNonNull(snapshot.child("company_logo").getValue()).toString())
                             .placeholder(R.drawable.iea_logo)
                             .circleCrop()
                             .error(R.drawable.iea_logo)
                             .into(companyLogoIv);
-                }
-
-
 
                 baasMemberProfileCompanyName.setText(Objects.requireNonNull(snapshot.child("company_name").getValue()).toString());
                 if (!mAuth.getCurrentUser().getEmail().equals(ownerContactEmail)) {
