@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class EventDetails extends AppCompatActivity {
-    TextView eventTitleTv, eventDateTv, eventTimeTv, eventDescriptionTv, joinEventYes, joinEventNo;
+    TextView eventTitleTv, eventDateTv, eventTimeTv, eventDescriptionTv, joinEventYes, joinEventNo,eventMemberTextTv;
     RecyclerView eventMembersRv;
     FirebaseRecyclerOptions<EventMemberItemModel> options;
     EventMemberItemAdapter eventMemberItemAdapter;
@@ -64,10 +64,17 @@ public class EventDetails extends AppCompatActivity {
         addMyselfBtn = findViewById(R.id.event_add_myself_btn);
         joinNowBtn = findViewById(R.id.join_now_btn);
         eventDetailsBackButton = findViewById(R.id.events_detail_back_btn);
+        eventMemberTextTv = findViewById(R.id.event_members);
 
         addMyselfDialog = new Dialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null){
+            eventMembersRv.setVisibility(View.GONE);
+            joinNowBtn.setVisibility(View.GONE);
+            eventMemberTextTv.setVisibility(View.GONE);
+            addMyselfBtn.setVisibility(View.GONE);
+        }
 
         eventsRef = FirebaseDatabase.getInstance().getReference().child("Events/" + EventItemKey);
         eventsRef.addValueEventListener(new ValueEventListener() {

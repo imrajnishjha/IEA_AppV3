@@ -64,7 +64,7 @@ import java.util.UUID;
 
 public class BaasMemberProfile extends AppCompatActivity {
     ImageView companyLogoIv;
-    TextView baasMemberProfileCompanyName;
+    TextView baasMemberProfileCompanyName,baasNoOfProduct;
     AppCompatButton baasMemberProfileViewBrochure, baasMemberProfileContactUs, baasMemberBackBtn;
     RecyclerView baasMemberRecyclerView;
     FirebaseRecyclerOptions<MemberProductModel> options;
@@ -95,9 +95,27 @@ public class BaasMemberProfile extends AppCompatActivity {
         addProductCv = findViewById(R.id.baas_addProductIcon);
         uploadBrochureCv = findViewById(R.id.baas_uploadBrochure);
         newItemCv = findViewById(R.id.baas_newitem);
+        baasNoOfProduct = findViewById(R.id.baas_no_of_product_info);
         baasMemberContactDialog = new Dialog(this);
         pdfUploadDialog= new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
+
+
+        DatabaseReference ProductdataRef = FirebaseDatabase.getInstance().getReference().child("Products by Member/" + ownerEmailConverted);
+        ProductdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long noOfProduct = snapshot.getChildrenCount();
+                baasNoOfProduct.setText(String.valueOf("No of product: "+ noOfProduct));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
 
         DatabaseReference ownerDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Registered Users/" + ownerEmailConverted);
 
@@ -138,7 +156,12 @@ public class BaasMemberProfile extends AppCompatActivity {
 
         baasMemberRecyclerView = findViewById(R.id.baas_member_rv);
 
-        baasMemberRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+        GridLayoutManager gridLayoutManager =new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+        //gridLayoutManager.setReverseLayout(true);
+        gridLayoutManager.getReverseLayout();
+
+        baasMemberRecyclerView.setLayoutManager(gridLayoutManager);
+
 
 
         options = new FirebaseRecyclerOptions.Builder<MemberProductModel>()

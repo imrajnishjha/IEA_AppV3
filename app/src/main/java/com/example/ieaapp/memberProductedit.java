@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +54,7 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -238,7 +240,11 @@ public class memberProductedit extends AppCompatActivity {
             dialog.setCancelable(false);
             dialog.show();
             HashMap<String, Object> productData = new HashMap<>();
-            productData.put("productPrice",productPrice.getText().toString().substring(1));
+            if(productPrice.getText().toString().isEmpty()){
+                productData.put("productPrice","--");
+            }else {
+                productData.put("productPrice",productPrice.getText().toString().substring(1));
+            }
             productData.put("productTitle",productName.getText().toString());
             productData.put("productDescription",productDesc.getText().toString());
             StorageReference productFileRef = storageProfilePicReference.child("Product Images/" + mAuth.getCurrentUser().getEmail() + productName.getText().toString());
@@ -288,7 +294,11 @@ public class memberProductedit extends AppCompatActivity {
     }
     public void uploadEditedProductStr(String purlStr,DatabaseReference ref,String key){
         HashMap<String, Object> productData = new HashMap<>();
-        productData.put("productPrice",productPrice.getText().toString().substring(1));
+        if(productPrice.getText().toString().isEmpty()){
+            productData.put("productPrice","--");
+        }else {
+            productData.put("productPrice",productPrice.getText().toString().substring(1));
+        }
         productData.put("productTitle",productName.getText().toString());
         productData.put("productDescription",productDesc.getText().toString());
         ref.child(key).updateChildren(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -313,7 +323,13 @@ public class memberProductedit extends AppCompatActivity {
         }else if (resultCode == RESULT_OK && requestCode == 3) {
             File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
             productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            Productimg.setImageURI(productImageUri);
+            try {
+                imageBitmap = getimageBitmap(productImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Productimg.setImageBitmap(imageBitmap);
+
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }
@@ -347,6 +363,16 @@ public class memberProductedit extends AppCompatActivity {
         boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
         boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         return res1 && res2;
+    }
+    public  Bitmap getimageBitmap(Uri uri) throws IOException {
+
+        Bitmap bitmap = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(memberProductedit.this.getContentResolver(), uri));
+        } else {
+            bitmap = MediaStore.Images.Media.getBitmap(memberProductedit.this.getContentResolver(), uri);
+        }
+        return  bitmap;
     }
 
 }

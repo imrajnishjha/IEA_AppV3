@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -52,6 +53,7 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public class UploadProduct extends AppCompatActivity {
@@ -145,9 +147,6 @@ public class UploadProduct extends AppCompatActivity {
             } else if (productDescription.getText().toString().isEmpty()) {
                 productDescription.setError("Enter product description");
                 productDescription.requestFocus();
-            } else if (productPrice.getText().toString().isEmpty()) {
-                productPrice.setError("Enter product price");
-                productPrice.requestFocus();
             } else if (resultUri == null && imageBitmap==null) {
                 Toast.makeText(this, "Select a product image", Toast.LENGTH_SHORT).show();
                 productImg.requestFocus();
@@ -166,7 +165,13 @@ public class UploadProduct extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 0) {
             File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
             resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            productImg.setImageURI(resultUri);
+            try {
+                imageBitmap = getimageBitmap(resultUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            productImg.setImageBitmap(imageBitmap);
+
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);
@@ -209,6 +214,7 @@ public class UploadProduct extends AppCompatActivity {
 
 
     private void uploadProductImage(Uri productImageUri) {
+        final String[] productPriceStr = new String[1];
         final String[] userContactNumber = new String[1];
         productUploadProgressDialog.setMessage("Uploading Product");
         productUploadProgressDialog.setCancelable(false);
@@ -239,14 +245,19 @@ public class UploadProduct extends AppCompatActivity {
 
                         String productTitleStr = productName.getText().toString();
                         String productDescriptionStr = productDescription.getText().toString();
-                        String productPriceStr = productPrice.getText().toString();
+                        if(productPrice.getText().toString().isEmpty()){
+                            productPriceStr[0] = "--";
+                        } else {
+                            productPriceStr[0] = productPrice.getText().toString();
+                        }
 
-                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr, mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
+
+                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr[0], mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
                         productReferenceByUser.child(productKey).setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 ProductDetailsModel newProductDetail = new ProductDetailsModel(mAuth.getCurrentUser().getEmail(),
-                                        userContactNumber[0], productDescriptionStr, uri.toString(), productPriceStr,
+                                        userContactNumber[0], productDescriptionStr, uri.toString(), productPriceStr[0],
                                         productTitleStr, productTitleStr.toLowerCase());
                                 productReference.child(productKey).setValue(newProductDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -294,5 +305,15 @@ public class UploadProduct extends AppCompatActivity {
                 Toast.makeText(UploadProduct.this, "Product could not be added", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public  Bitmap getimageBitmap(Uri uri) throws IOException {
+
+        Bitmap bitmap = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(UploadProduct.this.getContentResolver(), uri));
+        } else {
+            bitmap = MediaStore.Images.Media.getBitmap(UploadProduct.this.getContentResolver(), uri);
+        }
+        return  bitmap;
     }
 }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +54,7 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -241,7 +243,13 @@ public class payment_proof extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == 0) {
             File file = new File(Environment.getExternalStorageDirectory(),"paymentpic" );
             imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            proof_img.setImageURI(imageUri);
+            try {
+                imageBitmap = getimageBitmap(imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            proof_img.setImageBitmap(imageBitmap);
+
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             imageUri = UCrop.getOutput(data);
             proof_img.setImageURI(imageUri);
@@ -344,6 +352,16 @@ public class payment_proof extends AppCompatActivity {
                 finish();
             }
         }, 3000);
+    }
+    public  Bitmap getimageBitmap(Uri uri) throws IOException {
+
+        Bitmap bitmap = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(payment_proof.this.getContentResolver(), uri));
+        } else {
+            bitmap = MediaStore.Images.Media.getBitmap(payment_proof.this.getContentResolver(), uri);
+        }
+        return  bitmap;
     }
 
 }

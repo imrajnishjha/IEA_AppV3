@@ -26,7 +26,7 @@ public class Refer extends AppCompatActivity {
 
     EditText nameEdtTxt, company_nameEdtTxt, contact_numberEdtTxt, email_addressEdtTxt;
     AppCompatButton referBackButton, referButton;
-    String name, company_name, contact_number, email_address="";
+    String name, company_name, contact_number;
     FirebaseAuth mAuth=FirebaseAuth.getInstance();
     CardView myReferBtn;
     final String status = "In Review";
@@ -56,6 +56,7 @@ public class Refer extends AppCompatActivity {
         referBackButton.setOnClickListener(view -> finish());
 
         referButton.setOnClickListener(v -> {
+            String email_address;
             if (TextUtils.isEmpty(nameEdtTxt.getText().toString())) {
                 nameEdtTxt.setError("Name cannot be empty!");
                 nameEdtTxt.requestFocus();
@@ -65,9 +66,6 @@ public class Refer extends AppCompatActivity {
             } else if (TextUtils.isEmpty(contact_numberEdtTxt.getText().toString())) {
                 contact_numberEdtTxt.setError("Contact number cannot be empty!");
                 contact_numberEdtTxt.requestFocus();
-            } else if(TextUtils.isEmpty(email_addressEdtTxt.getText().toString())){
-                email_addressEdtTxt.setError("Email number cannot be empty!");
-                email_addressEdtTxt.requestFocus();
             } else {
                 progressDialog.show();
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Refer");
@@ -76,7 +74,12 @@ public class Refer extends AppCompatActivity {
                 name = nameEdtTxt.getText().toString();
                 company_name = company_nameEdtTxt.getText().toString();
                 contact_number = contact_numberEdtTxt.getText().toString();
-                email_address = email_addressEdtTxt.getText().toString();
+                if(email_addressEdtTxt.getText().toString().isEmpty()){
+                    email_address = "";
+                }else {
+                    email_address = email_addressEdtTxt.getText().toString();
+                }
+
                 Refermodelclass newrefer = new Refermodelclass(name,email_address,contact_number,company_name,mAuth.getCurrentUser().getEmail(),status);
                 databaseReference.child(referKey).setValue(newrefer).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -113,7 +116,7 @@ public class Refer extends AppCompatActivity {
         name = nameEdtTxt.getText().toString();
         company_name = company_nameEdtTxt.getText().toString();
         contact_number = contact_numberEdtTxt.getText().toString();
-        email_address = email_addressEdtTxt.getText().toString();
+        String email_address = email_addressEdtTxt.getText().toString();
         Log.i("Send email", "");
 
         String[] TO = {"wormoscorporation@gmail.com"};

@@ -312,7 +312,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="JOIN US"
+                        android:text="Watch Our Events"
                         android:textColor="@color/different_black"
                         android:textSize="18sp"
                         android:textStyle="bold" />

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -62,6 +65,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class Grievance extends AppCompatActivity {
 
@@ -94,6 +98,7 @@ public class Grievance extends AppCompatActivity {
         grievanceSubjectEdtTxt = findViewById(R.id.grievance_subject_edtTxt);
         cameraBtn = findViewById(R.id.issueCamaraBtn);
         cameraIv = findViewById(R.id.issueCamaraIv);
+
 
         dropdownInit();
 
@@ -240,6 +245,7 @@ public class Grievance extends AppCompatActivity {
     }
 
     private void PickImagefromcamera() {
+
         Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
         Log.d("TAG1", "PickImagefromcamera: "+file);
@@ -280,7 +286,12 @@ public class Grievance extends AppCompatActivity {
             File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
             imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
             cameraIv.setVisibility(View.VISIBLE);
-            cameraIv.setImageURI(imageUri);
+            try {
+                bitmap = getimageBitmap(imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            cameraIv.setImageBitmap(bitmap);
 
             Log.d("TAG2", String.valueOf(imageUri));
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
@@ -345,24 +356,16 @@ public class Grievance extends AppCompatActivity {
             finish();
         }, 3000);
     }
-    public Bitmap getimageBitmap( Uri uri) {
-        InputStream imageStream = null;
-        try {
-            imageStream = getContentResolver().openInputStream(uri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Bitmap bmp = BitmapFactory.decodeStream(imageStream);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 5, stream);
-        byte[] byteArray = stream.toByteArray();
-        try {
-            stream.close();
-            stream = null;
-        } catch (IOException e) {
+    public  Bitmap getimageBitmap(Uri uri) throws IOException {
 
-            e.printStackTrace();
+        Bitmap bitmap = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+           bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(Grievance.this.getContentResolver(), uri));
+        } else {
+           bitmap = MediaStore.Images.Media.getBitmap(Grievance.this.getContentResolver(), uri);
         }
-        return bmp;
+        return  bitmap;
     }
+
+    
 }

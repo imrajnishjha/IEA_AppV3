@@ -165,7 +165,6 @@
     <string-array name="grievance_department">
         <item>UPSIDA</item>
         <item>GNIDA</item>
-        <item>NOIDA AUTHORITY</item>
         <item>NPCL</item>
         <item>UPPCB</item>
         <item>UPPCL</item>
@@ -177,6 +176,7 @@
         <item>FOREST DEPARTMENT</item>
         <item>MEDICAL CENTRE</item>
         <item>ROADWAYS</item>
+        <item>NOIDA AUTHORITY</item>
         <item>RAILWAYS</item>
         <item>CENTRAL MSME</item>
         <item>BANK</item>
@@ -186,6 +186,7 @@
         <item>ESI</item>
         <item>PF</item>
         <item>Gov department</item>
+        <item>Other</item>
     </string-array>
 
     <string-array name="company_turnover">

@@ -196,16 +196,18 @@
             app:layout_constraintBottom_toBottomOf="@id/issueCamaraBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/issueCamaraBtn"/>
+
         <ImageView
+            android:id="@+id/issueCamaraIv"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:id="@+id/issueCamaraIv"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:layout_marginTop="5dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/issueCamaraBtn"
-            app:layout_constraintBottom_toTopOf="@id/empty_text_view"/>
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toTopOf="@id/empty_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/issueCamaraBtn" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

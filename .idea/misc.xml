@@ -105,9 +105,12 @@
         <entry key="..\:/Android_Apps/IEA_App/app/src/main/res/layout/upcoming_event_item.xml" value="0.32734375" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/aaa.xml" value="0.5" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_baas.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_baas_member_profile.xml" value="0.22" />
+        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_baas_member_profile.xml" value="0.25" />
+        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_event_details.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_explore_menu.xml" value="0.22" />
+        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_explore_us.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_grievance.xml" value="0.25" />
+        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_landing_page.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_login.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_member_directory_detail.xml" value="0.20416666666666666" />
@@ -116,6 +119,7 @@
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_member_productedit.xml" value="0.22" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_payment.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_payment_proof.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_refer.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_upload_product.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/activity_user_profile.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/Downloads/IEA App/IEA App/app/src/main/res/layout/are_you_sure_popup.xml" value="0.20416666666666666" />
