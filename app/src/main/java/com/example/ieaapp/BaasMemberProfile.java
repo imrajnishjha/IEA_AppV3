@@ -159,13 +159,8 @@ public class BaasMemberProfile extends AppCompatActivity {
         baasMemberRecyclerView = findViewById(R.id.baas_member_rv);
 
         GridLayoutManager gridLayoutManager =new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-
-
-
+        
         baasMemberRecyclerView.setLayoutManager(gridLayoutManager);
-
-
-
 
         options = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Products by Member/" + ownerEmailConverted), MemberProductModel.class)
