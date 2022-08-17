@@ -34,6 +34,39 @@
             app:layout_constraintTop_toTopOf="@id/logout_text"
             app:layout_constraintBottom_toBottomOf="@id/logout_text"/>
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/renewal_img"
+            app:cardCornerRadius="8dp"
+            android:visibility="gone"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toStartOf="@id/renewal_text"
+            app:layout_constraintTop_toTopOf="@id/renewal_text"
+            app:layout_constraintBottom_toBottomOf="@id/renewal_text">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/renewal"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/renewal_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Renew"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="#0B77D6"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logout_text" />
+
         <TextView
             android:id="@+id/logout_text"
             android:layout_width="wrap_content"
@@ -387,172 +420,19 @@
             android:layout_marginStart="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="48dp"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/button_style_black"
             android:fontFamily="@font/poppins_semi_bold"
-            android:text="Upload Brochure"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="Upload Brochure"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/add_products_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_profile_save_button"
             tools:ignore="hardCodedText" />
 
-        <TextView
-            android:id="@+id/add_products_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="50dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:text="Add Products"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/upload_product_image_cv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upload_brochure_btn"
-            tools:ignore="HardcodedText" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/upload_product_image_cv"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/ic_add_circle_outline"
-            android:backgroundTint="#D9D9D9"
-            app:cardCornerRadius="16dp"
-            app:layout_constraintBottom_toBottomOf="@id/add_product_btn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_products_text">
-
-            <ImageView
-                android:id="@+id/upload_product_image_iv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:padding="24dp"
-                android:src="@drawable/add_image_icon" />
-
-        </androidx.cardview.widget.CardView>
-
-        <EditText
-            android:id="@+id/product_title_edtTxt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/edittext_style_white_much_smaller"
-            android:fontFamily="@font/inria_sans_regular"
-            android:hint="Add Title"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="4dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/upload_product_image_cv"
-            app:layout_constraintTop_toTopOf="@id/upload_product_image_cv"
-            tools:ignore="HardcodedText" />
-
-        <EditText
-            android:id="@+id/product_description_edtTxt"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/edittext_style_white_much_smaller"
-            android:fontFamily="@font/inria_sans_regular"
-            android:gravity="start"
-            android:hint="Add Description"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="4dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@id/product_price_edtTxt"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/upload_product_image_cv"
-            app:layout_constraintTop_toBottomOf="@id/product_title_edtTxt"
-            tools:ignore="HardcodedText" />
-
-        <EditText
-            android:id="@+id/product_price_edtTxt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/edittext_style_white_much_smaller"
-            android:fontFamily="@font/inria_sans_regular"
-            android:hint="Add Price"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:paddingStart="12dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="4dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/upload_product_image_cv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/upload_product_image_cv"
-            tools:ignore="HardcodedText" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/add_product_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_style_black"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:text="Add"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upload_product_image_cv"
-            tools:ignore="hardCodedText" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/edit_product_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_style_black"
-            android:fontFamily="@font/poppins_semi_bold"
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp"
-            android:text="Edit"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upload_product_image_cv"
-            tools:ignore="hardCodedText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

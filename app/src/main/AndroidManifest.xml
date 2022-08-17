@@ -12,6 +12,7 @@
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+
     <queries>
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -29,6 +30,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IEAApp"
         tools:targetApi="28">
+        <activity
+            android:name=".ChatSession"
+            android:exported="false" />
         <activity
             android:name=".UploadProduct"
             android:exported="false" />

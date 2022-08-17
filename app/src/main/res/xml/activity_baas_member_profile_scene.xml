@@ -69,6 +69,15 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="25dp"
             android:layout_marginEnd="10dp" />
+        <Constraint
+            android:id="@+id/baas_chatBtn"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            motion:visibilityMode="ignore"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"
+            android:layout_marginEnd="10dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -101,5 +110,14 @@
             motion:layout_constraintBottom_toTopOf="@id/baas_uploadBrochure"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="20dp" />
+        <Constraint
+            android:id="@+id/baas_chatBtn"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"
+            motion:visibilityMode="ignore"
+            android:layout_marginEnd="10dp" />
     </ConstraintSet>
 </MotionScene>

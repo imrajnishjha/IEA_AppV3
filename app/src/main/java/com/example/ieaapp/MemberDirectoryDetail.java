@@ -63,12 +63,12 @@ public class MemberDirectoryDetail extends AppCompatActivity {
         memberProfileImage = findViewById(R.id.member_profile_image);
         memberProfileName = findViewById(R.id.member_profile_name);
         moreProductButton = findViewById(R.id.moreProduct_button);
-
         memberMail = findViewById(R.id.nullemailtext);
-
         memberEmailImg = findViewById(R.id.Member_mail_image);
         memberPhoneImg = findViewById(R.id.Member_phone_image);
         memberAddressImg = findViewById(R.id.Member_address_image);
+
+
 
         memberEmailImg.setOnClickListener(new View.OnClickListener() {
             @Override

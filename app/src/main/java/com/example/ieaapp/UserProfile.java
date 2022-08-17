@@ -60,7 +60,9 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,8 +71,8 @@ public class UserProfile extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
-    String userEmailConverted, userCompanyNameStr;
-    Uri resultUri, pdfUri, productImageUri = null;
+    String userEmailConverted, userCompanyNameStr,userProfileNameStr;
+    Uri resultUri, pdfUri;
     ProgressDialog productUploadProgressDialog;
     Bitmap imageBitmap;
 
@@ -81,15 +83,14 @@ public class UserProfile extends AppCompatActivity {
 
     DatabaseReference ref = database.getReference("Registered Users/" + userEmailConverted);
 
-    ImageView userProfileImage, uploadProductImageIv, logoutImg;
-    TextView userProfileName, userMembershipId, userMembershipDate, userMembershipExpiryDate, logoutTv;
-    EditText userContactNumberEdtTxt, userDateOfBirthEdtTxt, userEmailEdtTxt, userCompanyNameEdtTxt, userAddressEdtTxt,
-            productTitleEdtTxt, productDescriptionEdtTxt, productPriceEdtTxt;
-    AppCompatButton saveProfileBtn, userProfileBackBtn, uploadBrochureBtn, addProductBtn, editProductBtn;
-    ActivityResultLauncher<String> mGetContent, mGetPdf, mGetProductImage;
+    ImageView userProfileImage, logoutImg;
+    TextView userProfileName, userMembershipDate, userMembershipExpiryDate, logoutTv,renewalText;
+    EditText userContactNumberEdtTxt, userDateOfBirthEdtTxt, userEmailEdtTxt, userCompanyNameEdtTxt, userAddressEdtTxt;
+    AppCompatButton saveProfileBtn, userProfileBackBtn, uploadBrochureBtn;
+    ActivityResultLauncher<String> mGetContent, mGetPdf;
     TextInputEditText userBioEditText;
-    CardView uploadProductImageCv;
-
+    CardView renewalImg;
+    String membershipType;
     StorageReference storageProfilePicReference;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -101,6 +102,8 @@ public class UserProfile extends AppCompatActivity {
 
 
         userProfileImage = findViewById(R.id.user_profile_image);
+        renewalText = findViewById(R.id.renewal_text);
+        renewalImg = findViewById(R.id.renewal_img);
         userProfileName = findViewById(R.id.user_profile_name);
         userMembershipDate = findViewById(R.id.user_membership_date);
         userContactNumberEdtTxt = findViewById(R.id.user_profile_contactNumber_edtTxt);
@@ -113,13 +116,6 @@ public class UserProfile extends AppCompatActivity {
         userMembershipExpiryDate = findViewById(R.id.expiry_dateId);
         userProfileBackBtn = findViewById(R.id.userProfile_back_button);
         uploadBrochureBtn = findViewById(R.id.upload_brochure_btn);
-        addProductBtn = findViewById(R.id.add_product_btn);
-        editProductBtn = findViewById(R.id.edit_product_btn);
-        productTitleEdtTxt = findViewById(R.id.product_title_edtTxt);
-        productDescriptionEdtTxt = findViewById(R.id.product_description_edtTxt);
-        productPriceEdtTxt = findViewById(R.id.product_price_edtTxt);
-        uploadProductImageCv = findViewById(R.id.upload_product_image_cv);
-        uploadProductImageIv = findViewById(R.id.upload_product_image_iv);
         logoutImg = findViewById(R.id.logout_img);
         logoutTv = findViewById(R.id.logout_text);
         productUploadProgressDialog = new ProgressDialog(this);
@@ -128,11 +124,13 @@ public class UserProfile extends AppCompatActivity {
             finish();
         });
 
-        editProductBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), BaasMemberProfile.class);
-            intent.putExtra("BaasItemKey", userEmailConverted);
-            startActivity(intent);
-        });
+        renewalImg.setOnClickListener(v -> startActivity(new Intent(UserProfile.this,payment.class).putExtra("renewal","1")
+                .putExtra("email",mAuth.getCurrentUser().getEmail()).putExtra("memberfee",membershipType)
+                .putExtra("name",userProfileNameStr).putExtra("cname",userCompanyNameStr)));
+        renewalText.setOnClickListener(v -> startActivity(new Intent(UserProfile.this,payment.class).putExtra("renewal","1")
+                .putExtra("email",mAuth.getCurrentUser().getEmail()).putExtra("memberfee",membershipType)
+                .putExtra("name",userProfileNameStr).putExtra("cname",userCompanyNameStr)));
+
 
         storageProfilePicReference = FirebaseStorage.getInstance().getReference();
 
@@ -140,15 +138,22 @@ public class UserProfile extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userProfileNameStr = Objects.requireNonNull(Objects.requireNonNull(dataSnapshot.child("name").getValue()).toString());
+                userProfileNameStr = Objects.requireNonNull(Objects.requireNonNull(dataSnapshot.child("name").getValue()).toString());
                 userProfileName.setText(userProfileNameStr);
 
                 String userMembershipIdStr = Objects.requireNonNull(dataSnapshot.child("member_id").getValue()).toString();
+                membershipType = Objects.requireNonNull(dataSnapshot.child("memberfee").getValue()).toString();
 
                 String userMembershipDateStr = Objects.requireNonNull(dataSnapshot.child("date_of_membership").getValue()).toString();
                 userMembershipDate.setText(userMembershipDateStr);
-                String userExpiryDate = yearincrementer(userMembershipDateStr);
+                String userExpiryDate = yearincrementer(userMembershipDateStr,365);
                 userMembershipExpiryDate.setText(userExpiryDate);
+                int date = dateCompare(yearincrementer(userExpiryDate,-7));
+                if(date == 1){
+                    renewalImg.setVisibility(View.VISIBLE);
+                    renewalText.setVisibility(View.VISIBLE);
+                }
+                Log.d("TAG", "onDataChange: "+date);
 
                 String userContactNumberStr = Objects.requireNonNull(dataSnapshot.child("phone_number").getValue()).toString();
                 userContactNumberEdtTxt.setText(userContactNumberStr);
@@ -219,21 +224,7 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        mGetProductImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-            @Override
-            public void onActivityResult(Uri result) {
-                String destinationUri = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
-                UCrop.of(result, Uri.fromFile(new File(getCacheDir(), destinationUri)))
-                        .withAspectRatio(5, 6)
-                        .start(UserProfile.this, 2);
-                uploadProductImageIv.setPadding(0, 0, 0, 0);
-            }
-        });
 
-        uploadProductImageCv.setOnClickListener(view -> {
-            mGetProductImage.launch("image/*");
-
-        });
 
         userProfileImage.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(UserProfile.this);
@@ -329,26 +320,6 @@ public class UserProfile extends AppCompatActivity {
 
         });
 
-        addProductBtn.setOnClickListener(view -> {
-            if (productTitleEdtTxt.getText().toString().isEmpty()) {
-                productTitleEdtTxt.setError("Enter product title");
-                productTitleEdtTxt.requestFocus();
-            } else if (productDescriptionEdtTxt.getText().toString().isEmpty()) {
-                productDescriptionEdtTxt.setError("Enter product description");
-                productDescriptionEdtTxt.requestFocus();
-            } else if (productPriceEdtTxt.getText().toString().isEmpty()) {
-                productPriceEdtTxt.setError("Enter product price");
-                productPriceEdtTxt.requestFocus();
-            } else if (productImageUri == null) {
-                Toast.makeText(this, "Select a product image", Toast.LENGTH_SHORT).show();
-                uploadProductImageIv.requestFocus();
-            } else {
-                String productPriceStr = productPriceEdtTxt.getText().toString();
-
-                uploadProductImage(productImageUri);
-            }
-
-        });
 
         logoutImg.setOnClickListener(view -> {
             mAuth.signOut();
@@ -363,61 +334,6 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
-    private void uploadProductImage(Uri productImageUri) {
-        productUploadProgressDialog.setMessage("Uploading Product");
-        productUploadProgressDialog.show();
-        StorageReference productFileRef = storageProfilePicReference.child("Product Images/" + mAuth.getCurrentUser().getEmail().toString() + productTitleEdtTxt.getText().toString());
-        productFileRef.putFile(productImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                productFileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        DatabaseReference productReferenceByUser = FirebaseDatabase.getInstance().getReference().child("Products by Member")
-                                .child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-                        DatabaseReference productReference = FirebaseDatabase.getInstance().getReference().child("Products");
-                        String productKey = productReferenceByUser.push().getKey();
-
-                        String productTitleStr = productTitleEdtTxt.getText().toString();
-                        String productDescriptionStr = productDescriptionEdtTxt.getText().toString();
-                        String productPriceStr = productPriceEdtTxt.getText().toString();
-
-                        ProductModel newProduct = new ProductModel(uri.toString(), productTitleStr, productDescriptionStr, productPriceStr, mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7"));
-                        productReferenceByUser.child(productKey).setValue(newProduct).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                ProductDetailsModel newProductDetail = new ProductDetailsModel(mAuth.getCurrentUser().getEmail(),
-                                        userContactNumberEdtTxt.getText().toString(), productDescriptionStr, uri.toString(), productPriceStr,
-                                        productTitleStr, productTitleStr.toLowerCase());
-                                productReference.child(productKey).setValue(newProductDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        startActivity(new Intent(getApplicationContext(), UserProfile.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                                        productUploadProgressDialog.dismiss();
-                                        Toast.makeText(UserProfile.this, "Your product has been added", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        productUploadProgressDialog.dismiss();
-                                        Toast.makeText(UserProfile.this, "Product could not be added", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                productUploadProgressDialog.dismiss();
-                                Toast.makeText(UserProfile.this, "Product could not be added", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
 
     ProgressDialog pdfUploadDialog;
 
@@ -454,9 +370,6 @@ public class UserProfile extends AppCompatActivity {
             imageBitmap = (Bitmap) extras.get("data");
             userProfileImage.setImageBitmap(imageBitmap);
             Log.d("TAG23", imageBitmap.toString()+data.getExtras());
-        } else if (resultCode == RESULT_OK && requestCode == 2) {
-            productImageUri = UCrop.getOutput(data);
-            uploadProductImageIv.setImageURI(productImageUri);
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }
@@ -508,17 +421,32 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
-    public String yearincrementer(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+    public static String yearincrementer(String date,int day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy",Locale.getDefault());
         Calendar c = Calendar.getInstance();
         try {
-            c.setTime(sdf.parse(date));
+            c.setTime(Objects.requireNonNull(sdf.parse(date)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        c.add(Calendar.DATE, 365);
+        c.add(Calendar.DATE, day);
         date = sdf.format(c.getTime());
+        Log.d("dateis", "yearincrementer: "+date);
         return date;
+    }
+    public static int dateCompare(String date) {
+        int catalog_outdated =0;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        Date strDate = null;
+        try {
+            strDate = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (new Date().after(strDate)) {
+            catalog_outdated = 1;
+        }
+        return catalog_outdated;
     }
 
 

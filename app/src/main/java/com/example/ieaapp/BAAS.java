@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,12 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.Locale;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +42,7 @@ public class BAAS extends AppCompatActivity {
     FirebaseRecyclerOptions<BaasListModel> options;
     FirebaseRecyclerOptions<MemberProductModel> productOptions;
     BaasListAdapter baasListAdapter;
+    MemberProductAdapter baasProductAdapter;
     AppCompatButton baasBackBtn, baasFilterOkayBtn;
     EditText searchBaasEdtTxt;
     AutoCompleteTextView baasIndustrySearchTv;
@@ -66,30 +68,23 @@ public class BAAS extends AppCompatActivity {
         baasRadioIdHolder = findViewById(R.id.baas_radio_id_holder);
         baasFilterSearchOutbox = findViewById(R.id.baas_filter_search_outbox);
         wormosCv = findViewById(R.id.WormosCv);
-        companyLogo= findViewById(R.id.baasCompanyLogoIv);
+        companyLogo = findViewById(R.id.baasCompanyLogoIv);
 
         baasFilterPopup = new Dialog(this);
 
         storageCompanyLogoReference = FirebaseStorage.getInstance().getReference();
-        StorageReference fileRef = storageCompanyLogoReference.child("Company Logos/" + mAuth.getCurrentUser().getEmail() + "CompanyLogo");
-        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(getApplicationContext())
-                        .load(uri)
-                        .placeholder(R.drawable.iea_logo)
-                        .circleCrop()
-                        .error(R.drawable.iea_logo)
-                        .into(companyLogo);
-            }
-        });
-        companyLogo.setOnClickListener(view -> {
-            startActivity(new Intent(BAAS.this,BaasMemberProfile.class).putExtra("BaasItemKey",mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")));
-        });
+        StorageReference fileRef = storageCompanyLogoReference.child("Company Logos/" + Objects.requireNonNull(mAuth.getCurrentUser()).getEmail() + "CompanyLogo");
+        fileRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(getApplicationContext())
+                .load(uri)
+                .placeholder(R.drawable.iea_logo)
+                .circleCrop()
+                .error(R.drawable.iea_logo)
+                .into(companyLogo));
+        companyLogo.setOnClickListener(view -> startActivity(new Intent(BAAS.this, BaasMemberProfile.class).putExtra("BaasItemKey", Objects.requireNonNull(mAuth.getCurrentUser().getEmail()).replaceAll("\\.", "%7"))));
 
         baasRadioIdHolder.setText(String.valueOf(R.id.search_by_industry_type_rBtn));
 
-        MembersDirectory.WrapContentLinearLayoutManager wrapContentLinearLayoutManager=new MembersDirectory.WrapContentLinearLayoutManager(this);
+        MembersDirectory.WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new MembersDirectory.WrapContentLinearLayoutManager(this);
 
 
         baasListRecyclerView.setLayoutManager(wrapContentLinearLayoutManager);
@@ -225,9 +220,9 @@ public class BAAS extends AppCompatActivity {
                                         .setQuery(FirebaseDatabase.getInstance().getReference().child("Registered Users"), BaasListModel.class)
                                         .build();
                             } else {
-                                String companyNameFLC = searchBaasEdtTxt.getText().toString().substring(0, 1).toUpperCase() + searchBaasEdtTxt.getText().toString().substring(1);
+                                String companyNameLC = searchBaasEdtTxt.getText().toString().toLowerCase(Locale.ROOT);
                                 options = new FirebaseRecyclerOptions.Builder<BaasListModel>()
-                                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Registered Users").orderByChild("company_name").startAt(companyNameFLC).endAt(companyNameFLC + "\uf8ff"), BaasListModel.class)
+                                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Registered Users").orderByChild("company_name_lowercase").startAt(companyNameLC).endAt(companyNameLC + "\uf8ff"), BaasListModel.class)
                                         .build();
 
                             }
@@ -241,14 +236,55 @@ public class BAAS extends AppCompatActivity {
 
                         }
                     });
+                } else if (baasFilterRadioButton.getText().toString().equals("Product Name")) {
+                    baasFilterSearchOutbox.setVisibility(View.GONE);
+                    searchBaasEdtTxt.setVisibility(View.VISIBLE);
+                    searchBaasEdtTxt.setHint("Search by Product Name");
+
+                    productOptions = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
+                            .setQuery(FirebaseDatabase.getInstance().getReference().child("Products"), MemberProductModel.class)
+                            .build();
+
+                    baasProductAdapter = new MemberProductAdapter(productOptions);
+                    baasListRecyclerView.setAdapter(baasProductAdapter);
+                    baasProductAdapter.startListening();
+
+                    searchBaasEdtTxt.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            productOptions = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
+                                    .setQuery(FirebaseDatabase.getInstance().getReference().child("Products"), MemberProductModel.class)
+                                    .build();
+
+                            baasProductAdapter = new MemberProductAdapter(productOptions);
+                            baasListRecyclerView.setAdapter(baasProductAdapter);
+                            baasProductAdapter.startListening();
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            String searchText = searchBaasEdtTxt.getText().toString().toLowerCase(Locale.ROOT);
+                            productOptions = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
+                                    .setQuery(FirebaseDatabase.getInstance().getReference().child("Products")
+                                            .orderByChild("productTitleLowerCase").startAt(searchText).endAt(searchText + "\uf8ff"), MemberProductModel.class)
+                                    .build();
+
+                            baasProductAdapter = new MemberProductAdapter(productOptions);
+                            baasListRecyclerView.setAdapter(baasProductAdapter);
+                            baasProductAdapter.startListening();
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
                 }
                 baasFilterPopup.dismiss();
             });
         });
 
-        wormosCv.setOnClickListener(view -> {
-            startActivity(new Intent(BAAS.this, WormosDetail.class));
-        });
+        wormosCv.setOnClickListener(view -> startActivity(new Intent(BAAS.this, WormosDetail.class)));
     }
 
     public void dropdownInit() {

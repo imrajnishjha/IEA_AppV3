@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -78,12 +79,6 @@ public class explore_menu extends AppCompatActivity {
         helpImg = findViewById(R.id.helpimg);
 
         mAuth = FirebaseAuth.getInstance();
-
-        storageProfilePicReference = FirebaseStorage.getInstance().getReference();
-
-        grievanceCalculator();
-
-
         String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
 
         assert userEmail != null;
@@ -91,6 +86,15 @@ public class explore_menu extends AppCompatActivity {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("Registered Users/" + userEmailConverted);
+
+        membershipChecker(ref);
+
+        storageProfilePicReference = FirebaseStorage.getInstance().getReference();
+
+        grievanceCalculator();
+
+
+
 
         final int[] solvedGrievances = {0};
         final int[] activeGrievances = {0};
@@ -206,6 +210,7 @@ public class explore_menu extends AppCompatActivity {
 
         helpImg.setOnClickListener(view -> openWhatsAppConvo());
         postJob.setOnClickListener(view -> {
+            startActivity(new Intent(explore_menu.this, ChatSession.class));
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
         });
     }
@@ -220,6 +225,31 @@ public class explore_menu extends AppCompatActivity {
         Uri uri = Uri.parse("https://wa.me/919145114666?text=Hello,%20I%20have%20a%20query.");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
+    }
+
+    public void membershipChecker(DatabaseReference databaseReference){
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                HashMap<String,Object> statusMap = new HashMap<>();
+                statusMap.put("status","blocked");
+                String startingDate = Objects.requireNonNull(snapshot.child("date_of_membership").getValue()).toString();
+                String expiryDate = UserProfile.yearincrementer(startingDate,365);
+                int datevalue = UserProfile.dateCompare(expiryDate);
+                if(datevalue == 1){
+                    databaseReference.updateChildren(statusMap);
+                    mAuth.signOut();
+                    startActivity(new Intent(explore_menu.this, LandingPage.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    finish();
+                    Toast.makeText(explore_menu.this, "Your Membership has been expired", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void grievanceCalculator(){

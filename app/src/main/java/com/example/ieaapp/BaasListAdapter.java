@@ -80,13 +80,10 @@ public class BaasListAdapter extends FirebaseRecyclerAdapter<BaasListModel, Baas
         baasListRecyclerAdapter.startListening();
 
         holder.baasListView.setOnClickListener(view -> {
-            if(productExists[0]){
                 Intent intent = new Intent(view.getContext(), BaasMemberProfile.class);
                 intent.putExtra("BaasItemKey", getRef(position).getKey());
                 Log.d("item key", ""+getRef(position).getKey());
                 view.getContext().startActivity(intent);
-            }
-
         });
 
         holder.baasListExpandBtn.setOnClickListener(view -> {

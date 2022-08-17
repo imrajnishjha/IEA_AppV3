@@ -24,12 +24,13 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
     private String memberfees;
 
 
-    String fullname, email, phoneNo, companyName, Department, Turnover,Gstno;
+    String fullname, email, phoneNo, companyName, Department, Turnover,Gstno,renew;
 
     FirebaseDatabase memberDirectoryRoot;
     DatabaseReference memberDirectoryRef;
     String paymentReceiverName;
     EditText gstNo;
+
 
 
     @Override
@@ -43,13 +44,17 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
 
 
         Intent intent = getIntent();
-        fullname = intent.getStringExtra("name");
+        renew = intent.getStringExtra("renewal");
         email = intent.getStringExtra("email");
-        phoneNo = intent.getStringExtra("phoneno");
-        companyName = intent.getStringExtra("cname");
-        Department = intent.getStringExtra("department");
-        Turnover = intent.getStringExtra("annual_turn");
         memberfees = intent.getStringExtra("memberfee");
+        fullname = intent.getStringExtra("name");
+        companyName = intent.getStringExtra("cname");
+        if(renew.equals("0")){
+            phoneNo = intent.getStringExtra("phoneno");
+            Department = intent.getStringExtra("department");
+            Turnover = intent.getStringExtra("annual_turn");
+        }
+
 
         Log.d("Useremail", "onCreate: "+email.toLowerCase());
 
@@ -110,17 +115,21 @@ public class payment extends AppCompatActivity implements PaymentResultListener 
                 Intent intent = new Intent(payment.this, payment_proof.class);
 
                 TextView amountleft = findViewById(R.id.amount_paylater);
-
-                intent.putExtra("name", fullname);
                 intent.putExtra("email", email.toLowerCase());
-                intent.putExtra("phoneno", phoneNo);
-                intent.putExtra("cname", companyName);
-                intent.putExtra("department", Department);
-                intent.putExtra("annual_turn", Turnover);
+                intent.putExtra("renewal", renew);
                 intent.putExtra("memberfee", memberfees);
                 intent.putExtra("costleft", amountleft.getText().toString());
                 intent.putExtra("paymentMethod", autoCompletePayment.getText().toString());
                 intent.putExtra("GstNo",gstNo.getText().toString());
+                intent.putExtra("name", fullname);
+                intent.putExtra("cname", companyName);
+                if(renew.equals("0")){
+                    intent.putExtra("phoneno", phoneNo);
+                    intent.putExtra("department", Department);
+                    intent.putExtra("annual_turn", Turnover);
+                }
+
+
 
                 if (TextUtils.isEmpty(amount_payingnow.getText().toString())) {
                     amount_payingnow.setError("Amount cannot be empty!");

@@ -77,8 +77,10 @@ public class BaasMemberProfile extends AppCompatActivity {
     Uri companyLogoUri,pdfUri;
     FirebaseAuth mAuth;
     Bitmap imageBitmap;
-    CardView addProductCv,uploadBrochureCv,newItemCv;
+    CardView addProductCv,uploadBrochureCv,newItemCv,memberchatCv;
     ProgressDialog pdfUploadDialog;
+    final DatabaseReference registryDataRef = FirebaseDatabase.getInstance().getReference("Registered Users");
+
 
 
 
@@ -98,6 +100,7 @@ public class BaasMemberProfile extends AppCompatActivity {
         uploadBrochureCv = findViewById(R.id.baas_uploadBrochure);
         newItemCv = findViewById(R.id.baas_newitem);
         baasNoOfProduct = findViewById(R.id.baas_no_of_product_info);
+        memberchatCv= findViewById(R.id.baas_chatBtn);
         baasMemberContactDialog = new Dialog(this);
         pdfUploadDialog= new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
@@ -127,7 +130,7 @@ public class BaasMemberProfile extends AppCompatActivity {
                 memberBrochureLink = Objects.requireNonNull(snapshot.child("brochure_url").getValue()).toString();
 
                 ownerContactNumber = Objects.requireNonNull(snapshot.child("phone_number").getValue()).toString();
-                ownerContactEmail = snapshot.child("email").getValue().toString();
+                ownerContactEmail = Objects.requireNonNull(snapshot.child("email").getValue()).toString();
 
                 if(companyLogoUri==null){
                     Glide.with(getApplicationContext())
@@ -144,6 +147,8 @@ public class BaasMemberProfile extends AppCompatActivity {
                     addProductCv.setVisibility(View.GONE);
                     uploadBrochureCv.setVisibility(View.GONE);
                     newItemCv.setVisibility(View.GONE);
+                    memberchatCv.setVisibility(View.VISIBLE);
+
                 }
 
             }
@@ -312,7 +317,47 @@ public class BaasMemberProfile extends AppCompatActivity {
             mGetPdf.launch("application/pdf");
         });
 
+        memberchatCv.setOnClickListener(v ->{
+            final String[] chatKey = new String[1];
+
+                registryDataRef.child(ownerEmailConverted).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if(!snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).exists()){
+                            chatKey[0] = ownerEmailConverted+mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7");
+                            HashMap<String,Object> ownerMap = new HashMap<>();
+                            ownerMap.put(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7"),chatKey[0]);
+                            HashMap<String,Object> userMap = new HashMap<>();
+                            userMap.put(ownerEmailConverted,chatKey[0]);
+                            registryDataRef.child(ownerEmailConverted).updateChildren(ownerMap);
+                            registryDataRef.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).updateChildren(userMap).addOnSuccessListener(s->{
+                                startActivity(new Intent(BaasMemberProfile.this,ChatSession.class).putExtra("chatKey",chatKey[0])
+                                        .putExtra("ownerEmail",ownerEmail).putExtra("chatType","user").putExtra("key","0"));
+                                Log.d("one2", "onDataChange: ");
+                            }).addOnFailureListener(f -> {
+                                Toast.makeText(BaasMemberProfile.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+                            });
+                        } else if(snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).exists()){
+                            chatKey[0] = snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).getValue().toString();
+                            startActivity(new Intent(BaasMemberProfile.this,ChatSession.class).putExtra("chatKey",chatKey[0])
+                                    .putExtra("ownerEmail",ownerEmail).putExtra("chatType","user").putExtra("key","1"));
+                            Log.d("one", "onDataChange: ");
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+        });
+
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -15,7 +15,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 public class WormosDetail extends AppCompatActivity {
     Dialog contactDialog;
-    AppCompatButton wormosContactBtn;
+    AppCompatButton wormosContactBtn,wormosBackBtn;
     TextView wormosProductDetailTitleTv, wormosProductDetailDescTv;
 
     @Override
@@ -26,8 +26,10 @@ public class WormosDetail extends AppCompatActivity {
         wormosContactBtn = findViewById(R.id.Wormos_detail_contact_btn);
         wormosProductDetailTitleTv = findViewById(R.id.Wormos_detail_title_tv);
         wormosProductDetailDescTv = findViewById(R.id.Wormos_detail_desc_tv);
+        wormosBackBtn = findViewById(R.id.Wormos_detail_back_btn);
         contactDialog = new Dialog(this);
 
+        wormosBackBtn.setOnClickListener(view -> finish());
         wormosContactBtn.setOnClickListener(view -> {
             openWhatsAppConvo();
         });

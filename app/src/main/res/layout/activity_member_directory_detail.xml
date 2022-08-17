@@ -36,6 +36,8 @@
             app:layout_constraintStart_toEndOf="@id/memberDetail_back_button"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
         <androidx.cardview.widget.CardView
             android:id="@+id/member_profile_image_cardView"
             android:layout_width="120dp"

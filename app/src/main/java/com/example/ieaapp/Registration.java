@@ -40,6 +40,7 @@ public class Registration extends AppCompatActivity {
             TextView member_fee1 = findViewById(R.id.member_price);
 
             intent.putExtra("name", fullname.getText().toString());
+            intent.putExtra("renewal", "0");
             intent.putExtra("email", email.getText().toString());
             intent.putExtra("phoneno", phoneNo.getText().toString());
             intent.putExtra("cname", Comapany_name.getText().toString());

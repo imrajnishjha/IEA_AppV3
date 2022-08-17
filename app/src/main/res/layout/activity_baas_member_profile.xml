@@ -227,5 +227,31 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/baas_chatBtn"
+        android:layout_width="61dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="#7F7F7F"
+        android:visibility="gone"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/chaticon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="14dp"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:src="@drawable/chaticon" />
+
+    </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

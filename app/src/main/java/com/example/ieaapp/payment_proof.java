@@ -63,7 +63,7 @@ public class payment_proof extends AppCompatActivity {
 
     ImageView proof_img;
     AppCompatButton insert_btn, payment_proofbackbtn, upload_btn;
-    String fullname, email, companyName, Department, phoneNo, Turnover, memberfees, amountleft, paymentMethod, nameOfReceiver = "",gstNo="";
+    String fullname, email, companyName, Department, phoneNo, Turnover, memberfees, amountleft, paymentMethod, nameOfReceiver = "",gstNo="",renew;
     FirebaseDatabase memberDirectoryRoot;
     DatabaseReference memberDirectoryRef;
     private StorageReference memberstorageRef;
@@ -92,16 +92,20 @@ public class payment_proof extends AppCompatActivity {
         paymentReceiverHeading = findViewById(R.id.name_of_receiver_text);
 
         Intent intent = getIntent();
-        fullname = intent.getStringExtra("name");
+        renew = intent.getStringExtra("renewal");
         email = intent.getStringExtra("email");
-        phoneNo = intent.getStringExtra("phoneno");
-        companyName = intent.getStringExtra("cname");
-        Department = intent.getStringExtra("department");
-        Turnover = intent.getStringExtra("annual_turn");
         memberfees = intent.getStringExtra("memberfee");
         amountleft = intent.getStringExtra("costleft");
         paymentMethod = intent.getStringExtra("paymentMethod");
-        gstNo = intent.getStringExtra("GstNo");
+        fullname = intent.getStringExtra("name");
+        companyName = intent.getStringExtra("cname");
+        if(renew.equals("0")){
+            phoneNo = intent.getStringExtra("phoneno");
+            Department = intent.getStringExtra("department");
+            Turnover = intent.getStringExtra("annual_turn");
+            gstNo = intent.getStringExtra("GstNo");
+        }
+
 
 
 
@@ -266,7 +270,12 @@ public class payment_proof extends AppCompatActivity {
         memberDirectoryRef = memberDirectoryRoot.getReference("Temp Registry");
 
         if(uri != null){
-            ImgdataHaldler(dialog,uri);
+            if(renew.equals("0")){
+                ImgdataHaldler(dialog,uri);
+            } else if(renew.equals("1")) {
+                renewalHandler(dialog,uri);
+            }
+
 
         } else {
             dialog.dismiss();
@@ -310,8 +319,7 @@ public class payment_proof extends AppCompatActivity {
                                             "IEA New Registration",
                                             "New registration application has been submitted. (" + registrationCount[0] + ")",
                                             getApplicationContext(),
-                                            payment_proof.this,
-                                            (int) registrationCount[0]);
+                                            payment_proof.this);
 
                                     grievanceNotificationSender.SendNotifications();
 
@@ -331,6 +339,56 @@ public class payment_proof extends AppCompatActivity {
                 });
 
             }
+        });
+    }
+
+    public void renewalHandler(ProgressDialog dialog,Uri proofimg_uri){
+        StorageReference urirefence = memberstorageRef.child("RenewalProof/" + UUID.randomUUID().toString());
+        urirefence.putFile(proofimg_uri).addOnSuccessListener(s ->{
+            urirefence.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    UserRenewalHelper userRenewalHelper = new UserRenewalHelper(uri.toString(),email,memberfees,amountleft,fullname,companyName,nameOfReceiver);
+                    DatabaseReference renewalRef = FirebaseDatabase.getInstance().getReference("Renewal Registry");
+                    renewalRef.child(email.replaceAll("\\.","%7")).setValue(userRenewalHelper).addOnSuccessListener(s -> {
+
+                        FirebaseDatabase.getInstance().getReference("Core Member Token").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot tokenSnapshot : snapshot.getChildren()) {
+                                    String grievanceUserToken = Objects.requireNonNull(tokenSnapshot.getValue()).toString();
+
+                                    FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(grievanceUserToken,
+                                            "IEA Membership Renewal",
+                                            "New renewal application has been submitted.",
+                                            getApplicationContext(),
+                                            payment_proof.this);
+
+                                    grievanceNotificationSender.SendNotifications();
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        Toast.makeText(payment_proof.this, "Renewal Submitted", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(payment_proof.this,UserProfile.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        dialog.dismiss();
+
+                    }).addOnFailureListener(f -> {
+                        Toast.makeText(payment_proof.this, "Please try again", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+                }
+            }).addOnFailureListener(f -> {
+
+            });
+        }).addOnFailureListener(f -> {
+            Toast.makeText(payment_proof.this, "Please try again", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
         });
     }
 

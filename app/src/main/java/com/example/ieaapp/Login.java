@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -34,6 +35,7 @@ public class Login extends AppCompatActivity {
     TextView forgotPassIntent, privacyPolicy;
     ProgressDialog loginProgressDialog;
     String token;
+    DatabaseReference registryDataRef= FirebaseDatabase.getInstance().getReference("Registered Users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,17 +89,35 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        loginProgressDialog.dismiss();
-                        Toast.makeText(Login.this, "You are logged in!", Toast.LENGTH_SHORT).show();
-                        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
-                            Log.d("Messaging", "onComplete: Messaging On Complete");
-                            token = task1.getResult();
-                            Log.d("Messaging", "Token: " + token);
-                            sendTokenToDatabase(token);
-                        });
+                        registryDataRef.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String status = Objects.requireNonNull(snapshot.child("status").getValue()).toString();
+                                if(status.equals("blocked")){
+                                    Toast.makeText(Login.this, "Your Membership has been expired", Toast.LENGTH_SHORT).show();
+                                    mAuth.signOut();
+                                    loginProgressDialog.dismiss();
+                                }else {
+                                    loginProgressDialog.dismiss();
+                                    Toast.makeText(Login.this, "You are logged in!", Toast.LENGTH_SHORT).show();
+                                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task1 -> {
+                                        Log.d("Messaging", "onComplete: Messaging On Complete");
+                                        token = task1.getResult();
+                                        Log.d("Messaging", "Token: " + token);
+                                        sendTokenToDatabase(token);
+                                    });
 
-                        startActivity(new Intent(Login.this, explore_menu.class).putExtra("userEmail", replacePeriod(login_email)));
-                        finish();
+                                    startActivity(new Intent(Login.this, explore_menu.class).putExtra("userEmail", replacePeriod(login_email)));
+                                    loginProgressDialog.dismiss();
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     } else {
                         Toast.makeText(Login.this, "Login Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         loginProgressDialog.dismiss();
