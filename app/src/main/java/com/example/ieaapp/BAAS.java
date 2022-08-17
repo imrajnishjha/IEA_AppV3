@@ -89,7 +89,11 @@ public class BAAS extends AppCompatActivity {
 
         baasRadioIdHolder.setText(String.valueOf(R.id.search_by_industry_type_rBtn));
 
-        baasListRecyclerView.setLayoutManager(new MembersDirectory.WrapContentLinearLayoutManager(this));
+        MembersDirectory.WrapContentLinearLayoutManager wrapContentLinearLayoutManager=new MembersDirectory.WrapContentLinearLayoutManager(this);
+
+
+        baasListRecyclerView.setLayoutManager(wrapContentLinearLayoutManager);
+
 
         options = new FirebaseRecyclerOptions.Builder<BaasListModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Registered Users"), BaasListModel.class)

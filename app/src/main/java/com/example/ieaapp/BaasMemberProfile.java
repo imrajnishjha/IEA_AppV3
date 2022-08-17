@@ -58,6 +58,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -157,16 +159,18 @@ public class BaasMemberProfile extends AppCompatActivity {
         baasMemberRecyclerView = findViewById(R.id.baas_member_rv);
 
         GridLayoutManager gridLayoutManager =new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-        //gridLayoutManager.setReverseLayout(true);
-        gridLayoutManager.getReverseLayout();
+
+
 
         baasMemberRecyclerView.setLayoutManager(gridLayoutManager);
+
 
 
 
         options = new FirebaseRecyclerOptions.Builder<MemberProductModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Products by Member/" + ownerEmailConverted), MemberProductModel.class)
                 .build();
+        //Collections.reverse(Collections.singletonList(options));
 
         baasListRecyclerAdapter = new BaasProductAdapter(options);
         baasMemberRecyclerView.setAdapter(baasListRecyclerAdapter);
