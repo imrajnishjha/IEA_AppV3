@@ -18,11 +18,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,7 +47,9 @@ public class MemberDirectoryDetail extends AppCompatActivity {
     String memberEmailStr, memberBrochureLink, memberAddressStr, memberPhoneStr,pdfUrl;
     MemberProductAdapter memberProductAdapter;
     CircleImageView memberEmailImg, memberPhoneImg, memberAddressImg;
+    CardView memberChatCV;
     Dialog MemberinfoDialog;
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
 
 
@@ -67,6 +72,7 @@ public class MemberDirectoryDetail extends AppCompatActivity {
         memberEmailImg = findViewById(R.id.Member_mail_image);
         memberPhoneImg = findViewById(R.id.Member_phone_image);
         memberAddressImg = findViewById(R.id.Member_address_image);
+        memberChatCV = findViewById(R.id.member_directory_chatBtn);
 
 
 
@@ -174,6 +180,10 @@ public class MemberDirectoryDetail extends AppCompatActivity {
                             .error(R.drawable.iea_logo)
                             .into(memberProfileImage);
 
+                    if(memberEmailStr.equals(mAuth.getCurrentUser().getEmail())){
+                        memberChatCV.setVisibility(View.GONE);
+                    }
+
 
                 }
             }
@@ -213,6 +223,44 @@ public class MemberDirectoryDetail extends AppCompatActivity {
                 Toast.makeText(this, "Brochure hasn't been uploaded yet", Toast.LENGTH_LONG).show();
             }
 
+        });
+
+        memberChatCV.setOnClickListener(v->{
+            final String[] chatKey = new String[1];
+            String ownerEmailConverted = memberEmailStr.replaceAll("\\.","%7");
+            ref.child(memberEmailStr.replaceAll("\\.","%7")).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if(!snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).exists()){
+                        chatKey[0] = ownerEmailConverted+mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7");
+                        HashMap<String,Object> ownerMap = new HashMap<>();
+                        ownerMap.put(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7"),chatKey[0]);
+                        HashMap<String,Object> userMap = new HashMap<>();
+                        userMap.put(ownerEmailConverted,chatKey[0]);
+                        ref.child(ownerEmailConverted).updateChildren(ownerMap);
+                        ref.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).updateChildren(userMap).addOnSuccessListener(s->{
+                            startActivity(new Intent(MemberDirectoryDetail.this,ChatSession.class).putExtra("chatKey",chatKey[0])
+                                    .putExtra("ownerEmail",memberEmailStr).putExtra("chatType","user").putExtra("key","0"));
+                            Log.d("one2", "onDataChange: ");
+                        }).addOnFailureListener(f -> {
+                            Toast.makeText(MemberDirectoryDetail.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+                        });
+                    } else if(snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).exists()){
+                        chatKey[0] = snapshot.child(mAuth.getCurrentUser().getEmail().replaceAll("\\.","%7")).getValue().toString();
+                        startActivity(new Intent(MemberDirectoryDetail.this,ChatSession.class).putExtra("chatKey",chatKey[0])
+                                .putExtra("ownerEmail",memberEmailStr).putExtra("chatType","user").putExtra("key","1"));
+                        Log.d("one", "onDataChange: ");
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         });
 
     }

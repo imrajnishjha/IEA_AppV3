@@ -167,7 +167,7 @@ public class ChatSession extends AppCompatActivity {
     }
 
     public void sendNotification(String Token,String message,String senderName){
-        FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(Token, senderName+"-Baas",  message, getApplicationContext(), ChatSession.this);
+        FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(Token, senderName,  message, getApplicationContext(), ChatSession.this);
         grievanceNotificationSender.SendNotifications();
     }
 

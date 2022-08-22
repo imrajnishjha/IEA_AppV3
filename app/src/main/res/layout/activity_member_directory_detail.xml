@@ -224,10 +224,43 @@
             android:layout_height="30dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/email_image"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/member_icon_center_holder"
             app:layout_constraintTop_toBottomOf="@+id/member_company_name" />
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:id="@+id/member_icon_center_holder"
+            app:layout_constraintTop_toBottomOf="@id/member_company_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/member_directory_chatBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:backgroundTint="#F5F5F5"
+            android:layout_marginStart="10dp"
+            android:outlineSpotShadowColor="#F5F5F5"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/Member_address_image"
+            app:layout_constraintTop_toBottomOf="@+id/member_company_name"
+            app:cardCornerRadius="30dp">
+
+            <ImageView
+                android:id="@+id/chaticon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="0dp"
+                android:paddingTop="3dp"
+                android:layout_gravity="center"
+                android:background="#F5F5F5"
+                android:src="@drawable/chaticon" />
+
+        </androidx.cardview.widget.CardView>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/Member_phone_image"
@@ -247,7 +280,7 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/address_image"
             android:layout_marginStart="10dp"
-            app:layout_constraintStart_toEndOf="@+id/Member_mail_image"
+            app:layout_constraintStart_toEndOf="@+id/member_icon_center_holder"
             app:layout_constraintTop_toBottomOf="@+id/member_company_name" />
 
         <TextView
@@ -271,8 +304,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/nulladdresstext"
             android:visibility="invisible"/>
-
-
 
 
 
