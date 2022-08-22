@@ -167,7 +167,7 @@ public class MemberDirectoryDetail extends AppCompatActivity {
                     memberProfileName.setText(memberNameStr);
 
 
-                    Glide.with(memberProfileImage.getContext())
+                    Glide.with(getApplicationContext())
                             .load(memberPictureUrl)
                             .placeholder(R.drawable.iea_logo)
                             .circleCrop()

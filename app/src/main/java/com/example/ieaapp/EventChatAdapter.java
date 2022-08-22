@@ -1,7 +1,6 @@
 package com.example.ieaapp;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class EndUserChatAdapter extends FirebaseRecyclerAdapter<EndUserChatModel, EndUserChatAdapter.EndUserChatViewHolder> {
+import java.util.Random;
 
+public class EventChatAdapter extends FirebaseRecyclerAdapter<EndUserChatModel, EventChatAdapter.EventChatViewHolder> {
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -31,12 +30,12 @@ public class EndUserChatAdapter extends FirebaseRecyclerAdapter<EndUserChatModel
      *
      * @param options
      */
-    public EndUserChatAdapter(@NonNull FirebaseRecyclerOptions<EndUserChatModel> options) {
+    public EventChatAdapter(@NonNull FirebaseRecyclerOptions<EndUserChatModel> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull EndUserChatViewHolder holder, int position, @NonNull EndUserChatModel model) {
+    protected void onBindViewHolder(@NonNull EventChatViewHolder holder, int position, @NonNull EndUserChatModel model) {
         DatabaseReference databaseReference = getRef(position);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -49,11 +48,16 @@ public class EndUserChatAdapter extends FirebaseRecyclerAdapter<EndUserChatModel
                     holder.userCV.setVisibility(View.GONE);
                     holder.endUserIV.setVisibility(View.VISIBLE);
                     holder.endUserCV.setVisibility(View.VISIBLE);
+                    holder.endUserName.setVisibility(View.VISIBLE);
+                    holder.endUserName.setTextColor(Integer.parseInt(model.getColor()));
                     holder.endUserChat.setText(model.getMessage());
+                    holder.endUserName.setText(model.getName());
+
                     Log.d("one4", "onDataChange: ");
                 }else{
                     holder.endUserIV.setVisibility(View.GONE);
                     holder.endUserCV.setVisibility(View.GONE);
+                    holder.endUserName.setVisibility(View.GONE);
                     holder.userIV.setVisibility(View.VISIBLE);
                     holder.userCV.setVisibility(View.VISIBLE);
                     holder.userChat.setText(model.getMessage());
@@ -67,29 +71,28 @@ public class EndUserChatAdapter extends FirebaseRecyclerAdapter<EndUserChatModel
             }
         });
 
-
     }
 
     @NonNull
     @Override
-    public EndUserChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.end_msg_item, parent,false);
-        return new EndUserChatViewHolder(view);
+    public EventChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_msg_item, parent,false);
+        return new EventChatViewHolder(view);
     }
 
-    static class EndUserChatViewHolder extends RecyclerView.ViewHolder{
+    static class EventChatViewHolder extends RecyclerView.ViewHolder{
         TextView endUserChat,endUserName,userChat;
         CardView userCV,endUserCV;
         ImageView userIV,endUserIV;
-        public EndUserChatViewHolder(@NonNull View itemView) {
+        public EventChatViewHolder(@NonNull View itemView) {
             super(itemView);
-            endUserChat = (TextView) itemView.findViewById(R.id.endUserText);
-            endUserName = (TextView) itemView.findViewById(R.id.endUserName);
-            userChat = (TextView) itemView.findViewById(R.id.userChatText);
-            userCV =(CardView) itemView.findViewById(R.id.userchatCV);
-            endUserCV =(CardView) itemView.findViewById(R.id.enduserchatCV);
-            userIV = (ImageView)  itemView.findViewById(R.id.userChatIV);
-            endUserIV = (ImageView)  itemView.findViewById(R.id.endUserChatIV);
+            endUserChat = (TextView) itemView.findViewById(R.id.eventUserText);
+            endUserName = (TextView) itemView.findViewById(R.id.eventUserName);
+            userChat = (TextView) itemView.findViewById(R.id.eventChatText);
+            userCV =(CardView) itemView.findViewById(R.id.eventchatCV);
+            endUserCV =(CardView) itemView.findViewById(R.id.eventuserchatCV);
+            userIV = (ImageView)  itemView.findViewById(R.id.eventChatIV);
+            endUserIV = (ImageView)  itemView.findViewById(R.id.eventUserChatIV);
 
         }
     }

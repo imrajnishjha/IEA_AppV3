@@ -170,7 +170,7 @@
         android:layout_height="60dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="25dp"
-        android:backgroundTint="#7F7F7F"
+        android:backgroundTint="#8cd3ff"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -179,6 +179,7 @@
             android:id="@+id/plusiconImg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#8cd3ff"
             android:padding="5dp"
             android:src="@drawable/plusicon" />
 
@@ -191,7 +192,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="#7F7F7F"
+        android:backgroundTint="#8cd3ff"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toTopOf="@id/baas_addProductIcon"
         app:layout_constraintEnd_toEndOf="parent">
@@ -199,7 +200,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#7F7F7F"
+            android:background="#8cd3ff"
             android:id="@+id/brochureiconImg"
             android:padding="14dp"
             android:src="@drawable/brochureicon" />
@@ -213,7 +214,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="12dp"
-        android:backgroundTint="#7F7F7F"
+        android:backgroundTint="#8cd3ff"
         app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toTopOf="@id/baas_uploadBrochure"
         app:layout_constraintEnd_toEndOf="parent">
@@ -222,6 +223,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="15dp"
+            android:background="#8cd3ff"
             android:id="@+id/newitemImg"
             android:src="@drawable/newitem" />
 

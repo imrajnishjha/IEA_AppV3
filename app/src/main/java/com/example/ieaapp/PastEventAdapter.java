@@ -1,6 +1,7 @@
 package com.example.ieaapp;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Locale;
-
-public class UpcomingEventAdapter extends FirebaseRecyclerAdapter<UpcomingEventModel, UpcomingEventAdapter.UpcomingEventViewHolder>  {
+public class PastEventAdapter extends FirebaseRecyclerAdapter<UpcomingEventModel,PastEventAdapter.pastEventViewHolder> {
 
 
     /**
@@ -27,20 +24,14 @@ public class UpcomingEventAdapter extends FirebaseRecyclerAdapter<UpcomingEventM
      *
      * @param options
      */
-    public UpcomingEventAdapter(@NonNull FirebaseRecyclerOptions<UpcomingEventModel> options) {
+    public PastEventAdapter(@NonNull FirebaseRecyclerOptions<UpcomingEventModel> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull UpcomingEventViewHolder holder, int position, @NonNull UpcomingEventModel model) {
-        if(UserProfile.dateCompare(model.getDate())==1){
-            PastEventModel pastEventModel = new PastEventModel(model.getDate(), model.getDescription(), model.getImgUrl(), model.getTitle().toLowerCase(), model.getLocation(), model.getWeekday(), model.getTime(), model.getTitle());
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Past Events");
-            databaseReference.child(getRef(position).getKey()).setValue(pastEventModel).addOnSuccessListener(s->{
-                DatabaseReference upcomingRef = getRef(position);
-                upcomingRef.removeValue();
-            });
-        }else{
+    protected void onBindViewHolder(@NonNull pastEventViewHolder holder, int position, @NonNull UpcomingEventModel model) {
+        Log.d("TAG", "onBindViewHolder: past");
+
             holder.upcomingEventTitle.setText(model.getTitle());
             holder.upcomingEventDate.setText(model.getDate());
             holder.upcomingEventTime.setText(model.getTime());
@@ -54,26 +45,24 @@ public class UpcomingEventAdapter extends FirebaseRecyclerAdapter<UpcomingEventM
             holder.upcomingEventItem.setOnClickListener(view -> {
                 Intent intent = new Intent(view.getContext(), EventDetails.class);
                 intent.putExtra("EventItemKey", getRef(position).getKey());
-                intent.putExtra("EventType", "Events");
+                intent.putExtra("EventType","Past Events");
                 view.getContext().startActivity(intent);
             });
-        }
-
     }
 
     @NonNull
     @Override
-    public UpcomingEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View upcomingEventView = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_event_item, parent, false);
-        return new UpcomingEventViewHolder(upcomingEventView);
+    public pastEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View upcomingEventView2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_event_item, parent, false);
+        return new pastEventViewHolder(upcomingEventView2);
     }
 
-    public class UpcomingEventViewHolder extends RecyclerView.ViewHolder {
+    static class pastEventViewHolder extends RecyclerView.ViewHolder{
         ImageView upcomingEventImg;
         TextView upcomingEventTitle, upcomingEventTime, upcomingEventDate;
         View upcomingEventItem;
 
-        public UpcomingEventViewHolder(@NonNull View itemView) {
+        public pastEventViewHolder(@NonNull View itemView) {
             super(itemView);
 
             upcomingEventImg = itemView.findViewById(R.id.upcoming_events_item_img);

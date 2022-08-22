@@ -15,9 +15,10 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Events extends AppCompatActivity {
-    RecyclerView upcomingEventRecyclerView;
-    FirebaseRecyclerOptions<UpcomingEventModel> options;
+    RecyclerView upcomingEventRecyclerView,pastEventRecyclerView;
+    FirebaseRecyclerOptions<UpcomingEventModel> options,pastoptions;
     UpcomingEventAdapter upcomingEventAdapter;
+    PastEventAdapter pastEventAdapter;
     EditText eventsSearchTv;
     AppCompatButton eventsBackButton;
 
@@ -29,16 +30,24 @@ public class Events extends AppCompatActivity {
         eventsBackButton = findViewById(R.id.events_back_button);
 
         upcomingEventRecyclerView = findViewById(R.id.upcoming_events_rv);
+        pastEventRecyclerView = findViewById(R.id.past_events_rv);
         eventsSearchTv = findViewById(R.id.search_events_edtTxt);
         upcomingEventRecyclerView.setLayoutManager(new MemberDirectoryDetail.WrapContentLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        pastEventRecyclerView.setLayoutManager(new MemberDirectoryDetail.WrapContentLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         options = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Events"), UpcomingEventModel.class)
                 .build();
+        pastoptions  = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("Past Events"), UpcomingEventModel.class)
+                .build();
+
+        pastEventAdapter = new PastEventAdapter(pastoptions);
+        pastEventRecyclerView.setAdapter(pastEventAdapter);
+
 
         upcomingEventAdapter = new UpcomingEventAdapter(options);
         upcomingEventRecyclerView.setAdapter(upcomingEventAdapter);
-        upcomingEventAdapter.startListening();
 
         eventsSearchTv.addTextChangedListener(new TextWatcher() {
             @Override
@@ -52,6 +61,12 @@ public class Events extends AppCompatActivity {
                     options = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
                             .setQuery(FirebaseDatabase.getInstance().getReference().child("Events").orderByChild("lowercase_title").startAt(eventsSearchTv.getText().toString()).endAt(eventsSearchTv.getText().toString()+"\uf8ff"), UpcomingEventModel.class)
                             .build();
+                    pastoptions = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
+                            .setQuery(FirebaseDatabase.getInstance().getReference().child("Past Events").orderByChild("lowercase_title").startAt(eventsSearchTv.getText().toString()).endAt(eventsSearchTv.getText().toString()+"\uf8ff"), UpcomingEventModel.class)
+                            .build();
+                    pastEventAdapter = new PastEventAdapter(pastoptions);
+                    pastEventAdapter.startListening();
+                    pastEventRecyclerView.setAdapter(pastEventAdapter);
                     upcomingEventAdapter = new UpcomingEventAdapter(options);
                     upcomingEventAdapter.startListening();
                     upcomingEventRecyclerView.setAdapter(upcomingEventAdapter);
@@ -59,7 +74,13 @@ public class Events extends AppCompatActivity {
                     options = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
                             .setQuery(FirebaseDatabase.getInstance().getReference().child("Events"), UpcomingEventModel.class)
                             .build();
+                    pastoptions  = new FirebaseRecyclerOptions.Builder<UpcomingEventModel>()
+                            .setQuery(FirebaseDatabase.getInstance().getReference().child("Past Events"), UpcomingEventModel.class)
+                            .build();
                 }
+                pastEventAdapter = new PastEventAdapter(pastoptions);
+                pastEventAdapter.startListening();
+                pastEventRecyclerView.setAdapter(pastEventAdapter);
                 upcomingEventAdapter = new UpcomingEventAdapter(options);
                 upcomingEventAdapter.startListening();
                 upcomingEventRecyclerView.setAdapter(upcomingEventAdapter);
@@ -78,6 +99,7 @@ public class Events extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         upcomingEventAdapter.startListening();
+        pastEventAdapter.startListening();
     }
 
 //    @Override

@@ -33,11 +33,10 @@ public class ChatSession extends AppCompatActivity {
     TextView userName;
     DatabaseReference chatData = FirebaseDatabase.getInstance().getReference("Members Chat");
     DatabaseReference userData = FirebaseDatabase.getInstance().getReference("Registered Users");
-    String chatKey,ownerEmail,chatType;
+    String chatKey,ownerEmail,chatType,key,senderName,userToken;
     EndUserChatAdapter chatAdapter;
     FirebaseRecyclerOptions<EndUserChatModel> options;
     int position;
-    String key;
 
 
 
@@ -65,16 +64,44 @@ public class ChatSession extends AppCompatActivity {
         userData.child(ownerEmailConverted).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String userNameStr= Objects.requireNonNull(snapshot.child("name").getValue()).toString();
-                String userPurlStr= Objects.requireNonNull(snapshot.child("purl").getValue()).toString();
-                userName.setText(userNameStr);
-                Glide.with(getApplicationContext())
-                        .load(userPurlStr)
-                        .placeholder(R.drawable.iea_logo)
-                        .circleCrop()
-                        .error(R.drawable.iea_logo)
-                        .into(userProfilePic);
+                if(snapshot.child("user_token").exists()){
+                    String userNameStr= Objects.requireNonNull(snapshot.child("name").getValue()).toString();
+                    String userPurlStr= Objects.requireNonNull(snapshot.child("purl").getValue()).toString();
+                    userToken = Objects.requireNonNull(snapshot.child("user_token").getValue()).toString();
+                    userName.setText(userNameStr);
+                    Glide.with(getApplicationContext())
+                            .load(userPurlStr)
+                            .placeholder(R.drawable.iea_logo)
+                            .circleCrop()
+                            .error(R.drawable.iea_logo)
+                            .into(userProfilePic);
+                }else{
+                    String userNameStr= Objects.requireNonNull(snapshot.child("name").getValue()).toString();
+                    String userPurlStr= Objects.requireNonNull(snapshot.child("purl").getValue()).toString();
+                    userName.setText(userNameStr);
+                    Glide.with(getApplicationContext())
+                            .load(userPurlStr)
+                            .placeholder(R.drawable.iea_logo)
+                            .circleCrop()
+                            .error(R.drawable.iea_logo)
+                            .into(userProfilePic);
+                }
+
             }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        userData.child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("\\.","%7")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                senderName = Objects.requireNonNull(snapshot.child("name").getValue()).toString();
+
+            }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -106,10 +133,6 @@ public class ChatSession extends AppCompatActivity {
                 .build();
 
         chatAdapter = new EndUserChatAdapter(options);
-
-
-        Log.d("TAGr", "onCreate2: "+position);
-
         chatRv.setAdapter(chatAdapter);
 
         chatSendBtn.setOnClickListener(v ->{
@@ -125,15 +148,11 @@ public class ChatSession extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        chatAdapter.stopListening();
-    }
 
 
     public void chatSender(DatabaseReference databaseReference,String key,EndUserChatAdapter adapter){
-        EndUserChatModel chatData =new EndUserChatModel(FirebaseAuth.getInstance().getCurrentUser().getEmail(),chatText.getText().toString());
+
+        EndUserChatModel chatData =new EndUserChatModel(FirebaseAuth.getInstance().getCurrentUser().getEmail(),chatText.getText().toString(),senderName);
         if(!chatText.getText().toString().isEmpty()){
             String pushkey = databaseReference.child(key).push().getKey();
             databaseReference.child(key).child(pushkey).setValue(chatData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -141,9 +160,15 @@ public class ChatSession extends AppCompatActivity {
                 public void onSuccess(Void unused) {
                     chatRv.smoothScrollToPosition(adapter.getItemCount());
                     chatText.setText("");
+                    sendNotification(userToken,chatText.getText().toString(),senderName);
                 }
             });
         }
+    }
+
+    public void sendNotification(String Token,String message,String senderName){
+        FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(Token, senderName+"-Baas",  message, getApplicationContext(), ChatSession.this);
+        grievanceNotificationSender.SendNotifications();
     }
 
 

@@ -46,7 +46,8 @@ public class MembersDirectory extends AppCompatActivity {
         setContentView(R.layout.activity_members_directory);
 
         memberDirectoryRecyclerView = findViewById(R.id.members_directory_recycler_view);
-        memberDirectoryRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
+        WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(getApplicationContext());
+        memberDirectoryRecyclerView.setLayoutManager(wrapContentLinearLayoutManager);
         memberDirectoryBackButton = findViewById(R.id.members_directory_back_button);
         memberSearchTextView = findViewById(R.id.member_search_autocomplete);
         noMemberTv = findViewById(R.id.no_member_tv);
@@ -68,6 +69,9 @@ public class MembersDirectory extends AppCompatActivity {
                 options = new FirebaseRecyclerOptions.Builder<MembersDirectoryModel>()
                         .setQuery(FirebaseDatabase.getInstance().getReference().child("Registered Users"), MembersDirectoryModel.class)
                         .build();
+                memberDirectoryAdapter = new MembersDirectoryAdapter(options);
+                memberDirectoryRecyclerView.setAdapter(memberDirectoryAdapter);
+                memberDirectoryAdapter.startListening();
             }
 
             @Override
@@ -100,8 +104,8 @@ public class MembersDirectory extends AppCompatActivity {
 
         memberDirectoryBackButton.setOnClickListener(view -> finish());
 
-        memberDirectoryAdapter = new MembersDirectoryAdapter(options);
-        memberDirectoryRecyclerView.setAdapter(memberDirectoryAdapter);
+       memberDirectoryAdapter = new MembersDirectoryAdapter(options);
+       memberDirectoryRecyclerView.setAdapter(memberDirectoryAdapter);
 
         memberDirectoryFilterIcon.setOnClickListener(view -> {
             LayoutInflater inflater = getLayoutInflater();
@@ -110,7 +114,6 @@ public class MembersDirectory extends AppCompatActivity {
             memberDirectoryRadioGroup = view1.findViewById(R.id.member_directory_popup_radio_group);
             searchByMemberNameRBtn = view1.findViewById(Integer.parseInt(memberDirectoryIdHolder.getText().toString()));
             memberDirectoryPopupOkayBtn = view1.findViewById(R.id.member_directory_popup_okay_btn);
-
             memberDirectorySearchPopup.setContentView(view1);
             memberDirectorySearchPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             memberDirectorySearchPopup.show();
@@ -120,6 +123,7 @@ public class MembersDirectory extends AppCompatActivity {
                 memberDirectoryIdHolder.setText(String.valueOf(memberDirectoryRadioGroup.getCheckedRadioButtonId()));
                 searchByMemberNameRBtn = view1.findViewById(Integer.parseInt(memberDirectoryIdHolder.getText().toString()));
                 if (searchByMemberNameRBtn.getText().toString().equals("Member Name")) {
+                    Log.d("Visibility", "Working");
                     memberSearchOutbox.setVisibility(View.GONE);
                     memberDirectorySearchNameEdtTxt.setVisibility(View.VISIBLE);
                     memberDirectorySearchNameEdtTxt.addTextChangedListener(new TextWatcher() {
@@ -191,6 +195,7 @@ public class MembersDirectory extends AppCompatActivity {
                         }
                     });
                 }
+
                 memberDirectorySearchPopup.dismiss();
                 Log.d("filtervalue", memberDirectoryIdHolder.getText().toString());
                 Log.d("Visibility", searchByMemberNameRBtn.getText().toString());
@@ -216,7 +221,13 @@ public class MembersDirectory extends AppCompatActivity {
         memberDirectoryAdapter.startListening();
     }
 
-    public static class WrapContentLinearLayoutManager extends LinearLayoutManager {
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        memberDirectoryAdapter.stopListening();
+//    }
+
+    public class WrapContentLinearLayoutManager extends LinearLayoutManager {
         public WrapContentLinearLayoutManager(Context context) {
             super(context);
         }
@@ -228,11 +239,6 @@ public class MembersDirectory extends AppCompatActivity {
             } catch (IndexOutOfBoundsException e) {
                 Log.e("TAG", "Recycler view error");
             }
-        }
-
-        @Override
-        public boolean supportsPredictiveItemAnimations() {
-            return false;
         }
     }
 

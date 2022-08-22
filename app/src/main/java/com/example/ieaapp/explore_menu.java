@@ -210,7 +210,6 @@ public class explore_menu extends AppCompatActivity {
 
         helpImg.setOnClickListener(view -> openWhatsAppConvo());
         postJob.setOnClickListener(view -> {
-            startActivity(new Intent(explore_menu.this, ChatSession.class));
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
         });
     }
@@ -219,6 +218,18 @@ public class explore_menu extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         grievanceCalculator();
+        StorageReference fileRef = storageProfilePicReference.child("User Profile Pictures/" + mAuth.getCurrentUser().getEmail().toString() + "ProfilePicture");
+        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext())
+                        .load(uri)
+                        .placeholder(R.drawable.iea_logo)
+                        .circleCrop()
+                        .error(R.drawable.iea_logo)
+                        .into(userImage);
+            }
+        });
     }
 
     private void openWhatsAppConvo() {

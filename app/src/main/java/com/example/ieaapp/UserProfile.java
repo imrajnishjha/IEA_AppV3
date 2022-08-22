@@ -182,7 +182,7 @@ public class UserProfile extends AppCompatActivity {
 
                 String corePictureUrl = Objects.requireNonNull(dataSnapshot.child("purl").getValue()).toString();
 
-                if(imageBitmap == null){
+                if(imageBitmap == null && resultUri==null){
                     Glide.with(getApplicationContext())
                             .load(corePictureUrl)
                             .placeholder(R.drawable.iea_logo)

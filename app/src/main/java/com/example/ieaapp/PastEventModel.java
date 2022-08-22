@@ -1,22 +1,21 @@
 package com.example.ieaapp;
 
-public class UpcomingEventModel {
-    String title, date, time, date_and_time, joining_link, description, imgUrl, location, weekday;
+public class PastEventModel {
+    String date, description, imgUrl, lowercase_title, location,weekday, time,title;
 
-    public UpcomingEventModel() {
+    PastEventModel() {
 
     }
 
-    public UpcomingEventModel(String title, String date, String time, String date_and_time, String joining_link, String description, String imgUrl, String location, String weekday) {
-        this.title = title;
+    public PastEventModel(String date, String description, String imgUrl, String lowercase_title, String location, String weekday, String time,String title) {
         this.date = date;
-        this.time = time;
-        this.date_and_time = date_and_time;
-        this.joining_link = joining_link;
         this.description = description;
         this.imgUrl = imgUrl;
+        this.lowercase_title = lowercase_title;
         this.location = location;
         this.weekday = weekday;
+        this.time = time;
+        this.title=title;
     }
 
     public String getTitle() {
@@ -35,30 +34,6 @@ public class UpcomingEventModel {
         this.date = date;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate_and_time() {
-        return date_and_time;
-    }
-
-    public void setDate_and_time(String date_and_time) {
-        this.date_and_time = date_and_time;
-    }
-
-    public String getJoining_link() {
-        return joining_link;
-    }
-
-    public void setJoining_link(String joining_link) {
-        this.joining_link = joining_link;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -75,6 +50,14 @@ public class UpcomingEventModel {
         this.imgUrl = imgUrl;
     }
 
+    public String getLowercase_title() {
+        return lowercase_title;
+    }
+
+    public void setLowercase_title(String lowercase_title) {
+        this.lowercase_title = lowercase_title;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -89,5 +72,13 @@ public class UpcomingEventModel {
 
     public void setWeekday(String weekday) {
         this.weekday = weekday;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

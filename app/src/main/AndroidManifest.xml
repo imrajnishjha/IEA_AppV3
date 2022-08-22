@@ -31,6 +31,12 @@
         android:theme="@style/Theme.IEAApp"
         tools:targetApi="28">
         <activity
+            android:name=".MembershipRenewal"
+            android:exported="false" />
+        <activity
+            android:name=".EventChatSession"
+            android:exported="false" />
+        <activity
             android:name=".ChatSession"
             android:exported="false" />
         <activity

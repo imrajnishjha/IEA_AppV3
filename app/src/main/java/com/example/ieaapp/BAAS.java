@@ -1,6 +1,7 @@
 package com.example.ieaapp;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -84,7 +86,7 @@ public class BAAS extends AppCompatActivity {
 
         baasRadioIdHolder.setText(String.valueOf(R.id.search_by_industry_type_rBtn));
 
-        MembersDirectory.WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new MembersDirectory.WrapContentLinearLayoutManager(this);
+        WrapContentLinearLayoutManager2 wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager2(this);
 
 
         baasListRecyclerView.setLayoutManager(wrapContentLinearLayoutManager);
@@ -96,7 +98,7 @@ public class BAAS extends AppCompatActivity {
 
         baasListAdapter = new BaasListAdapter(options);
         baasListRecyclerView.setAdapter(baasListAdapter);
-        baasListAdapter.startListening();
+
 
         baasBackBtn.setOnClickListener(view -> finish());
 
@@ -129,7 +131,7 @@ public class BAAS extends AppCompatActivity {
                 }
                 baasListAdapter = new BaasListAdapter(options);
                 baasListRecyclerView.setAdapter(baasListAdapter);
-                baasListAdapter.startListening();
+                //baasListAdapter.startListening();
             }
 
             @Override
@@ -303,6 +305,31 @@ public class BAAS extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         dropdownInit();
+        baasListAdapter.startListening();
     }
 
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        baasListAdapter.stopListening();
+//    }
+        public static class WrapContentLinearLayoutManager2 extends LinearLayoutManager {
+            public WrapContentLinearLayoutManager2(Context context) {
+        super(context);
+    }
+
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    Log.e("TAG", "Recycler view error");
+                }
+            }
+
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return false;
+            }
+        }
 }

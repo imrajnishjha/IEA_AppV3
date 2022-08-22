@@ -273,7 +273,9 @@ public class payment_proof extends AppCompatActivity {
             if(renew.equals("0")){
                 ImgdataHaldler(dialog,uri);
             } else if(renew.equals("1")) {
-                renewalHandler(dialog,uri);
+                renewalHandler(dialog,uri,renew);
+            } else if(renew.equals("2")){
+                renewalHandler(dialog,uri,renew);
             }
 
 
@@ -342,7 +344,7 @@ public class payment_proof extends AppCompatActivity {
         });
     }
 
-    public void renewalHandler(ProgressDialog dialog,Uri proofimg_uri){
+    public void renewalHandler(ProgressDialog dialog,Uri proofimg_uri,String renewalOption){
         StorageReference urirefence = memberstorageRef.child("RenewalProof/" + UUID.randomUUID().toString());
         urirefence.putFile(proofimg_uri).addOnSuccessListener(s ->{
             urirefence.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -375,7 +377,12 @@ public class payment_proof extends AppCompatActivity {
                             }
                         });
                         Toast.makeText(payment_proof.this, "Renewal Submitted", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(payment_proof.this,UserProfile.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        if(renewalOption.equals("2")){
+                            startActivity(new Intent(payment_proof.this,LandingPage.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }else {
+                            startActivity(new Intent(payment_proof.this,UserProfile.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
+
                         dialog.dismiss();
 
                     }).addOnFailureListener(f -> {

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +45,8 @@ public class EventDetails extends AppCompatActivity {
     AppCompatButton addMyselfBtn, eventDetailsBackButton,joinNowBtn;
     Dialog addMyselfDialog;
     FirebaseAuth mAuth;
-    String EventItemKey;
+    String EventItemKey,EventType;
+    CardView eventChat;
     String[] userEmail = new String[1];
 
     @Override
@@ -53,7 +55,8 @@ public class EventDetails extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         EventItemKey = getIntent().getStringExtra("EventItemKey");
-        Log.d(("ItemKey"), "onCreate: " + EventItemKey);
+        EventType = getIntent().getStringExtra("EventType");
+        Log.d(("ItemKey"), "onCreate: " + EventItemKey+EventType);
 
         eventTitleTv = findViewById(R.id.event_title_txt);
         eventDateTv = findViewById(R.id.event_date_txt);
@@ -65,6 +68,7 @@ public class EventDetails extends AppCompatActivity {
         joinNowBtn = findViewById(R.id.join_now_btn);
         eventDetailsBackButton = findViewById(R.id.events_detail_back_btn);
         eventMemberTextTv = findViewById(R.id.event_members);
+        eventChat = findViewById(R.id.eventDetail_chatBtn);
 
         addMyselfDialog = new Dialog(this);
 
@@ -74,10 +78,17 @@ public class EventDetails extends AppCompatActivity {
             joinNowBtn.setVisibility(View.GONE);
             eventMemberTextTv.setVisibility(View.GONE);
             addMyselfBtn.setVisibility(View.GONE);
+            eventChat.setVisibility(View.GONE);
+        }
+        if(EventType.equals("Past Events")){
+            eventMembersRv.setVisibility(View.GONE);
+            joinNowBtn.setVisibility(View.GONE);
+            eventMemberTextTv.setVisibility(View.GONE);
+            addMyselfBtn.setVisibility(View.GONE);
         }
 
-        eventsRef = FirebaseDatabase.getInstance().getReference().child("Events/" + EventItemKey);
-        eventsRef.addValueEventListener(new ValueEventListener() {
+        eventsRef = FirebaseDatabase.getInstance().getReference().child(EventType);
+        eventsRef.child(EventItemKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 eventTitleTv.setText(Objects.requireNonNull(snapshot.child("title").getValue()).toString());
@@ -97,6 +108,9 @@ public class EventDetails extends AppCompatActivity {
 
             }
         });
+
+
+
 
         eventMembersRv.setLayoutManager(new MemberDirectoryDetail.WrapContentLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         options = new FirebaseRecyclerOptions.Builder<EventMemberItemModel>()
@@ -124,17 +138,23 @@ public class EventDetails extends AppCompatActivity {
                 DatabaseReference eventMembersReference = FirebaseDatabase.getInstance().getReference().child("Events/" + EventItemKey + "/members/" + userEmail[0].replaceAll("\\.", "%7"));
 
                 final String[] userImgUrl = new String[1];
+                final String[] token = new String[1];
                 FirebaseDatabase.getInstance().getReference("Registered Users/" + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).replaceAll("\\.", "%7")).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         userImgUrl[0] = Objects.requireNonNull(snapshot.child("purl").getValue()).toString();
+                        token[0] = Objects.requireNonNull(snapshot.child("user_token").getValue()).toString();
 
                         HashMap<String, Object> memberData = new HashMap<>();
                         memberData.put("email", userEmail[0]);
                         memberData.put("imageUrl", userImgUrl[0]);
+                        memberData.put("user_token",token[0]);
+                        Log.d("TAG", "onDataChange: "+token[0]);
 
-                        eventMembersReference.updateChildren(memberData).addOnSuccessListener(o ->
-                                        Toast.makeText(EventDetails.this, "You have been added", Toast.LENGTH_SHORT).show()
+                        eventMembersReference.updateChildren(memberData).addOnSuccessListener(o ->{
+                                            Toast.makeText(EventDetails.this, "You have been added", Toast.LENGTH_SHORT).show();
+                                        }
+
                                 )
                                 .addOnFailureListener(e ->
                                         Toast.makeText(EventDetails.this, "You could not be added", Toast.LENGTH_SHORT).show());
@@ -168,17 +188,23 @@ public class EventDetails extends AppCompatActivity {
                 DatabaseReference eventMembersReference = FirebaseDatabase.getInstance().getReference().child("Events/" + EventItemKey + "/members/" + userEmail[0].replaceAll("\\.", "%7"));
 
                 final String[] userImgUrl = new String[1];
+                final String[] token = new String[1];
                 FirebaseDatabase.getInstance().getReference("Registered Users/" + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).replaceAll("\\.", "%7")).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         userImgUrl[0] = Objects.requireNonNull(snapshot.child("purl").getValue()).toString();
+                        token[0] = Objects.requireNonNull(snapshot.child("user_token").getValue()).toString();
 
                         HashMap<String, Object> memberData = new HashMap<>();
                         memberData.put("email", userEmail[0]);
                         memberData.put("imageUrl", userImgUrl[0]);
+                        memberData.put("user_token",token[0]);
+                        Log.d("TAG", "onDataChange: "+token[0]);
 
-                        eventMembersReference.updateChildren(memberData).addOnSuccessListener(o ->
-                                        Toast.makeText(EventDetails.this, "You have been added", Toast.LENGTH_SHORT).show()
+                        eventMembersReference.updateChildren(memberData).addOnSuccessListener(o ->{
+                                            Toast.makeText(EventDetails.this, "You have been added", Toast.LENGTH_SHORT).show();
+                                        }
+
                                 )
                                 .addOnFailureListener(e ->
                                         Toast.makeText(EventDetails.this, "You could not be added", Toast.LENGTH_SHORT).show());
@@ -196,6 +222,42 @@ public class EventDetails extends AppCompatActivity {
         });
 
         eventDetailsBackButton.setOnClickListener(view -> finish());
+
+        eventChat.setOnClickListener(v -> {
+            final String[] eventChatKey = new String[1];
+
+            eventsRef.child(EventItemKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    if(!snapshot.child("EventChatKey").exists()){
+                        eventChatKey[0] = eventTitleTv.getText().toString()+eventDateTv.getText().toString();
+                        HashMap<String,Object> eventMap = new HashMap<>();
+                        eventMap.put("EventChatKey",eventChatKey[0]);
+                        eventsRef.child(EventItemKey).updateChildren(eventMap).addOnSuccessListener(s->{
+                            startActivity(new Intent(EventDetails.this,EventChatSession.class).putExtra("chatKey",eventChatKey[0])
+                                    .putExtra("eventItemKey",EventItemKey).putExtra("key","0").putExtra("eventType",EventType));
+                            Log.d("one2", "onDataChange: ");
+                        }).addOnFailureListener(f -> {
+                            Toast.makeText(EventDetails.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+                        });
+                    } else if(snapshot.child("EventChatKey").exists()){
+                        eventChatKey[0] = snapshot.child("EventChatKey").getValue().toString();
+                        startActivity(new Intent(EventDetails.this,EventChatSession.class).putExtra("chatKey",eventChatKey[0])
+                                .putExtra("eventItemKey",EventItemKey).putExtra("key","1").putExtra("eventType",EventType));
+                        Log.d("one", "onDataChange: ");
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        });
     }
 
     @Override
@@ -287,5 +349,6 @@ public class EventDetails extends AppCompatActivity {
 
         }
     }
+
 
 }

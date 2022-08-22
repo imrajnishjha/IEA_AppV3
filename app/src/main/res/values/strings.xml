@@ -5,6 +5,7 @@
     <string name="request_for_membership">Request For Membership</string>
     <string name="existing_member">Existing Member</string>
     <string name="forgot_password"><u>Forgot Password?</u></string>
+    <string name="renewmembership"><u>Click here to renew your membership</u></string>
     <string name="register">Register</string>
     <string name="full_name">Full Name</string>
     <string name="proceed_to_pay">Proceed To Pay</string>

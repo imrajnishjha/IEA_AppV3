@@ -1,6 +1,8 @@
 package com.example.ieaapp;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -23,7 +25,7 @@ public class CoreTeamMembers extends AppCompatActivity{
         setContentView(R.layout.activity_core_team_members);
 
         coreMemberRecyclerView = findViewById(R.id.core_member_recycler_view);
-        coreMemberRecyclerView.setLayoutManager(new MembersDirectory.WrapContentLinearLayoutManager(this));
+        coreMemberRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(getApplicationContext()));
         coreTeamMemberBackButton = findViewById(R.id.core_team_member_back_button);
 
         options = new FirebaseRecyclerOptions.Builder<CoreMemberModel>()
@@ -48,10 +50,20 @@ public class CoreTeamMembers extends AppCompatActivity{
         coreMemberAdapter.startListening();
     }
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        coreMemberAdapter.stopListening();
-//    }
+    public class WrapContentLinearLayoutManager extends LinearLayoutManager {
+        public WrapContentLinearLayoutManager(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            try {
+                super.onLayoutChildren(recycler, state);
+            } catch (IndexOutOfBoundsException e) {
+                Log.e("TAG", "Recycler view error");
+            }
+        }
+    }
+
 
 }
