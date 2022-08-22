@@ -51,6 +51,7 @@ public class explore_menu extends AppCompatActivity {
     AppCompatButton exploreMenuLogoutBtn, memberNotificationIcon;
     long allsolvedValue, allProblemValue, allRejectedValue;
     RelativeLayout activeBar, activeVal;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,10 @@ public class explore_menu extends AppCompatActivity {
         helpImg = findViewById(R.id.helpimg);
 
         mAuth = FirebaseAuth.getInstance();
-        String userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+        if(mAuth.getCurrentUser()!=null){
+            userEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
+        }
+
 
         assert userEmail != null;
         String userEmailConverted = userEmail.replaceAll("\\.", "%7");
@@ -104,18 +108,24 @@ public class explore_menu extends AppCompatActivity {
         grievanceReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Query grievanceQuery = grievanceReference.orderByChild("email").equalTo(mAuth.getCurrentUser().getEmail());
-                grievanceQuery.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        solvedGrievances[0] = (int) snapshot.getChildrenCount();
-                    }
+                try{
+                    Query grievanceQuery = grievanceReference.orderByChild("email").equalTo(mAuth.getCurrentUser().getEmail());
+                    grievanceQuery.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            solvedGrievances[0] = (int) snapshot.getChildrenCount();
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
             }
 
             @Override

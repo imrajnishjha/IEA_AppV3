@@ -153,7 +153,7 @@ public class UserProfile extends AppCompatActivity {
                     renewalImg.setVisibility(View.VISIBLE);
                     renewalText.setVisibility(View.VISIBLE);
                 }
-                Log.d("TAG", "onDataChange: "+date);
+                Log.d("datetag", "onDataChange: "+date+"e+"+userExpiryDate);
 
                 String userContactNumberStr = Objects.requireNonNull(dataSnapshot.child("phone_number").getValue()).toString();
                 userContactNumberEdtTxt.setText(userContactNumberStr);

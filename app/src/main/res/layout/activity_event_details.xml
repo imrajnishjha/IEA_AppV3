@@ -107,7 +107,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
-                android:background="@drawable/ic_calendar_month_24"
+                android:background="@drawable/ic_baseline_calendar_today_24"
                 android:backgroundTint="#FB929E"
                 app:layout_constraintBottom_toBottomOf="@id/event_date_txt"
                 app:layout_constraintStart_toEndOf="@id/event_date_txt"
@@ -141,7 +141,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="4dp"
-                android:background="@drawable/ic_clock_24"
+                android:background="@drawable/ic_baseline_clock_24"
                 app:layout_constraintBottom_toBottomOf="@id/event_time_txt"
                 app:layout_constraintStart_toEndOf="@id/event_time_txt"
                 app:layout_constraintTop_toTopOf="@id/event_time_txt" />
