@@ -45,7 +45,7 @@ public class MembersDirectory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members_directory);
 
-        memberDirectoryRecyclerView = findViewById(R.id.members_directory_recycler_view);
+        memberDirectoryRecyclerView = (RecyclerView) findViewById(R.id.members_directory_recycler_view);
         WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(getApplicationContext());
         memberDirectoryRecyclerView.setLayoutManager(wrapContentLinearLayoutManager);
         memberDirectoryBackButton = findViewById(R.id.members_directory_back_button);
@@ -227,7 +227,7 @@ public class MembersDirectory extends AppCompatActivity {
 //        memberDirectoryAdapter.stopListening();
 //    }
 
-    public class WrapContentLinearLayoutManager extends LinearLayoutManager {
+     static class WrapContentLinearLayoutManager extends LinearLayoutManager {
         public WrapContentLinearLayoutManager(Context context) {
             super(context);
         }
