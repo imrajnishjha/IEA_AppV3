@@ -54,7 +54,7 @@ public class MembershipRenewal extends AppCompatActivity {
                             String membershipType = Objects.requireNonNull(snapshot.child("memberfee").getValue()).toString();
                             startActivity(new Intent(MembershipRenewal.this,payment.class).putExtra("renewal","2")
                                     .putExtra("email",renewalEmail.getText().toString()).putExtra("memberfee",membershipType)
-                                    .putExtra("name",renewalName.getText().toString()).putExtra("cname",renewalCompanyName.getText().toString()));
+                                     .putExtra("name",renewalName.getText().toString()).putExtra("cname",renewalCompanyName.getText().toString()));
                         }else {
                             Toast.makeText(MembershipRenewal.this, "Enter Correct Email", Toast.LENGTH_SHORT).show();
                         }
