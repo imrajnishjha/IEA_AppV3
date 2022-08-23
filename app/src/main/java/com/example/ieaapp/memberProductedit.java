@@ -39,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -219,14 +220,11 @@ public class memberProductedit extends AppCompatActivity {
 
             });
             cameraCardView.setOnClickListener(view1 -> {
-                if (!checkCameraPermission()) {
-                    requestCameraPermission();
-
-                } else {
-                    PickImagefromcamera();
-                    productImageUri = null;
-                    alertDialogImg.dismiss();
-                }
+                ImagePicker.with(this)
+                        .cameraOnly()
+                        .crop(5f,6f)	    			//Crop image(Optional), Check Customization for more option
+                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(3);
             });
         });
 
@@ -321,28 +319,14 @@ public class memberProductedit extends AppCompatActivity {
             productImageUri = UCrop.getOutput(data);
             Productimg.setImageURI(productImageUri);
         }else if (resultCode == RESULT_OK && requestCode == 3) {
-            File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
-            productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            try {
-                imageBitmap = getimageBitmap(productImageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Productimg.setImageBitmap(imageBitmap);
+            productImageUri = data.getData();
+            Productimg.setImageURI(productImageUri);
 
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }
     }
 
-    private void PickImagefromcamera() {
-        Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),"productslogo.jpg" );
-        file.delete();
-        productImageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, productImageUri);
-        startActivityForResult(fromcamera, 3);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestStoragePermission() {

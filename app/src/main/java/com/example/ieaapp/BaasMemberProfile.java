@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -253,14 +254,13 @@ public class BaasMemberProfile extends AppCompatActivity {
 
                 });
                 cameraCardView.setOnClickListener(view1 -> {
-                    if (!checkCameraPermission()) {
-                        requestCameraPermission();
 
-                    } else {
-                        PickImagefromcamera();
-                        companyLogoUri = null;
-                        alertDialogImg.dismiss();
-                    }
+                    ImagePicker.with(this)
+                            .crop()
+                            .cameraOnly()//Crop image(Optional), Check Customization for more option
+                            .compress(2048)			//Final image size will be less than 1 MB(Optional)
+                            .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                            .start(5);
                 });
             });
         } else {
@@ -371,6 +371,9 @@ public class BaasMemberProfile extends AppCompatActivity {
             Log.d("TAG", "onActivityResult: "+uri.toString());
             companyLogoIv.setImageURI(uri);
             uploadCompanyLogo(uri);
+        } else if (resultCode == RESULT_OK && requestCode == 5) {
+            companyLogoUri = data.getData();
+            uploadCompanyLogo(companyLogoUri);
         }
     }
 

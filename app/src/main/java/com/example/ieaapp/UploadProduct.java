@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -129,14 +130,11 @@ public class UploadProduct extends AppCompatActivity {
 
             });
             cameraCardView.setOnClickListener(view -> {
-                if (!checkCameraPermission()) {
-                    requestCameraPermission();
-
-                } else {
-                    PickImagefromcamera();
-                    resultUri = null;
-                    alertDialogImg.dismiss();
-                }
+                ImagePicker.with(this)
+                        .crop(5f,6f)	    			//Crop image(Optional), Check Customization for more option
+                        .cameraOnly()
+                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(0);
             });
         });
 
@@ -163,14 +161,8 @@ public class UploadProduct extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 0) {
-            File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
-            resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-            try {
-                imageBitmap = getimageBitmap(resultUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            productImg.setImageBitmap(imageBitmap);
+            resultUri = data.getData();
+            productImg.setImageURI(resultUri);
 
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);

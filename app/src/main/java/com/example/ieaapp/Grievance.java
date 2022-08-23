@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -232,28 +233,14 @@ public class Grievance extends AppCompatActivity {
 
             });
             cameraCardView.setOnClickListener(view -> {
-                if (!checkCameraPermission()) {
-                    requestCameraPermission();
-
-                } else {
-                    PickImagefromcamera();
-                    imageUri= null;
-                    alertDialogImg.dismiss();
-                }
+                ImagePicker.with(this)
+                        .crop(1f,1f)
+                        .cameraOnly()
+                        .compress(2048)			//Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(0);
             });
         });
-    }
-
-    private void PickImagefromcamera() {
-
-        Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
-        Log.d("TAG1", "PickImagefromcamera: "+file);
-        file.delete();
-        imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
-        Log.d("TAG3", "PickImagefromcamera: "+imageUri);
-        startActivityForResult(fromcamera, 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -283,17 +270,9 @@ public class Grievance extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 0) {
-            File file = new File(Environment.getExternalStorageDirectory(),"grievanceImg.jpg" );
-            imageUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+            imageUri=data.getData();
             cameraIv.setVisibility(View.VISIBLE);
-            try {
-                bitmap = getimageBitmap(imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            cameraIv.setImageBitmap(bitmap);
-
-            Log.d("TAG2", String.valueOf(imageUri));
+            cameraIv.setImageURI(imageUri);
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             imageUri = UCrop.getOutput(data);
             cameraIv.setVisibility(View.VISIBLE);
