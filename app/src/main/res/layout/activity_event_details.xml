@@ -193,9 +193,36 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/empty_text_view"
+                app:layout_constraintBottom_toTopOf="@id/event_photos_rv"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/event_members" />
+
+            <TextView
+                android:id="@+id/event_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="Photos"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/event_members_rv"
+                tools:ignore="HardcodedText" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/event_photos_rv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/empty_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/event_photos" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/event_add_myself_btn"
@@ -214,7 +241,7 @@
                 app:layout_constraintBottom_toTopOf="@id/join_now_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/event_members_rv" />
+                app:layout_constraintTop_toBottomOf="@id/event_photos_rv" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/join_now_btn"

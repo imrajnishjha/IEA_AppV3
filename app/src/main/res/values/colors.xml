@@ -9,5 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="different_black">#212121</color>
     <color name="grey">#A4A4A4</color>
-    <color name="mtrl_textinput_default_box_stroke_color" tools:ignore="PrivateResource">#212121</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:ignore="PrivateResource">#6d6875</color>
+    <color name="ucrop_color_toolbar">#e9c46a</color>
+    <color name="ucrop_color_statusbar">#8338ec</color>
+    <color name="ucrop_color_widget_active">#e76f51</color>
 </resources>

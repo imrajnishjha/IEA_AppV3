@@ -231,6 +231,9 @@ public class MembersDirectory extends AppCompatActivity {
         public WrapContentLinearLayoutManager(Context context) {
             super(context);
         }
+         public WrapContentLinearLayoutManager(Context context,int orientation,boolean reverseLayout) {
+             super(context,orientation,reverseLayout);
+         }
 
         @Override
         public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {

@@ -36,9 +36,11 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class EventDetails extends AppCompatActivity {
-    TextView eventTitleTv, eventDateTv, eventTimeTv, eventDescriptionTv, joinEventYes, joinEventNo,eventMemberTextTv;
-    RecyclerView eventMembersRv;
+    TextView eventTitleTv, eventDateTv, eventTimeTv, eventDescriptionTv, joinEventYes, joinEventNo,eventMemberTextTv,eventPhotoTextTv;
+    RecyclerView eventMembersRv,eventPhotoRv;
     FirebaseRecyclerOptions<EventMemberItemModel> options;
+    FirebaseRecyclerOptions<PastEventPhotoModel> pastEvenPhotoOptions;
+    PastEventPhotoAdapter pastEventPhotoAdapter;
     EventMemberItemAdapter eventMemberItemAdapter;
     DatabaseReference eventsRef;
     ImageView eventDetailImg;
@@ -69,6 +71,8 @@ public class EventDetails extends AppCompatActivity {
         eventDetailsBackButton = findViewById(R.id.events_detail_back_btn);
         eventMemberTextTv = findViewById(R.id.event_members);
         eventChat = findViewById(R.id.eventDetail_chatBtn);
+        eventPhotoRv = findViewById(R.id.event_photos_rv);
+        eventPhotoTextTv = findViewById(R.id.event_photos);
 
         addMyselfDialog = new Dialog(this);
 
@@ -82,10 +86,24 @@ public class EventDetails extends AppCompatActivity {
         }
         if(EventType.equals("Past Events")){
             eventMembersRv.setVisibility(View.GONE);
+            setMargins(eventMembersRv,0,1,0,0);
             joinNowBtn.setVisibility(View.GONE);
+            setMargins(eventChat,0,0,0,25);
             eventMemberTextTv.setVisibility(View.GONE);
+            setMargins(eventMemberTextTv,0,1,0,0);
             addMyselfBtn.setVisibility(View.GONE);
+            eventPhotoRv.setVisibility(View.VISIBLE);
+            eventPhotoTextTv.setVisibility(View.VISIBLE);
         }
+
+        eventPhotoRv.setLayoutManager(new MembersDirectory.WrapContentLinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        pastEvenPhotoOptions = new FirebaseRecyclerOptions.Builder<PastEventPhotoModel>()
+                .setQuery(FirebaseDatabase.getInstance().getReference("Past Events/" + EventItemKey + "/image_uris"), PastEventPhotoModel.class)
+                .build();
+
+        pastEventPhotoAdapter = new PastEventPhotoAdapter(pastEvenPhotoOptions);
+        eventPhotoRv.setAdapter(pastEventPhotoAdapter);
+        pastEventPhotoAdapter.startListening();
 
         eventsRef = FirebaseDatabase.getInstance().getReference().child(EventType);
         eventsRef.child(EventItemKey).addValueEventListener(new ValueEventListener() {
@@ -264,6 +282,7 @@ public class EventDetails extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         eventMemberItemAdapter.startListening();
+        pastEventPhotoAdapter.startListening();
     }
 
 
@@ -347,6 +366,13 @@ public class EventDetails extends AppCompatActivity {
                 eventMemberItem = itemView;
             }
 
+        }
+    }
+    public static void setMargins (View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
         }
     }
 
