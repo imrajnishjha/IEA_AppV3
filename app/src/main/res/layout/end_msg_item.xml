@@ -9,7 +9,7 @@
         android:layout_width="20dp"
         android:layout_height="30dp"
         android:id="@+id/endUserChatIV"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="10.0dp"
         android:scaleY="1.7"
         android:visibility="gone"
         android:layout_marginStart="7.5dp"
@@ -23,11 +23,12 @@
         app:cardCornerRadius="7dp"
         android:layout_marginStart="20dp"
         android:visibility="gone"
-        android:outlineAmbientShadowColor="@color/different_black"
+        android:outlineAmbientShadowColor="#335c67"
+        android:outlineSpotShadowColor="#335c67"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="5dp"
         android:layout_gravity="start"
-        android:backgroundTint="@color/different_black">
+        android:backgroundTint="#335c67">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -86,11 +87,12 @@
         android:id="@+id/userchatCV"
         app:cardCornerRadius="7dp"
         android:layout_marginEnd="20dp"
-        android:outlineAmbientShadowColor="@color/different_black"
+        android:outlineAmbientShadowColor="#a76957"
+        android:outlineSpotShadowColor="#a76957"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="5dp"
         android:layout_gravity="end"
-        android:backgroundTint="@color/different_black">
+        android:backgroundTint="#a76957">
 
 
 

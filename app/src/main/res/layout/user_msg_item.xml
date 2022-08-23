@@ -23,11 +23,12 @@
         app:cardCornerRadius="7dp"
         android:layout_marginStart="20dp"
         android:visibility="gone"
-        android:outlineAmbientShadowColor="@color/different_black"
         android:layout_marginTop="14dp"
+        android:outlineAmbientShadowColor="#335c67"
+        android:outlineSpotShadowColor="#335c67"
         android:layout_marginBottom="5dp"
         android:layout_gravity="start"
-        android:backgroundTint="@color/different_black">
+        android:backgroundTint="#335c67">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -87,11 +88,12 @@
         android:id="@+id/eventchatCV"
         app:cardCornerRadius="7dp"
         android:layout_marginEnd="20dp"
-        android:outlineAmbientShadowColor="@color/different_black"
+        android:outlineAmbientShadowColor="#a76957"
+        android:outlineSpotShadowColor="#a76957"
         android:layout_marginTop="14dp"
         android:layout_marginBottom="5dp"
         android:layout_gravity="end"
-        android:backgroundTint="@color/different_black">
+        android:backgroundTint="#a76957">
 
 
 
