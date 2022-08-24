@@ -159,8 +159,9 @@ public class ChatSession extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     chatRv.smoothScrollToPosition(adapter.getItemCount());
-                    chatText.setText("");
                     sendNotification(userToken,chatText.getText().toString(),senderName);
+                    chatText.setText("");
+
                 }
             });
         }

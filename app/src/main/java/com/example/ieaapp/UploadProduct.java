@@ -131,10 +131,10 @@ public class UploadProduct extends AppCompatActivity {
             });
             cameraCardView.setOnClickListener(view -> {
                 ImagePicker.with(this)
-                        .crop(5f,6f)	    			//Crop image(Optional), Check Customization for more option
+                        .crop(5f,6f)
                         .cameraOnly()
-                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                        .start(0);
+                        .maxResultSize(620, 620)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(5);
             });
         });
 
@@ -145,25 +145,21 @@ public class UploadProduct extends AppCompatActivity {
             } else if (productDescription.getText().toString().isEmpty()) {
                 productDescription.setError("Enter product description");
                 productDescription.requestFocus();
-            } else if (resultUri == null && imageBitmap==null) {
+            } else if (resultUri == null ) {
                 Toast.makeText(this, "Select a product image", Toast.LENGTH_SHORT).show();
                 productImg.requestFocus();
             } else {
                 uploadProductImage(resultUri);
             }
-
         });
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 0) {
+        if (resultCode == RESULT_OK && requestCode == 5) {
             resultUri = data.getData();
             productImg.setImageURI(resultUri);
-
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             resultUri = UCrop.getOutput(data);
             productImg.setImageURI(resultUri);
@@ -173,14 +169,6 @@ public class UploadProduct extends AppCompatActivity {
         }
     }
 
-    private void PickImagefromcamera() {
-        Intent fromcamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(Environment.getExternalStorageDirectory(),"productlogo.jpg" );
-        file.delete();
-        resultUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
-        fromcamera.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, resultUri);
-        startActivityForResult(fromcamera, 0);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestStoragePermission() {

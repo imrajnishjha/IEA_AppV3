@@ -146,8 +146,8 @@ public class EventChatSession extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     eventChatRV.smoothScrollToPosition(adapter.getItemCount());
-                    eventChatText.setText("");
                     sendEventNotification(eventChatText.getText().toString(),senderName,eventNameStr,eventItemKey);
+                    eventChatText.setText("");
                 }
             });
         }
