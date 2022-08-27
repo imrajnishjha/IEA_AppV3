@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if(getIntent().getExtras()!=null){
             if(getIntent().getExtras().getString("activity").equals("grievance")){
                 act = new Intent(MainActivity.this,MyGrievances.class).putExtra("GrievanceItemKey",getIntent().getExtras().getString("ownerKey")).
-                        putExtra("notify","1");
+                        putExtra("notify","1").putExtra("status","All");
                 return act;
             } else if(getIntent().getExtras().getString("activity").equals("userChatSession")){
                 act = new Intent(MainActivity.this,ChatSession.class).putExtra("chatKey", getIntent().getExtras().getString("chatKey"))

@@ -59,7 +59,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .putExtra("eventType",remoteMessage.getData().get("eventType"));
 
         }else if(Objects.requireNonNull(remoteMessage.getData().get("activity")).matches("grievance")){
-            resultIntent = new Intent(this,MyGrievances.class);
+            resultIntent = new Intent(this,MyGrievances.class).putExtra("status","All");
 
         } else{
             resultIntent = new Intent(this, MembersNotification.class);
