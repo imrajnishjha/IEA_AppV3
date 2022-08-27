@@ -66,13 +66,14 @@
             android:layout_width="wrap_content"
             android:layout_height="37dp"
             android:layout_marginStart="10dp"
-            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:gravity="bottom"
             android:text="Boost your Business"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/hello_text" />
+            app:layout_constraintTop_toBottomOf="@id/user_img" />
 
 
         <RelativeLayout
@@ -227,400 +228,400 @@
             android:layout_marginStart="12dp">
 
             <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/coreteam" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Core Team"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:text="Head Department Members"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/refer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_alignParentEnd="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="10dp"
-                android:layout_toEndOf="@id/core_mem"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginEnd="12dp"
-                app:layout_constraintStart_toEndOf="@id/core_mem"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description">
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/coreteam" />
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/refer" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Refer"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:maxLines="1"
-                    android:layout_marginBottom="10dp"
-                    android:text="Run hassle free Business"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/explore"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/core_mem"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintTop_toBottomOf="@id/core_mem"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/member_directory">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/explore" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Explore IEA"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:text="Know more about us"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/member_directory"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/refer"
-                android:layout_alignParentEnd="true"
+                android:layout_gravity="start"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="10dp"
-                android:layout_toEndOf="@id/explore"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginEnd="12dp"
-                app:layout_constraintTop_toBottomOf="@id/refer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/explore">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/members" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:maxLines="1"
-                    android:text="Member Directory"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                android:layout_marginTop="60dp"
+                android:text="Core Team"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:maxLines="1"
-                    android:layout_marginBottom="10dp"
-                    android:text="Explore other member"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bbas"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/explore"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintTop_toBottomOf="@id/explore"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/grievance">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/bbas" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Business as a Service"
-                    android:textColor="#000"
-                    android:maxLines="1"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:text="Business of Services"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/grievance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/member_directory"
-                android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="80dp"
                 android:layout_marginBottom="10dp"
-                android:layout_toEndOf="@id/bbas"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginEnd="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/member_directory"
-                app:layout_constraintStart_toEndOf="@id/bbas">
+                android:maxLines="1"
+                android:text="Head Department Members"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/grievance" />
+        </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Grievance"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/refer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@id/core_mem"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintStart_toEndOf="@id/core_mem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description">
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="File your complaint"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/postjobs"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/bbas"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintTop_toBottomOf="@id/bbas"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/events">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/white"
-                    android:src="@drawable/postjobs" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Post Jobs"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:text="Need Hands?Post now"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/events"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_below="@id/grievance"
-                android:layout_alignParentEnd="true"
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/refer" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Refer"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:maxLines="1"
                 android:layout_marginBottom="10dp"
-                android:layout_toEndOf="@id/postjobs"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="6dp"
-                android:layout_marginEnd="12dp"
-                app:layout_constraintTop_toBottomOf="@id/grievance"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/postjobs">
+                android:text="Run hassle free Business"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/events" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="60dp"
-                    android:text="Events"
-                    android:textColor="#000"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:text="Meet and Connect with Others"
-                    android:textColor="@color/different_black"
-                    android:textSize="9sp" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/explore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/core_mem"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toBottomOf="@id/core_mem"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/member_directory">
 
-            </androidx.cardview.widget.CardView>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/explore" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Explore IEA"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:text="Know more about us"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/member_directory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/refer"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@id/explore"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintTop_toBottomOf="@id/refer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/explore">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/members" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:maxLines="1"
+                android:text="Member Directory"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:maxLines="1"
+                android:layout_marginBottom="10dp"
+                android:text="Explore other member"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bbas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/explore"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toBottomOf="@id/explore"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/grievance">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/bbas" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Business as a Service"
+                android:textColor="#000"
+                android:maxLines="1"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:text="Business of Services"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/grievance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/member_directory"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@id/bbas"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/member_directory"
+            app:layout_constraintStart_toEndOf="@id/bbas">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/grievance" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Grievance"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="10dp"
+                android:text="File your complaint"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/postjobs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/bbas"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toBottomOf="@id/bbas"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/events">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:src="@drawable/postjobs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Post Jobs"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:text="Need Hands?Post now"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/events"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_below="@id/grievance"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@id/postjobs"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintTop_toBottomOf="@id/grievance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/postjobs">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/events" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="60dp"
+                android:text="Events"
+                android:textColor="#000"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:text="Meet and Connect with Others"
+                android:textColor="@color/different_black"
+                android:textSize="9sp" />
+
+        </androidx.cardview.widget.CardView>
 
 
         <androidx.cardview.widget.CardView

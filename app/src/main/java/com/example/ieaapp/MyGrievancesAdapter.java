@@ -1,5 +1,6 @@
 package com.example.ieaapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,8 @@ public class MyGrievancesAdapter extends FirebaseRecyclerAdapter<MyGrievanceMode
     protected void onBindViewHolder(@NonNull MyGrievanceViewHolder holder, int position, @NonNull MyGrievanceModel model) {
         holder.myGrievanceDept.setText(model.getDepartment());
         holder.myGrievanceDesc.setText(model.getComplain());
-        holder.myGrievanceStatus.setText(model.getStatus());
+        String grievanceStatus = String.valueOf(model.getStatus());
+        holder.myGrievanceStatus.setText(grievanceStatus);
 
         switch (model.getStatus()){
             case "Unsolved":
@@ -47,7 +49,17 @@ public class MyGrievancesAdapter extends FirebaseRecyclerAdapter<MyGrievanceMode
                 holder.grievanceStatusColorTv.setBackgroundColor(Color.parseColor("#FEFF9E"));
                 break;
         }
+
+        holder.myGrievanceView.setOnClickListener(view -> openGrievanceDetails(position, view, grievanceStatus));
     }
+
+    private void openGrievanceDetails(int position, View view, String status) {
+        Intent intent = new Intent(view.getContext(), GrievanceDetails.class);
+        intent.putExtra("status", status);
+        intent.putExtra("grievanceKey", getRef(position).getKey());
+        view.getContext().startActivity(intent);
+    }
+
 
     @NonNull
     @Override
@@ -64,9 +76,9 @@ public class MyGrievancesAdapter extends FirebaseRecyclerAdapter<MyGrievanceMode
         public MyGrievanceViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            myGrievanceDept = (TextView) itemView.findViewById(R.id.my_grievances_dept_tv);
-            myGrievanceDesc = (TextView) itemView.findViewById(R.id.my_grievances_desc_tv);
-            myGrievanceStatus = (TextView) itemView.findViewById(R.id.my_grievances_status_tv);
+            myGrievanceDept = itemView.findViewById(R.id.my_grievances_dept_tv);
+            myGrievanceDesc = itemView.findViewById(R.id.my_grievances_desc_tv);
+            myGrievanceStatus = itemView.findViewById(R.id.my_grievances_status_tv);
             grievanceStatusColorTv = itemView.findViewById(R.id.grievance_status_color_tv);
             myGrievanceView = itemView;
         }

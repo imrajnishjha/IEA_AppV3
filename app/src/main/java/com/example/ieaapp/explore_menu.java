@@ -42,7 +42,7 @@ public class explore_menu extends AppCompatActivity {
     FirebaseAuth mAuth;
     final DatabaseReference MemberOfMonthref = FirebaseDatabase.getInstance().getReference("Member of Month");
     TextView exploreUsername, Memberofmonthname, activeValue, solvedValue, MoMdescription;
-    ImageView logoutImg, userImage;
+    ImageView userImage;
     CircleImageView MemberofmonthImg;
     CardView coreMembersCard, memberDirectoryCard, grievanceCard, contactUs, refer, baasCard, eventsCard, helpImg, postJob;
     Dialog exploreIeaContactDialog;
@@ -138,9 +138,6 @@ public class explore_menu extends AppCompatActivity {
         Log.d("grievance value", String.valueOf(activeGrievances[0]));
         Log.d("grievance value", String.valueOf(solvedGrievances[0]));
 
-
-//        activeValue.setText(activeGrievances[0]);
-//        solvedValue.setText(solvedGrievances[0]);
         MemberOfMonthref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,8 +208,8 @@ public class explore_menu extends AppCompatActivity {
 
         userImage.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, UserProfile.class)));
 
-        activeBar.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, MyGrievances.class)));
-        activeVal.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, MyGrievances.class)));
+//        activeBar.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, MyGrievances.class)));
+//        activeVal.setOnClickListener(view -> startActivity(new Intent(explore_menu.this, MyGrievances.class)));
 
         memberNotificationIcon.setOnClickListener(view -> {
             startActivity(new Intent(explore_menu.this, MembersNotification.class));
@@ -222,6 +219,15 @@ public class explore_menu extends AppCompatActivity {
         postJob.setOnClickListener(view -> {
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
         });
+
+        activeValue.setOnClickListener(view -> openSelectiveGrievance("Active"));
+        solvedValue.setOnClickListener(view -> openSelectiveGrievance("Solved"));
+    }
+
+    private void openSelectiveGrievance(String status) {
+        Intent intent = new Intent(explore_menu.this, MyGrievances.class);
+        intent.putExtra("status", status);
+        startActivity(intent);
     }
 
     @Override

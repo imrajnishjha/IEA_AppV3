@@ -188,7 +188,7 @@ public class Grievance extends AppCompatActivity {
             }
         });
 
-        myGrievancesBtn.setOnClickListener(view -> startActivity(new Intent(Grievance.this, MyGrievances.class)));
+        myGrievancesBtn.setOnClickListener(view -> startActivity(new Intent(Grievance.this, MyGrievances.class).putExtra("status","All")));
 
         mGetImage =registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override

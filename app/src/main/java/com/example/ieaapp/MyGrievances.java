@@ -12,6 +12,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 public class MyGrievances extends AppCompatActivity {
 
     RecyclerView myGrievancesRecyclerView;
@@ -19,6 +21,7 @@ public class MyGrievances extends AppCompatActivity {
     MyGrievancesAdapter myGrievancesAdapter;
     FirebaseRecyclerOptions<MyGrievanceModel> options;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    public String activityStatusValue;
     String notify;
 
     @Override
@@ -26,26 +29,41 @@ public class MyGrievances extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_grievances);
 
-        myGrievancesRecyclerView = (RecyclerView) findViewById(R.id.my_grievances_recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        Intent intent = getIntent();
+        activityStatusValue = intent.getStringExtra("status");
+        notify = getIntent().getStringExtra("notify");
+        myGrievancesRecyclerView = findViewById(R.id.my_grievances_recyclerView);
+        LinearLayoutManager linearLayoutManager = new MembersDirectory.WrapContentLinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         myGrievancesRecyclerView.setLayoutManager(linearLayoutManager);
         myGrievancesBackButton = findViewById(R.id.my_grievances_back_button);
 
-        notify = getIntent().getStringExtra("notify");
-
-        options = new FirebaseRecyclerOptions.Builder<MyGrievanceModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("Unresolved Grievances").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7")), MyGrievanceModel.class)
-                .build();
+        switch (activityStatusValue) {
+            case "Active":
+                options = new FirebaseRecyclerOptions.Builder<MyGrievanceModel>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Unsolved Grievances").orderByChild("email").startAt(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).endAt(mAuth.getCurrentUser().getEmail() + "\uf8ff"), MyGrievanceModel.class)
+                        .build();
+                break;
+            case "Solved":
+                options = new FirebaseRecyclerOptions.Builder<MyGrievanceModel>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Solved Grievance").child(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).replaceAll("\\.", "%7")), MyGrievanceModel.class)
+                        .build();
+                break;
+            default:
+                options = new FirebaseRecyclerOptions.Builder<MyGrievanceModel>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Unresolved Grievances").child(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).replaceAll("\\.", "%7")), MyGrievanceModel.class)
+                        .build();
+                break;
+        }
 
         myGrievancesAdapter = new MyGrievancesAdapter(options);
         myGrievancesRecyclerView.setAdapter(myGrievancesAdapter);
         myGrievancesBackButton.setOnClickListener(view -> {
             if(notify!=null){
                 startActivity(new Intent(this,explore_menu.class));
-                finish();
-            } else{finish();}
+            }
+            finish();
         });
     }
 
@@ -56,12 +74,6 @@ public class MyGrievances extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        myGrievancesAdapter.stopListening();
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         if(notify!=null){
@@ -69,5 +81,5 @@ public class MyGrievances extends AppCompatActivity {
             finish();
         } else{finish();}
     }
-}
 
+}
