@@ -3,6 +3,7 @@ package com.example.ieaapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +31,16 @@ public class MainActivity extends AppCompatActivity {
         memberDirectoryAdapter2 =  new MembersDirectoryAdapter(options3);
         splashRV.setAdapter(memberDirectoryAdapter2);
 
+        if (getIntent().getExtras()!=null) {
+            Log.d("extrau", "onCreate: "+getIntent().getExtras().getString("activity"));
+            Log.d("extraui", "onCreate: "+getIntent().getStringExtra("activity"));
+        }
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(MainActivity.this, LandingPage.class);
+                Intent i = activityHandler();
                 startActivity(i);
                 finish();
             }
@@ -45,6 +51,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         memberDirectoryAdapter2.startListening();
+    }
+
+    public Intent activityHandler(){
+        Intent act = null;
+        if(getIntent().getExtras()!=null){
+            if(getIntent().getExtras().getString("activity").equals("grievance")){
+                act = new Intent(MainActivity.this,MyGrievances.class).putExtra("GrievanceItemKey",getIntent().getExtras().getString("ownerKey")).
+                        putExtra("notify","1");
+                return act;
+            } else if(getIntent().getExtras().getString("activity").equals("userChatSession")){
+                act = new Intent(MainActivity.this,ChatSession.class).putExtra("chatKey", getIntent().getExtras().getString("chatKey"))
+                        .putExtra("ownerEmail",getIntent().getExtras().getString("ownerKey")).
+                        putExtra("notify","1");
+                return act;
+            } else if(getIntent().getExtras().getString("activity").equals("eventChatSession")){
+                act = new Intent(MainActivity.this,EventChatSession.class).putExtra("chatKey",getIntent().getExtras().getString("chatKey"))
+                        .putExtra("eventItemKey",getIntent().getExtras().getString("ownerKey"))
+                        .putExtra("eventType",getIntent().getExtras().getString("eventType")).
+                        putExtra("notify","1");;
+                return act;
+            } else {
+                act = new Intent(MainActivity.this, MembersNotification.class);
+                return act;
+            }
+        } else {
+            act = new Intent(MainActivity.this, LandingPage.class);
+            return act;
+        }
     }
 
 

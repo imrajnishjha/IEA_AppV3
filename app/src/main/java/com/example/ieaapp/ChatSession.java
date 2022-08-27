@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -33,7 +34,7 @@ public class ChatSession extends AppCompatActivity {
     TextView userName;
     DatabaseReference chatData = FirebaseDatabase.getInstance().getReference("Members Chat");
     DatabaseReference userData = FirebaseDatabase.getInstance().getReference("Registered Users");
-    String chatKey,ownerEmail,chatType,key,senderName,userToken;
+    String chatKey,ownerEmail,chatType,key,notify,senderName,userToken;
     EndUserChatAdapter chatAdapter;
     FirebaseRecyclerOptions<EndUserChatModel> options;
     int position;
@@ -49,7 +50,12 @@ public class ChatSession extends AppCompatActivity {
         chatBackBtn = findViewById(R.id.chat_session_back_button);
         chatSendBtn = findViewById(R.id.chat_session_send_button);
         chatText = findViewById(R.id.userMsgText);
-        chatBackBtn.setOnClickListener(view -> finish());
+        chatBackBtn.setOnClickListener(view -> {
+            if(notify!=null){
+                startActivity(new Intent(this,explore_menu.class));
+                finish();
+            } else{finish();}
+        });
         chatKey = getIntent().getStringExtra("chatKey");
         ownerEmail = getIntent().getStringExtra("ownerEmail");
         userProfilePic = findViewById(R.id.chat_session_user_image);
@@ -57,9 +63,14 @@ public class ChatSession extends AppCompatActivity {
         String ownerEmailConverted = ownerEmail.replaceAll("\\.","%7");
         chatType = getIntent().getStringExtra("chatType");
         key = getIntent().getStringExtra("key");
-        if(key.equals("0")){
-            finish();
+        notify = getIntent().getStringExtra("notify");
+        if(key!=null){
+            if(key.equals("0")){
+                finish();
+            }
         }
+
+
 
         userData.child(ownerEmailConverted).addValueEventListener(new ValueEventListener() {
             @Override
@@ -168,10 +179,16 @@ public class ChatSession extends AppCompatActivity {
     }
 
     public void sendNotification(String Token,String message,String senderName){
-        FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(Token, senderName,  message, getApplicationContext(), ChatSession.this);
+        FcmNotificationsSender grievanceNotificationSender = new FcmNotificationsSender(Token, senderName,  message, getApplicationContext(), ChatSession.this,"userChatSession",FirebaseAuth.getInstance().getCurrentUser().getEmail(),chatKey);
         grievanceNotificationSender.SendNotifications();
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(notify!=null){
+            startActivity(new Intent(this,explore_menu.class));
+            finish();
+        } else{finish();}
+    }
 }

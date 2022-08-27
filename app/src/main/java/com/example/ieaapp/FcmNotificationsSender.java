@@ -25,27 +25,38 @@ public class FcmNotificationsSender  {
     Context mContext;
     Activity mActivity;
     int number;
-
+    String togo;
+    String ownerKey;
+    String chatKey;
+    String eventType;
 
     private RequestQueue requestQueue;
     private final String postUrl = "https://fcm.googleapis.com/fcm/send";
     private final String fcmServerKey ="AAAA9WJ23gM:APA91bEsqJBW9F1MQ6-GwZOQmi8G460AMTaVLYQx2hlvVZJjfuxzwIGT2Abcq00HZiq3Eqjspb9x5DfCnZlHTDvU7lNJL5f3ESsooNm6X3or01f5GSx07CDE-xFvt0-vXDI-haIo4RsJ";
 
-    public FcmNotificationsSender(String userFcmToken, String title, String body, Context mContext, Activity mActivity, int number) {
-        this.userFcmToken = userFcmToken;
-        this.title = title;
-        this.body = body;
-        this.mContext = mContext;
-        this.mActivity = mActivity;
-        this.number = number;
-    }
-    public FcmNotificationsSender(String userFcmToken, String title, String body, Context mContext, Activity mActivity) {
-        this.userFcmToken = userFcmToken;
-        this.title = title;
-        this.body = body;
-        this.mContext = mContext;
-        this.mActivity = mActivity;
 
+
+    public FcmNotificationsSender(String userFcmToken, String title, String body, Context mContext, Activity mActivity, String togo, String ownerKey, String chatKey) {
+        this.userFcmToken = userFcmToken;
+        this.title = title;
+        this.body = body;
+        this.mContext = mContext;
+        this.mActivity = mActivity;
+        this.togo = togo;
+        this.ownerKey = ownerKey;
+        this.chatKey = chatKey;
+    }
+
+    public FcmNotificationsSender(String userFcmToken, String title, String body, Context mContext, Activity mActivity, String togo, String ownerKey, String chatKey, String eventType) {
+        this.userFcmToken = userFcmToken;
+        this.title = title;
+        this.body = body;
+        this.mContext = mContext;
+        this.mActivity = mActivity;
+        this.togo = togo;
+        this.ownerKey = ownerKey;
+        this.chatKey = chatKey;
+        this.eventType = eventType;
     }
 
     public void SendNotifications() {
@@ -61,6 +72,13 @@ public class FcmNotificationsSender  {
             notiObject.put("number", number);
 
             mainObj.put("notification", notiObject);
+
+            JSONObject extraData = new JSONObject();
+            extraData.put("activity",togo);
+            extraData.put("ownerKey",ownerKey);
+            extraData.put("chatKey",chatKey);
+            extraData.put("eventType",eventType);
+            mainObj.put("data",extraData);
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, new Response.Listener<JSONObject>() {
                 @Override

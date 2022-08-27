@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +37,7 @@ public class EventChatSession extends AppCompatActivity {
     RecyclerView eventChatRV;
     FirebaseRecyclerOptions<EndUserChatModel> options;
     EventChatAdapter eventChatAdapter;
-    String eventItemKey,key,chatKey,EventType,senderName,colors,eventNameStr;
+    String eventItemKey,key,notify,chatKey,EventType,senderName,colors,eventNameStr;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     DatabaseReference eventChatData = FirebaseDatabase.getInstance().getReference("Events Chat");
     int position;
@@ -53,10 +54,19 @@ public class EventChatSession extends AppCompatActivity {
         eventChatRV = findViewById(R.id.eventchatSessionRV);
         eventItemKey=getIntent().getStringExtra("eventItemKey");
         key = getIntent().getStringExtra("key");
-        if(key.equals("0")){
-            finish();
+        notify = getIntent().getStringExtra("notify");
+        if(key != null){
+            if(key.equals("0")){
+                finish();
+            }
         }
-        eventChatBackBtn.setOnClickListener(view -> finish());
+
+        eventChatBackBtn.setOnClickListener(view -> {
+            if(notify!=null){
+                startActivity(new Intent(this,explore_menu.class));
+                finish();
+            } else{finish();}
+        });
         chatKey = getIntent().getStringExtra("chatKey");
         EventType = getIntent().getStringExtra("eventType");
 
@@ -165,7 +175,11 @@ public class EventChatSession extends AppCompatActivity {
                             senderName+"-"+eventName,
                             message,
                             getApplicationContext(),
-                            EventChatSession.this);
+                            EventChatSession.this,
+                            "eventChatSession",
+                            eventKey,
+                            chatKey,
+                            EventType);
 
                     grievanceNotificationSender.SendNotifications();
                 }
@@ -175,5 +189,14 @@ public class EventChatSession extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(notify!=null){
+            startActivity(new Intent(this,explore_menu.class));
+            finish();
+        } else{finish();}
     }
 }

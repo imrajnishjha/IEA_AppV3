@@ -314,7 +314,10 @@ public class payment_proof extends AppCompatActivity {
                                             "IEA New Registration",
                                             "New registration application has been submitted. (" + registrationCount[0] + ")",
                                             getApplicationContext(),
-                                            payment_proof.this);
+                                            payment_proof.this,
+                                            "memberapproval",
+                                            email.replaceAll("\\.","%7"),
+                                            "null");
 
                                     grievanceNotificationSender.SendNotifications();
 
@@ -357,7 +360,10 @@ public class payment_proof extends AppCompatActivity {
                                             "IEA Membership Renewal",
                                             "New renewal application has been submitted.",
                                             getApplicationContext(),
-                                            payment_proof.this);
+                                            payment_proof.this,
+                                            "memberrenewal",
+                                            email.replaceAll("\\.","%7"),
+                                            "null");
 
                                     grievanceNotificationSender.SendNotifications();
 

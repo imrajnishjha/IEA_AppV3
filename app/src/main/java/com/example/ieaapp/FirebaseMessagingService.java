@@ -22,17 +22,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Objects;
+
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     NotificationManager mNotificationManager;
 
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-
-// playing audio and vibration when user se reques
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();
@@ -40,59 +40,61 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             r.setLooping(false);
         }
 
-        // vibration
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {100, 300, 300, 300};
         v.vibrate(pattern, -1);
 
-        int resourceImage = getResources().getIdentifier(remoteMessage.getNotification().getIcon(), "drawable", getPackageName());
 
-        final long[] registrationCount = new long[1];
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "ieaapp");
 
-        FirebaseDatabase.getInstance().getReference("Temp Registry").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                registrationCount[0] = snapshot.getChildrenCount();
-            }
+        Intent resultIntent;
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        if(Objects.requireNonNull(remoteMessage.getData().get("activity")).matches("userChatSession")){
+            resultIntent = new Intent(this,ChatSession.class).putExtra("chatKey",remoteMessage.getData().get("chatKey"))
+                    .putExtra("ownerEmail",remoteMessage.getData().get("ownerKey"));
 
-            }
-        });
+        } else if(Objects.requireNonNull(remoteMessage.getData().get("activity")).matches("eventChatSession")){
+            resultIntent = new Intent(this,EventChatSession.class).putExtra("chatKey",remoteMessage.getData().get("chatKey"))
+                    .putExtra("eventItemKey",remoteMessage.getData().get("ownerKey"))
+                    .putExtra("eventType",remoteMessage.getData().get("eventType"));
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }else if(Objects.requireNonNull(remoteMessage.getData().get("activity")).matches("grievance")){
+            resultIntent = new Intent(this,MyGrievances.class);
 
-        Notification fcmNotification = new NotificationCompat.Builder(FirebaseMessagingService.this, "com.example.ieaadmin")
-                .setContentTitle(remoteMessage.getNotification().getTitle())
-                .setContentText(remoteMessage.getNotification().getBody())
-//                .setContentIntent(pendingIntent)
-//                .setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getNotification().getBody()))
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MAX)
-                .setNumber((int) registrationCount[0])
-                .build();
+        } else{
+            resultIntent = new Intent(this, MembersNotification.class);
+        }
 
-        Log.d("Registration Count: ", String.valueOf(registrationCount[0]));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        fcmNotification.notify();
+        mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-//        mNotificationManager =
-//                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            String channelId = "com.example.ieaadmin";
-//            NotificationChannel channel = new NotificationChannel(
-//                    channelId,
-//                    "Channel human readable title",
-//                    NotificationManager.IMPORTANCE_HIGH);
-//            mNotificationManager.createNotificationChannel(channel);
-//            fcmNotification..setChannelId(channelId);
-//        }
-//
-//        mNotificationManager.notify(100, builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "ieaapp";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Notifications",
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(channel);
+            builder.setSmallIcon(R.drawable.iea_logo);
+            builder.setChannelId(channelId);
+            builder.setContentIntent(pendingIntent);
+            builder.setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle());
+            builder.setContentText(remoteMessage.getNotification().getBody());
+            builder.setAutoCancel(true);
+            builder.setPriority(Notification.PRIORITY_MAX);
+        } else{
+            builder.setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle());
+            builder.setContentText(remoteMessage.getNotification().getBody());
+            builder.setChannelId("ieaapp");
+            builder.setSmallIcon(R.drawable.iea_logo);
+            builder.setAutoCancel(true);
+            builder.setPriority(Notification.PRIORITY_MAX);
+            builder.setContentIntent(pendingIntent);
 
+        }
+
+        mNotificationManager.notify(0, builder.build());
     }
 
 }

@@ -9,10 +9,10 @@
         android:layout_width="20dp"
         android:layout_height="30dp"
         android:id="@+id/eventUserChatIV"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="9.5dp"
         android:scaleY="1.7"
         android:visibility="gone"
-        android:layout_marginStart="7.5dp"
+        android:layout_marginStart="8dp"
         android:layout_gravity="start"
         android:src="@drawable/sidebar"/>
 
@@ -75,10 +75,10 @@
     <ImageView
         android:layout_width="20dp"
         android:layout_height="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="9.5dp"
         android:id="@+id/eventChatIV"
         android:scaleY="1.7"
-        android:layout_marginEnd="7.5dp"
+        android:layout_marginEnd="8dp"
         android:layout_gravity="end"
         android:src="@drawable/sidebar2"/>
 

@@ -1,5 +1,6 @@
 package com.example.ieaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class MyGrievances extends AppCompatActivity {
     MyGrievancesAdapter myGrievancesAdapter;
     FirebaseRecyclerOptions<MyGrievanceModel> options;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    String notify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +33,20 @@ public class MyGrievances extends AppCompatActivity {
         myGrievancesRecyclerView.setLayoutManager(linearLayoutManager);
         myGrievancesBackButton = findViewById(R.id.my_grievances_back_button);
 
+        notify = getIntent().getStringExtra("notify");
+
         options = new FirebaseRecyclerOptions.Builder<MyGrievanceModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("Unresolved Grievances").child(mAuth.getCurrentUser().getEmail().replaceAll("\\.", "%7")), MyGrievanceModel.class)
                 .build();
 
         myGrievancesAdapter = new MyGrievancesAdapter(options);
         myGrievancesRecyclerView.setAdapter(myGrievancesAdapter);
-        myGrievancesBackButton.setOnClickListener(view -> finish());
+        myGrievancesBackButton.setOnClickListener(view -> {
+            if(notify!=null){
+                startActivity(new Intent(this,explore_menu.class));
+                finish();
+            } else{finish();}
+        });
     }
 
     @Override
@@ -50,6 +59,15 @@ public class MyGrievances extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         myGrievancesAdapter.stopListening();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(notify!=null){
+            startActivity(new Intent(this,explore_menu.class));
+            finish();
+        } else{finish();}
     }
 }
 

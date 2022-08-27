@@ -83,9 +83,6 @@ public class Grievance extends AppCompatActivity {
     StorageReference storageProfilePicReference = FirebaseStorage.getInstance().getReference();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     ProgressDialog progressDialog;
-    Bitmap bitmap;
-
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -99,7 +96,6 @@ public class Grievance extends AppCompatActivity {
         grievanceSubjectEdtTxt = findViewById(R.id.grievance_subject_edtTxt);
         cameraBtn = findViewById(R.id.issueCamaraBtn);
         cameraIv = findViewById(R.id.issueCamaraIv);
-
 
         dropdownInit();
 
@@ -158,7 +154,7 @@ public class Grievance extends AppCompatActivity {
 
                                     Toast.makeText(Grievance.this, "We have received your request with id "+grievanceKey, Toast.LENGTH_LONG).show();
                                     confirmationPopup(progressDialog,0);
-                                    sendGrievanceNotification();
+                                    sendGrievanceNotification(grievanceKey);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -187,7 +183,7 @@ public class Grievance extends AppCompatActivity {
                     grievanceReference.child(grievanceKey).setValue(solvedModel);
                     Toast.makeText(Grievance.this, "We have received your request with id "+grievanceKey, Toast.LENGTH_LONG).show();
                     confirmationPopup(progressDialog,1);
-                    sendGrievanceNotification();
+                    sendGrievanceNotification(grievanceKey);
                 }
             }
         });
@@ -284,7 +280,7 @@ public class Grievance extends AppCompatActivity {
 
     }
 
-    private void sendGrievanceNotification() {
+    private void sendGrievanceNotification(String key) {
         FirebaseDatabase.getInstance().getReference("Core Member Token").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -295,7 +291,7 @@ public class Grievance extends AppCompatActivity {
                             "IEA New Grievance Submitted",
                             "New Grievance has been submitted:\n" + grievanceSubjectEdtTxt.getText().toString(),
                             getApplicationContext(),
-                            Grievance.this);
+                            Grievance.this,"grievance","null",key);
 
                     grievanceNotificationSender.SendNotifications();
                 }

@@ -1,5 +1,6 @@
 package com.example.ieaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -41,7 +42,10 @@ public class MembersNotification extends AppCompatActivity {
         memberNotificationRv.setAdapter(memberNotificationAdapter);
 
 
-        memberNotificationBackBtn.setOnClickListener(view -> finish());
+        memberNotificationBackBtn.setOnClickListener(view -> {
+                startActivity(new Intent(this,explore_menu.class));
+                finish();
+        });
 
 
     }
@@ -53,5 +57,11 @@ public class MembersNotification extends AppCompatActivity {
         memberNotificationAdapter.startListening();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this,explore_menu.class));
+        finish();
+    }
 }
 
