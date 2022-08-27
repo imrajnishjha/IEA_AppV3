@@ -50,12 +50,7 @@ public class ChatSession extends AppCompatActivity {
         chatBackBtn = findViewById(R.id.chat_session_back_button);
         chatSendBtn = findViewById(R.id.chat_session_send_button);
         chatText = findViewById(R.id.userMsgText);
-        chatBackBtn.setOnClickListener(view -> {
-            if(notify!=null){
-                startActivity(new Intent(this,explore_menu.class));
-                finish();
-            } else{finish();}
-        });
+
         chatKey = getIntent().getStringExtra("chatKey");
         ownerEmail = getIntent().getStringExtra("ownerEmail");
         userProfilePic = findViewById(R.id.chat_session_user_image);
@@ -70,6 +65,12 @@ public class ChatSession extends AppCompatActivity {
             }
         }
 
+        chatBackBtn.setOnClickListener(view -> {
+            if(notify!=null){
+                startActivity(new Intent(this,explore_menu.class));
+                finish();
+            } else{finish();}
+        });
 
 
         userData.child(ownerEmailConverted).addValueEventListener(new ValueEventListener() {
