@@ -14,6 +14,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +30,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     NotificationManager mNotificationManager;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -65,7 +67,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             resultIntent = new Intent(this, MembersNotification.class);
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
 
         mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 

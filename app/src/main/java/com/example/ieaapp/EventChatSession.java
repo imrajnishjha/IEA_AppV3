@@ -111,6 +111,9 @@ public class EventChatSession extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     position = (int) snapshot.getChildrenCount();
+                    if(eventChatAdapter!=null){
+                        eventChatRV.smoothScrollToPosition(eventChatAdapter.getItemCount());
+                    }
 
                 }
             }
