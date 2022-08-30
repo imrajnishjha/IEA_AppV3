@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 return act;
             }
         } catch(Exception e ) {
+            e.printStackTrace();
             act = new Intent(MainActivity.this, LandingPage.class);
             return act;
         }
