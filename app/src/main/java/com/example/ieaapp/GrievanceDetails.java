@@ -34,7 +34,7 @@ public class GrievanceDetails extends AppCompatActivity {
     String statusStr, userEmailReplaced, grievanceKeyStr, imageUrl = "";
     AutoCompleteTextView grievanceDetailsDepartmentField;
     EditText grievanceDetailsSubjectEdtTxt, getGrievanceDetailsIssueInputEdtTxt;
-    AppCompatButton grievanceDetailsSubmitBtn;
+    AppCompatButton grievanceDetailsSubmitBtn,grievanceDetailBackBtn;
     DatabaseReference grievanceItemRef, grievanceReference, grievanceReference2;
     FirebaseAuth mAuth;
     ImageView grievanceDetailsIv;
@@ -55,9 +55,12 @@ public class GrievanceDetails extends AppCompatActivity {
         getGrievanceDetailsIssueInputEdtTxt = findViewById(R.id.grievance_details_issue_input_edtTxt);
         grievanceDetailsSubmitBtn = findViewById(R.id.grievance_details_submit_btn);
         grievanceDetailsIv = findViewById(R.id.grievance_details_iv);
+        grievanceDetailBackBtn = findViewById(R.id.grievance_back_button);
         mAuth = FirebaseAuth.getInstance();
         userEmailReplaced = Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).replaceAll("\\.", "%7");
         grievanceItemRef = FirebaseDatabase.getInstance().getReference(("Unresolved Grievances/" + userEmailReplaced+"/"+grievanceKeyStr));
+
+        grievanceDetailBackBtn.setOnClickListener(view -> finish());
 
         if (statusStr.equals("Rejected"))
             grievanceDetailsSubmitBtn.setVisibility(View.VISIBLE);
