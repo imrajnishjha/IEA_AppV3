@@ -32,6 +32,8 @@ public class CoreTeamMembers extends AppCompatActivity{
                         .setQuery(FirebaseDatabase.getInstance().getReference().child("Core Teams Member"), CoreMemberModel.class)
                         .build();
 
+        Log.d("kilj", "onCreateView: "+options+"\n"+FirebaseDatabase.getInstance().getReference("Core Teams Member"));
+
         coreMemberAdapter = new CoreMemberAdapter(options);
         coreMemberRecyclerView.setAdapter(coreMemberAdapter);
 

@@ -127,7 +127,8 @@ public class ChatSession extends AppCompatActivity {
                     position = (int) snapshot.getChildrenCount();
                     Log.d("TAGr", "onCreate: "+position);
                     if(chatAdapter != null){
-                        chatRv.smoothScrollToPosition(chatAdapter.getItemCount());
+                        chatRv.smoothScrollToPosition(position);
+                        Log.d("TAGr", "onCreate: "+chatAdapter.getItemCount());
                     }
                 }
             }
