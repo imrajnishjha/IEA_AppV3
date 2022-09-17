@@ -431,11 +431,10 @@ public class UserProfile extends AppCompatActivity {
         }
         c.add(Calendar.DATE, day);
         date = sdf.format(c.getTime());
-        Log.d("dateis", "yearincrementer: "+date);
         return date;
     }
     public static int dateCompare(String date) {
-        int catalog_outdated =0;
+        int outdated =0;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
         Date strDate = null;
         try {
@@ -444,9 +443,9 @@ public class UserProfile extends AppCompatActivity {
             e.printStackTrace();
         }
         if (new Date().after(strDate)) {
-            catalog_outdated = 1;
+            outdated = 1;
         }
-        return catalog_outdated;
+        return outdated;
     }
 
 

@@ -154,15 +154,20 @@
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/activity_registration.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/activity_user_profile.xml" value="0.25" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/activity_wormos_detail.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/are_you_sure_popup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/baas_filter_popup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/baas_list_item.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/confirmation_popup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/end_msg_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/event_member_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/farzi.xml" value="0.203125" />
+        <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/image_picker_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/member_info_popup.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/members_directory_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/membershiptype_popup.xml" value="0.203125" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/my_grievance_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/past_event_photo_item.xml" value="0.203125" />
+        <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/reason.xml" value="0.203125" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/support_contact_popup.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/upcoming_event_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Administrator/StudioProjects/IEA_Appv3/app/src/main/res/layout/user_msg_item.xml" value="0.20416666666666666" />
